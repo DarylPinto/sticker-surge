@@ -1,0 +1,24 @@
+{
+  "name": "discord-stickers",
+  "version": "1.0.0",
+  "description": "Custom stickers and emotes for discord servers!",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "#"
+  },
+  "keywords": [
+    "Discord",
+    "Stickers",
+    "Emotes",
+    "Fun",
+    "Silly"
+  ],
+  "author": "Daryl Pinto",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^9.1.1"
+  }
+}
