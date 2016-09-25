@@ -76,7 +76,7 @@ function addSticker(message){
 		stickerURL = messageWords[2];
 	}else{
 		message.channel.sendMessage(replies.invalidAddSyntax);
-		return false;
+		return false; 
 	}
 
 	stickerName = messageWords[1];
