@@ -1,0 +1,6 @@
+{
+	"insufficientPermission": "You need to have the role `%%ROLE%%` to use that command.",
+	"invalidAddSyntax": "Invalid syntax. Use: `+sticker <NAME> <IMAGE URL>` or `+sticker <NAME>` with an image attached.",
+	"addPersonalSticker": "`:p-%%STICKERNAME%%:` sticker created. Only you can use this sticker, but you can use it on any server that I'm on.",
+	"addGroupSticker": "`:%%STICKERNAME%%:` sticker created. Anyone on the server can use this sticker."
+}
