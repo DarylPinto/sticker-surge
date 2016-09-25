@@ -7,5 +7,11 @@
 	
 	"invalidRemoveSyntax": "Invalid syntax. Use: `-sticker [NAME]`",
 	"removePersonalSticker": "`:p-%%STICKERNAME%%:` sticker removed.",
-	"removeGroupSticker": "`:%%STICKERNAME%%:` sticker removed."
+	"removeGroupSticker": "`:%%STICKERNAME%%:` sticker removed.",
+
+	"personalStickerInfo": "To see all your personal stickers, click here: http://discordstickers.io/user/%%BASE62USERID%%",
+	"groupStickerInfo": "The most recently sent stickers were: %%RECENTSTICKERS%%\nFor a full list of stickers available on this server, click here: http://discordstickers.io/server/%%BASE62SERVERID%%",
+
+	"unknownError": "An unknown error occured."
+
 }

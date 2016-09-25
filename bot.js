@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const base62 = require('base62');
 const token = require('./token.json');
 const replies = require('./replies.json');
 const client = new Discord.Client();
@@ -14,6 +15,8 @@ client.on('message', message => {
   	addSticker(message);
 	}else if(command == '-sticker'){
 		removeSticker(message);
+	}else if(command == '/stickers'){
+		provideStickerInfo(message);
 	}
 });
 
@@ -121,7 +124,18 @@ function removeSticker(message){
 		message.channel.sendMessage(replies.removeGroupSticker.replace('%%STICKERNAME%%', stickerName));
 		//remove sticker to db
 	}else{
-		message.channel.sendMessage('An unknown error occured');
+		message.channel.sendMessage(replies.unknownError);
+	}
+
+}
+
+function provideStickerInfo(message){
+	if(message.channel.type == 'dm'){
+		let base62userid = base62.encode(parseInt(message.author.id));
+		message.channel.sendMessage(replies.personalStickerInfo.replace('%%BASE62USERID%%', base62userid));	
+	}else if(message.channel.type == 'text'){
+		let base62serverid = base62.encode(message.guild.id);
+		message.channel.sendMessage(replies.groupStickerInfo.replace('%%BASE62SERVERID%%', base62serverid).replace('%%RECENTSTICKERS%%', '`:test1:`, `:test2:`, `:test3`'));
 	}
 
 }
