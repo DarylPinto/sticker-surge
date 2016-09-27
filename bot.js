@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const base62 = require('base62');
-const util = require('./helper-functions');
+const util = require('./utility-functions');
 const token = require('./token.json');
 const replies = require('./replies.json');
 const client = new Discord.Client();
@@ -87,10 +87,10 @@ function removeSticker(message){
 
 	if(message.channel.type == 'dm'){
 		message.channel.sendMessage(replies.removePersonalSticker.replace('%%STICKERNAME%%', stickerName));
-		//remove sticker to db
+		//remove sticker from db
 	}else if(message.channel.type == 'text' && util.msgHasRole(message, groupStickerRole)){
 		message.channel.sendMessage(replies.removeGroupSticker.replace('%%STICKERNAME%%', stickerName));
-		//remove sticker to db
+		//remove sticker from db
 	}else{
 		message.channel.sendMessage(replies.unknownError);
 	}

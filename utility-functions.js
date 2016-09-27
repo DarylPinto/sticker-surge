@@ -40,7 +40,7 @@ function msgHasRole(message, roleName){
 *
 * @param {string} prefix - prefix for bot commands
 * @param {message obj} message - message to check for command
-* @returns {string || null} - prefixless string if command is valid, or null if it isn't
+* @returns {string|null} - prefixless string if command is valid, or null if it isn't
 */
 function getCommand(prefix, message){
 	 //Get first word of message
