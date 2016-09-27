@@ -11,7 +11,8 @@ client.on('ready', () => {
 
 client.on('message', message => {
 	
-	let command = util.getCommand('$', message);
+	let prefix = '$';
+	let command = util.getCommand(prefix, message);
 
 	if(command === 'addsticker'){
   	addSticker(message);
@@ -20,7 +21,7 @@ client.on('message', message => {
 	}else if(command === 'stickers'){
 		provideStickerInfo(message);
 	}else if(command === 'help'){
-		help(message);
+		message.channel.sendMessage(multiReplace(replies.groupHelp, {'%%PREFIX%%': prefix}));
 	}
 	
 });

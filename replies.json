@@ -1,5 +1,5 @@
 {
-	"insufficientPermission": "You need to have the role `%%ROLE%%` to modify server-wide stickers. However, you can make your own personal cross-server stickers by private messaging me.",
+	"insufficientPermission": "You need to have the role `%%ROLE%%` to modify this server's set of stickers. However, you can manage your own stickers (which you can use on any server) by private messaging me.",
 
 	"invalidAddSyntax": "Invalid syntax. Use: `+sticker [NAME] [IMAGE URL]` or upload an image with the comment `+sticker [NAME]`",
 	"addPersonalSticker": "`:p-%%STICKERNAME%%:` sticker created. Only you can use this sticker, but you can use it on any server that I'm on.",
@@ -11,6 +11,9 @@
 
 	"personalStickerInfo": "To see all your personal stickers, click here: http://discordstickers.io/user/%%BASE62USERID%%",
 	"groupStickerInfo": "The most recently sent stickers were: %%RECENTSTICKERS%%\nFor a full list of stickers available on this server, click here: http://discordstickers.io/server/%%BASE62SERVERID%%",
+
+	"groupHelp": "`%%PREFIX%%addsticker` - Add a sticker for anyone on this server to use.\n`%%PREFIX%%removesticker` - Remove a sticker from this server.\n`%%PREFIX%%stickers` - View all the stickers on this server, and the names of the 3 most recently used ones.",
+	"personalHelp": "``",
 
 	"unknownError": "An unknown error occured."
 
