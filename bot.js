@@ -19,6 +19,8 @@ client.on('message', message => {
 		removeSticker(message);
 	}else if(command === 'stickers'){
 		provideStickerInfo(message);
+	}else if(command === 'help'){
+		help(message);
 	}
 	
 });
@@ -26,22 +28,17 @@ client.on('message', message => {
 /**
 * Adds a sticker.
 *
-* @param {message object} message that triggered the bot
+* @param {message object} message - message that triggered the bot
 */
 function addSticker(message){
 	let messageWords = message.content.trim().split(' ');
 	let stickerName, stickerURL;
 	let groupStickerRole = 'sticker-artist';
 
-	//Make sure user has correct permissions
+	//Make sure user has proper permissions, determine
+	//sticker name, sticker URL and validate syntax
 	if(message.channel.type == 'text' && !util.msgHasRole(message, groupStickerRole)){
 		message.channel.sendMessage(replies.insufficientPermission.replace('%%ROLE%%', groupStickerRole));
-		return false;
-	}
-
-	//Determine sticker image URL (to download from)
-	if(messageWords.length < 2 || messageWords.length > 3){
-		message.channel.sendMessage(replies.invalidAddSyntax);
 		return false;
 	}else if(messageWords.length == 2 && util.msgHasImgAttached(message)){
 		stickerURL = message.attachments.array()[0].proxyURL;
@@ -51,8 +48,8 @@ function addSticker(message){
 		message.channel.sendMessage(replies.invalidAddSyntax);
 		return false; 
 	}
-
 	stickerName = messageWords[1];
+	
 
 	//Determine if sticker is personal or group
 	if(message.channel.type == 'dm'){
@@ -67,6 +64,11 @@ function addSticker(message){
 
 }
 
+/**
+* Removes a sticker.
+*
+* @param {message object} message - message that triggered the bot
+*/
 function removeSticker(message){
 	let messageWords = message.content.trim().split(' ');
 	let stickerName;
@@ -95,6 +97,12 @@ function removeSticker(message){
 
 }
 
+/**
+* Tells the user the most recently used stickers, links them to a list of available stickers, and 
+* provides help command
+*
+* @param {message object} message - message that triggered the bot
+*/
 function provideStickerInfo(message){
 	if(message.channel.type == 'dm'){
 		let base62userid = base62.encode(parseInt(message.author.id));
