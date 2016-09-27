@@ -1,5 +1,5 @@
 {
-	"insufficientPermission": "You need to have the role `%%ROLE%%` to use that command.",
+	"insufficientPermission": "You need to have the role `%%ROLE%%` to use that command. However, you can make your own personal cross-server stickers by private messaging me.",
 
 	"invalidAddSyntax": "Invalid syntax. Use: `+sticker [NAME] [IMAGE URL]` or upload an image with the comment `+sticker [NAME]`",
 	"addPersonalSticker": "`:p-%%STICKERNAME%%:` sticker created. Only you can use this sticker, but you can use it on any server that I'm on.",

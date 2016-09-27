@@ -10,15 +10,17 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-	let command = message.content.trim().split(' ')[0];
+	
+	let command = util.getCommand('$', message);
 
-	if(command == '+sticker'){
+	if(command === 'addsticker'){
   	addSticker(message);
-	}else if(command == '-sticker'){
+	}else if(command === 'removesticker'){
 		removeSticker(message);
-	}else if(command == '/stickers'){
+	}else if(command === 'stickers'){
 		provideStickerInfo(message);
 	}
+	
 });
 
 /**
@@ -60,7 +62,7 @@ function addSticker(message){
 		message.channel.sendMessage(replies.addGroupSticker.replace('%%STICKERNAME%%', stickerName));
 		//add sticker to db
 	}else{
-		message.channel.sendMessage('An unknown error occured');
+		message.channel.sendMessage(replies.unknownError);
 	}
 
 }
