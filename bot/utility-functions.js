@@ -58,7 +58,7 @@ function getCommand(prefix, message){
 * @param {object} obj - map of substrings and their replacements
 * @returns {string} - string with replacements made 
 */
-multiReplace = function(str, obj) {
+function multiReplace(str, obj) {
 	var retStr = str;
 	for (var x in obj) {
 		retStr = retStr.replace(new RegExp(x, 'g'), obj[x]);

@@ -20,6 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "base62": "^1.1.1",
-    "discord.js": "^9.1.1"
+    "discord.js": "^9.1.1",
+    "mongoose": "^4.6.1"
   }
 }

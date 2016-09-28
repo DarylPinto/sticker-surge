@@ -1,0 +1,23 @@
+{
+	"insufficientPermission": "You need to have the role `%%ROLE%%` to modify this server's set of stickers. However, you can manage your own stickers (which you can use on any server) by private messaging me.",
+
+	"invalidAddSyntax": "Invalid syntax. Use: `%%PREFIX%%addsticker [NAME] [IMAGE URL]` or upload an image with the comment `%%PREFIX%%addsticker [NAME]`",
+	"addPersonalSticker": "`:%%STICKERNAME%%-:` sticker created. Only you can use this sticker, but you can use it on any server that I'm on. (Note the dash at the end of the code.)",
+	"addGroupSticker": "`:%%STICKERNAME%%:` sticker created. Anyone on the server can use this sticker.",
+	
+	"invalidRemoveSyntax": "Invalid syntax. Use: `%%PREFIX%%removesticker [NAME]`",
+	"removePersonalSticker": "`:%%STICKERNAME%%-:` sticker removed.",
+	"removeGroupSticker": "`:%%STICKERNAME%%:` sticker removed.",
+
+	"personalStickerInfo": "To see all your personal stickers, click here: http://discordstickers.io/user/%%BASE62USERID%%",
+	"groupStickerInfo": "For a full list of stickers available on this server, click here: http://discordstickers.io/server/%%BASE62GUILDID%%\nThe most recently sent stickers were: %%RECENTSTICKERS%%",
+
+	"groupHelp": "`%%PREFIX%%addsticker` - Add a sticker for anyone on this server to use.\n`%%PREFIX%%removesticker` - Remove a sticker from this server.\n`%%PREFIX%%stickers` - View all the stickers on this server, and the names of the 3 most recently used ones.",
+	"personalHelp": "``",
+
+	"setRole": "Updated. Now only users with the role `%%NEWROLE%%` can now manage this server's stickers!",
+	"invalidSetRoleSyntax": "Invalid Syntax. Use: `%%PREFIX%%setrole [ROLE NAME]`",
+
+	"unknownError": "An unknown error occured."
+
+}
