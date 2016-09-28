@@ -198,7 +198,7 @@ function setRole(prefix, message, guildInfo){
 
 	}else{
 
-		let newRole = messageWords[1] || '@everyone';
+		let newRole = messageWords[1];
 		guildInfo.managerRole = newRole;
 		guildInfo.save((err)=>{
 			if(err) throw err;
