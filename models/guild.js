@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const guildSchema = Schema({
-	id: String,
+	id: {type: String, unique: true},
 	managerRole: String,
 	recentStickers: Array,
 	customStickers: [{type: Schema.Types.ObjectId, ref: 'Sticker'}],
-	stickerPackPrefixes: Array
+	stickerPacks: [{type: Schema.Types.ObjectId, ref: 'StickerPack'}]
 });
 
 let Guild = mongoose.model('Guild', guildSchema);

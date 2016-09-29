@@ -6,12 +6,20 @@ const mongoose = require('mongoose');
 const replies = require('./replies.js');
 const client = new Discord.Client();
 
+//set es2015 promises as mongoose promise lib
+mongoose.Promise = global.Promise;
+
 //connect to database	
 mongoose.connect('mongodb://localhost/test');
 let db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
 
-//get mongo models
+//Bot crashes by design if it cannot connect to db
+//(because it's useless otherwise)
+db.on('error', err => {
+	util.handleError(err);
+});
+
+//get mongo models... (Why mongo models? -Zoolander)
 let Guild = require('../models/guild');
 let Sticker = require('../models/sticker');
 let StickerPack = require('../models/sticker-pack');
@@ -22,10 +30,11 @@ client.on('ready', () => {
 });
 
 //When bot joins a guild for the first time
-client.on('guildCreate', (guild) => {
+client.on('guildCreate', guild => {
 
 	//MAKE SURE TO CHECK IF DB HAS INFO FOR THIS GUILD ALREADY,
 	//DONT WANT TO OVERWRITE GUILD'S STICKERS IF BOT IS KICKED THEN RE-ADDED
+	//try upsert https://docs.mongodb.com/manual/reference/method/db.collection.update/#upsert-parameter
 
 	let currentGuild = new Guild({
 		id: guild.id,
@@ -52,27 +61,31 @@ client.on('message', message => {
 		case('addsticker'):
 
 			if(message.channel.type == 'text'){
-				Guild.findOne({id: message.channel.guild.id}, (err, res) =>{
-					if(err) util.handleError(err, message); 
+				Guild.findOne({id: message.channel.guild.id})
+				.then(res =>{
 					addSticker(prefix, message, res);
+				})
+				.catch(err=>{
+					util.handleError(err, message); //check that this works
 				});
+
 			}else{
-				User.findOne({id: message.author.id}, (err, res)=>{
+				User.findOne({id: message.author.id}, (err, res) => {
 					if(err) util.handleError(err, message);
-					addPersonalSticker(prefix, message, res);
+					addPersonalSticker(prefix, message, res); //create seperate function for personal stickers
 				})
 			}
 			break;
 
 		case('removesticker'):
-			Guild.findOne({id: message.channel.guild.id}, (err, res) =>{
+			Guild.findOne({id: message.channel.guild.id}, (err, res) => {
 				if(err) util.handleError(err, message);
 				removeSticker(prefix, message, res);
 			});
 			break;
 
 		case('stickers'):
-			Guild.findOne({id: message.channel.guild.id}, (err, res) =>{
+			Guild.findOne({id: message.channel.guild.id}, (err, res) => {
 				if(err) util.handleError(err, message);
 				provideStickerInfo(message, res);
 			});
@@ -82,8 +95,8 @@ client.on('message', message => {
 			message.channel.sendMessage(replies.use('groupHelp', {'%%PREFIX%%': prefix}));
 			break;
 
-		case('setRole'):
-			Guild.findOne({id: message.channel.guild.id}, (err, res) =>{
+		case('setrole'):
+			Guild.findOne({id: message.channel.guild.id}, (err, res) => {
 				if(err) util.handleError(err, message);
 				setRole(prefix, message, res);
 			});	
@@ -210,9 +223,9 @@ function setRole(prefix, message, guildInfo){
 		let newRole = (messageWords[1].toLowerCase() === 'everyone') ? '@everyone' : messageWords[1].toLowerCase();
 		guildInfo.managerRole = newRole;
 
-		guildInfo.save(err => {
+		guildInfo.save()
+		.then(() => {
 
-			if(err) util.handleError(err, message); return false; 
 			if(newRole === '@everyone'){
 				message.channel.sendMessage(replies.use('setRoleEveryone'));	
 			}else{
@@ -220,7 +233,10 @@ function setRole(prefix, message, guildInfo){
 			}
 
 			console.log(guildInfo);
-		});
+		})
+		.catch(err => {
+			util.handleError(err, message);
+		})
 
 	}
 }

@@ -1,5 +1,3 @@
-const replies = require('./replies.js');
-
 /**
 * Does message have an image attachment?
 *
@@ -69,15 +67,15 @@ function multiReplace(str, obj) {
 };
 
 /**
-* Handle an error (usually db connection problems)
+* Handle an error (usually db connection problem)
 *
 * @param {error} err - Error to handle
 * @param {message} message - Message to reply to incase of an error
 */
-function handleError(err, message){
+function handleError(err, message){	
 	message = message || null;
-	console.error(err);
-	if(message)	message.channel.sendMessage(replies.use('unknownError'));
+	if(message)	message.channel.sendMessage("An unknown error occured.");
+	throw(err);
 }
 
 module.exports = {
@@ -85,5 +83,6 @@ module.exports = {
 	linkIsDirectImg,
 	msgHasRole,
 	getCommand,
-	multiReplace
+	multiReplace,
+	handleError
 }
