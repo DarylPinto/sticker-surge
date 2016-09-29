@@ -3,7 +3,7 @@ const base62 = require('base62');
 const util = require('./utility-functions');
 const token = require('./token.json');
 const mongoose = require('mongoose');
-const replies = require('./replies.json');
+const replies = require('./replies.js');
 const client = new Discord.Client();
 
 //connect to database	
@@ -35,7 +35,7 @@ client.on('guildCreate', (guild) => {
 	});
 
 	currentGuild.save(function(err){
-		if(err) throw err;
+		if(err) util.handleError(err);
 		console.log('Guild added to db!');
 	});
 
@@ -47,31 +47,51 @@ client.on('message', message => {
 	let prefix = '$';
 	let command = util.getCommand(prefix, message);
 
-	if(command === 'addsticker'){
+	switch(command){
 
-		Guild.findOne({id: message.channel.guild.id}, (err, doc) =>{
-			addSticker(prefix, message, doc);
-		});	
-		
-	}else if(command === 'removesticker'){
+		case('addsticker'):
 
-		Guild.findOne({id: message.channel.guild.id}, (err, doc) =>{
-			removeSticker(prefix, message, doc);
-		});
+			if(message.channel.type == 'text'){
+				Guild.findOne({id: message.channel.guild.id}, (err, res) =>{
+					if(err) util.handleError(err, message); 
+					addSticker(prefix, message, res);
+				});
+			}else{
+				User.findOne({id: message.author.id}, (err, res)=>{
+					if(err) util.handleError(err, message);
+					addPersonalSticker(prefix, message, res);
+				})
+			}
+			break;
 
-	}else if(command === 'stickers'){	
+		case('removesticker'):
+			Guild.findOne({id: message.channel.guild.id}, (err, res) =>{
+				if(err) util.handleError(err, message);
+				removeSticker(prefix, message, res);
+			});
+			break;
 
-		Guild.findOne({id: message.channel.guild.id}, (err, doc) =>{
-			provideStickerInfo(message, doc);
-		});
+		case('stickers'):
+			Guild.findOne({id: message.channel.guild.id}, (err, res) =>{
+				if(err) util.handleError(err, message);
+				provideStickerInfo(message, res);
+			});
+			break;
 
-	}else if(command === 'help'){
-		message.channel.sendMessage(util.multiReplace(replies.groupHelp, {'%%PREFIX%%': prefix}));
-	}else if(command === 'setrole'){
+		case('help'):
+			message.channel.sendMessage(replies.use('groupHelp', {'%%PREFIX%%': prefix}));
+			break;
 
-		Guild.findOne({id: message.channel.guild.id}, (err, doc) =>{
-			setRole(prefix, message, doc);
-		});	
+		case('setRole'):
+			Guild.findOne({id: message.channel.guild.id}, (err, res) =>{
+				if(err) util.handleError(err, message);
+				setRole(prefix, message, res);
+			});	
+			break;
+
+		default:
+			//do nothing
+			break;
 
 	}
 	
@@ -90,9 +110,7 @@ function addSticker(prefix, message, guildInfo){
 	//sticker name, sticker URL and validate syntax
 	if(message.channel.type == 'text' && !util.msgHasRole(message, guildInfo.managerRole)){
 
-		message.channel.sendMessage(util.multiReplace(replies.insufficientPermission, {	
-			'%%ROLE%%': guildInfo.managerRole
-		}));
+		message.channel.sendMessage(replies.use('insufficientPermission', {'%%ROLE%%': guildInfo.managerRole}));
 		return false;
 
 	}else if(messageWords.length == 2 && util.msgHasImgAttached(message)){
@@ -100,9 +118,7 @@ function addSticker(prefix, message, guildInfo){
 	}else if(messageWords.length == 3 && util.linkIsDirectImg(messageWords[2]) && !util.msgHasImgAttached(message)){
 		stickerURL = messageWords[2];
 	}else{
-		message.channel.sendMessage(util.multiReplace(replies.invalidAddSyntax, {
-			'%%PREFIX%%': prefix
-		}));
+		message.channel.sendMessage(replies.use('invalidAddSyntax', {'%%PREFIX%%': prefix}));
 		return false; 
 	}
 	stickerName = messageWords[1];
@@ -110,10 +126,10 @@ function addSticker(prefix, message, guildInfo){
 
 	//Determine if sticker is personal or group
 	if(message.channel.type == 'dm'){
-		message.channel.sendMessage(replies.addPersonalSticker.replace('%%STICKERNAME%%', stickerName));
+		message.channel.sendMessage(replies.use('addPersonalSticker', {'%%STICKERNAME%%': stickerName}));
 		//add sticker to db
 	}else if(message.channel.type == 'text' && util.msgHasRole(message, groupStickerRole)){
-		message.channel.sendMessage(replies.addGroupSticker.replace('%%STICKERNAME%%', stickerName));
+		message.channel.sendMessage(replies.use('addGroupSticker', {'%%STICKERNAME%%': stickerName}));
 		//add sticker to db
 	}else{
 		message.channel.sendMessage(replies.unknownError);
@@ -132,24 +148,20 @@ function removeSticker(prefix, message, guildInfo){
 
 	//Make sure user has correct permissions
 	if(message.channel.type == 'text' && !util.msgHasRole(message, guildInfo.managerRole)){
-		message.channel.sendMessage(util.multiReplace(replies.insufficientPermission, {	
-			'%%ROLE%%': guildInfo.managerRole
-		}));
+		message.channel.sendMessage(replies.use('insufficientPermission', {'%%ROLE%%': guildInfo.managerRole}));
 		return false;
 	}else if(messageWords.length != 2){
-		message.channel.sendMessage(util.multiReplace(replies.invalidRemoveSyntax, {
-			'%%PREFIX%%': prefix
-		}));
+		message.channel.sendMessage(replies.use('invalidRemoveSyntax', {'%%PREFIX%%': prefix}));
 		return false;
 	}
 
 	stickerName = messageWords[1];
 
 	if(message.channel.type == 'dm'){
-		message.channel.sendMessage(replies.removePersonalSticker.replace('%%STICKERNAME%%', stickerName));
+		message.channel.sendMessage(replies.use('removePersonalSticker', {'%%STICKERNAME%%': stickerName}));
 		//remove sticker from db
 	}else if(message.channel.type == 'text' && util.msgHasRole(message, groupStickerRole)){
-		message.channel.sendMessage(replies.removeGroupSticker.replace('%%STICKERNAME%%', stickerName));
+		message.channel.sendMessage(replies.use('removeGroupSticker', {'%%STICKERNAME%%': stickerName}));
 		//remove sticker from db
 	}else{
 		message.channel.sendMessage(replies.unknownError);
@@ -166,10 +178,10 @@ function removeSticker(prefix, message, guildInfo){
 function provideStickerInfo(message, guildInfo){
 	if(message.channel.type == 'dm'){
 		let base62userid = base62.encode(parseInt(message.author.id));
-		message.channel.sendMessage(replies.personalStickerInfo.replace('%%BASE62USERID%%', base62userid));	
+		message.channel.sendMessage(replies.use('personalStickerInfo', {'%%BASE62USERID%%': base62userid}));	
 	}else if(message.channel.type == 'text'){
 		let base62guildid = base62.encode(message.guild.id);
-		message.channel.sendMessage(util.multiReplace(replies.groupStickerInfo, {
+		message.channel.sendMessage(replies.use('groupStickerInfo', {
 			'%%BASE62GUILDID%%': base62guildid,
 			'%%RECENTSTICKERS%%': guildInfo.recentStickers.map(s=>`:${s}:`).join(', ')
 		}));
@@ -184,27 +196,29 @@ function setRole(prefix, message, guildInfo){
 	//Make sure user has correct permissions
 	if(message.channel.type == 'text' && !util.msgHasRole(message, guildInfo.managerRole)){
 
-		message.channel.sendMessage(util.multiReplace(replies.insufficientPermission, {	
-			'%%ROLE%%': guildInfo.managerRole
-		}));
+		message.channel.sendMessage(replies.use('insufficientPermission', {'%%ROLE%%': guildInfo.managerRole}));
 		return false;
 
 	}else if(messageWords.length != 2){
 
-		message.channel.sendMessage(util.multiReplace(replies.invalidSetRoleSyntax, {
-			'%%PREFIX%%': prefix
-		}));
+		message.channel.sendMessage(replies.use('invalidSetRoleSyntax', {'%%PREFIX%%': prefix}));
 		return false;
 
 	}else{
 
-		let newRole = messageWords[1];
+		//If role is set to 'everyone', change it to '@everyone'
+		let newRole = (messageWords[1].toLowerCase() === 'everyone') ? '@everyone' : messageWords[1].toLowerCase();
 		guildInfo.managerRole = newRole;
-		guildInfo.save((err)=>{
-			if(err) throw err;
-			message.channel.sendMessage(util.multiReplace(replies.setRole, {
-				'%%NEWROLE%%': newRole
-			}));
+
+		guildInfo.save(err => {
+
+			if(err) util.handleError(err, message); return false; 
+			if(newRole === '@everyone'){
+				message.channel.sendMessage(replies.use('setRoleEveryone'));	
+			}else{
+				message.channel.sendMessage(replies.use('setRole', {'%%NEWROLE%%': newRole}));		
+			}
+
 			console.log(guildInfo);
 		});
 

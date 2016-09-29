@@ -1,3 +1,5 @@
+const replies = require('./replies.js');
+
 /**
 * Does message have an image attachment?
 *
@@ -25,14 +27,14 @@ function linkIsDirectImg(url){
 }
 
 /**
-* Does the author of this message have the role `roleName`?
+* Does the author of this message have the role `roleName` (lowercase only)?
 *
 * @param {message object} message
 * @param {string} roleName 
 * @returns {boolean}
 */
 function msgHasRole(message, roleName){
-	return message.member.roles.map(r=>r.name).includes(roleName);
+	return message.member.roles.map(r=>r.name.toLowerCase()).includes(roleName);
 }
 
 /**
@@ -65,6 +67,18 @@ function multiReplace(str, obj) {
 	}
 	return retStr;
 };
+
+/**
+* Handle an error (usually db connection problems)
+*
+* @param {error} err - Error to handle
+* @param {message} message - Message to reply to incase of an error
+*/
+function handleError(err, message){
+	message = message || null;
+	console.error(err);
+	if(message)	message.channel.sendMessage(replies.use('unknownError'));
+}
 
 module.exports = {
 	msgHasImgAttached,
