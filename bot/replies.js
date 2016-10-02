@@ -9,6 +9,7 @@ let replies = {
 "invalidAddSyntax": "Invalid syntax. Use: `%%PREFIX%%addsticker [NAME] [IMAGE URL]` or upload an image with the comment `%%PREFIX%%addsticker [NAME]`",
 "addPersonalSticker": "`:%%STICKERNAME%%-:` sticker created. Only you can use this sticker, but you can use it on any server that I'm on. (Note the dash at the end of the code.)",
 "addGroupSticker": "`:%%STICKERNAME%%:` sticker created. Anyone on the server can use this sticker.",
+"stickerAlreadyExists": "Sticker already exists.",
 
 //Remove sticker	
 "invalidRemoveSyntax": "Invalid syntax. Use: `%%PREFIX%%removesticker [NAME]`",
