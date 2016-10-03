@@ -22,6 +22,7 @@ db.on('error', err => {
 
 //get mongo models... (Why mongo models? -Zoolander)
 let Guild = require('../models/guild');
+let User = require('../models/user');
 let Sticker = require('../models/sticker');
 let StickerPack = require('../models/sticker-pack');
 
@@ -81,7 +82,7 @@ client.on('message', message => {
 			if(message.channel.type == 'text'){
 				addGuildSticker(message, stickerName, stickerURL);
 			}else if(message.channel.type == 'dm'){
-				addPersonalSticker(stickerName, stickerURL);
+				addPersonalSticker(message, stickerName, stickerURL);
 			}
 
 			break;
@@ -151,13 +152,15 @@ function addGuildSticker(message, stickerName, stickerURL){
 		}else{
 			currentGuild.customStickers.push({
 				name: stickerName,
-				url: cloudURL
+				url: cloudURL,
+				uses: 0,
+				createdAt: new Date()
 			});
 			currentGuild.save(()=>{
 				message.channel.sendMessage(replies.use('addGroupSticker', {
 					'%%STICKERNAME%%': stickerName
 				}));
-			});	
+			});
 		}
 
 	}).catch(err=>{
@@ -167,43 +170,67 @@ function addGuildSticker(message, stickerName, stickerURL){
 }
 
 /**
-* Adds a sticker.
+* Adds a personal sticker that can be used in any guild 
 *
 * @param {message object} message - message that triggered the bot
+* @param {string} stickerName - name of the sticker
+* @param {string} stickerURL - URL of the sticker
 */
-function addSticker(prefix, message, currentGuild){
-	let messageWords = message.content.trim().split(' ');
-	let stickerName, stickerURL;
+function addPersonalSticker(message, stickerName, stickerURL){
 
-	//Make sure user has proper permissions, determine
-	//sticker name, sticker URL and validate syntax
-	if(message.channel.type == 'text' && !util.msgHasRole(message, currentGuild.managerRole)){
+	Promise.all([
+		User.update(
+			{id: message.author.id},
+			{$setOnInsert:{
+				id: message.author.id,
+				username: message.author.username,
+				avatarURL: message.author.avatarURL
+			}},
+			{upsert: true, setDefaultsOnInsert: true}
+		),
+		cloudinary.uploader.upload(stickerURL)
+	])	
+	.then(values =>{
 
-		message.channel.sendMessage(replies.use('insufficientPermission', {'%%ROLE%%': currentGuild.managerRole}));
-		return false;
+		//console.log(values);
 
-	}else if(messageWords.length == 2 && util.msgHasImgAttached(message)){
-		stickerURL = message.attachments.array()[0].proxyURL;
-	}else if(messageWords.length == 3 && util.linkIsDirectImg(messageWords[2]) && !util.msgHasImgAttached(message)){
-		stickerURL = messageWords[2];
-	}else{
-		message.channel.sendMessage(replies.use('invalidAddSyntax', {'%%PREFIX%%': prefix}));
-		return false; 
-	}
-	stickerName = messageWords[1];
-	
+		let cloudURL = values[1].url;
+		let maxHeight = 300;
+		let maxWidth = 300;
 
-	//Determine if sticker is personal or group
-	if(message.channel.type == 'dm'){
+		//If uploaded image is bigger than limits set above, save a size-modified cloudinary URL
+		if(values[1].height > maxHeight || values[1].width > maxWidth){
+			let temp = cloudURL.split('/image/upload/');
+			cloudURL = temp.join(`/image/upload/w_${maxWidth.toString()},h_${maxHeight.toString()},c_fit/`);	
+		}
 
-		message.channel.sendMessage(replies.use('addPersonalSticker', {'%%STICKERNAME%%': stickerName}));
-		//add sticker to db
-	}else if(message.channel.type == 'text' && util.msgHasRole(message, groupStickerRole)){
-		message.channel.sendMessage(replies.use('addGroupSticker', {'%%STICKERNAME%%': stickerName}));
-		//add sticker to db
-	}else{
-		message.channel.sendMessage(replies.unknownError);
-	}
+		let user = values[0];
+
+		//check if sticker exists
+		let stickerExists = false;
+		user.customStickers.forEach(s=>{
+			if(s.name == stickerName) stickerExists = true;
+		});
+
+		if(stickerExists){
+			message.channel.sendMessage(replies.use('stickerAlreadyExists'));
+		}else{
+			user.customStickers.push({
+				name: stickerName,
+				url: cloudURL,
+				uses: 0,
+				createdAt: new Date()
+			});
+			user.save(()=>{
+				message.channel.sendMessage(replies.use('addPersonalSticker', {
+					'%%STICKERNAME%%': stickerName
+				}));
+			});
+		}
+
+	}).catch(err=>{
+		util.handleError(err, message);
+	});
 
 }
 

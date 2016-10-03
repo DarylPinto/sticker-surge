@@ -3,10 +3,11 @@ const Schema = mongoose.Schema;
 
 const stickerSchema = Schema({
 	name: String,
-	type: String, //'group', 'personal' or 'pack'
+	//type: String, //'group', 'personal' or 'pack'
 	url: String,
-	creator: {type: Schema.Types.ObjectId, ref: 'User'},
-	uses: Number
+	//creator: {type: Schema.Types.ObjectId, ref: 'User'},
+	uses: Number,
+	createdAt: Date
 });
 
 let Sticker = mongoose.model('Sticker', stickerSchema);

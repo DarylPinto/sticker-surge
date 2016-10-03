@@ -5,7 +5,7 @@ const guildSchema = Schema({
 	id: {type: String, unique: true, required: true},
 	managerRole: {type: String, default: '@everyone'},
 	recentStickers: [String],
-	customStickers: [Schema.Types.Mixed],
+	customStickers: [{type: Schema.ObjectId, ref: 'Sticker'}],
 	stickerPacks: [{type: Schema.ObjectId, ref: 'StickerPack'}]
 });
 
