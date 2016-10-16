@@ -50,7 +50,6 @@ Guild.find({})
 //Start bot
 client.on('ready', () => {
   console.log('I am ready!');
-  console.log(guildSettings);
 });
 
 //When bot is added to a guild
@@ -63,13 +62,11 @@ client.on('guildCreate', guild => {
 		{upsert: true, setDefaultsOnInsert: true}
 	)
 	.then(res=>{
-		console.log(res);
 		guildSettings[res.id].prefix = res.prefix;
-  	console.log(guildSettings);
 		res.save();
 	})
 	.catch(err=>{
-		console.err(err);
+		util.handleError(err);
 	});
 
 });
@@ -231,20 +228,18 @@ function addGuildSticker(message, stickerName, stickerURL){
 function addPersonalSticker(message, stickerName, stickerURL){
 
 	Promise.all([
-		User.update(
+		User.findOneAndUpdate(
 			{id: message.author.id},
-			{$setOnInsert:{
+			{
 				id: message.author.id,
 				username: message.author.username,
 				avatarURL: message.author.avatarURL
-			}},
-			{upsert: true, setDefaultsOnInsert: true}
+			},
+			{upsert: true,	new: true, setDefaultsOnInsert: true}
 		),
 		cloudinary.uploader.upload(stickerURL)
 	])	
 	.then(values =>{
-
-		//console.log(values);
 
 		let cloudURL = values[1].url;
 		let maxHeight = 300;
@@ -370,7 +365,6 @@ function setRole(prefix, message, currentGuild){
 				message.channel.sendMessage(replies.use('setRole', {'%%NEWROLE%%': newRole}));		
 			}
 
-			console.log(currentGuild);
 		})
 		.catch(err => {
 			util.handleError(err, message);

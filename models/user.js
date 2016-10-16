@@ -5,7 +5,12 @@ const userSchema = Schema({
 	id: {type: String, unique: true},
 	username: String,
 	avatarURL: String,
-	customStickers: [{type: Schema.Types.ObjectId, ref: 'Sticker'}],
+	customStickers: [{
+		name: String,
+		url: String,
+		uses: Number,
+		createdAt: Date
+	}],
 	createdStickerPacks: [{type: Schema.Types.ObjectId, ref: 'StickerPack'}],
 	stickerPacks: [{type: Schema.Types.ObjectId, ref: 'StickerPack'}]
 });
