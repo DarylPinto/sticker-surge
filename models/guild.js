@@ -4,8 +4,14 @@ const Schema = mongoose.Schema;
 const guildSchema = Schema({
 	id: {type: String, unique: true, required: true},
 	managerRole: {type: String, default: '@everyone'},
+	prefix: {type: String, default: '$'},
 	recentStickers: [String],
-	customStickers: [{type: Schema.ObjectId, ref: 'Sticker'}],
+	customStickers: [{
+		name: String,
+		url: String,
+		uses: Number,
+		createdAt: Date
+	}],
 	stickerPacks: [{type: Schema.ObjectId, ref: 'StickerPack'}]
 });
 

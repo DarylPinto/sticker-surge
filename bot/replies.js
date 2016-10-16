@@ -3,7 +3,7 @@ const util = require('./utility-functions');
 let replies = {
 
 //Permissions
-"insufficientPermission": "You need to have the role `%%ROLE%%` to modify this server's set of stickers. However, you can manage your own stickers (which you can use on any server) by private messaging me.",
+"insufficientPermission": "You need to have the role **%%ROLE%%** to do that. However, you can manage your own stickers (which are usable on any server) by private messaging me.",
 
 //Add sticker
 "invalidAddSyntax": "Invalid syntax. Use: `%%PREFIX%%addsticker [NAME] [IMAGE URL]` or upload an image with the comment `%%PREFIX%%addsticker [NAME]`",
@@ -25,12 +25,18 @@ let replies = {
 \`%%PREFIX%%removesticker\` - Remove a sticker from this server.
 \`%%PREFIX%%stickers\` - View all the stickers on this server, and the names of the 3 most recently used ones.`,
 
-"personalHelp": "``",
+"personalHelp": `\`%%PREFIX%%addsticker\` - Add a sticker for anyone on this server to use.
+\`%%PREFIX%%removesticker\` - Remove a sticker from this server.
+\`%%PREFIX%%stickers\` - View all the stickers on this server, and the names of the 3 most recently used ones.`,
 
 //Set Role
 "setRole": `Updated. Now only users with the role **%%NEWROLE%%** can manage this server's stickers!`,
 "setRoleEveryone": `Updated. Now everyone can manage this server's stickers!`,
 "invalidSetRoleSyntax": "Invalid Syntax. Use: `%%PREFIX%%setrole [ROLE NAME]`",
+
+//Set Prefix
+"setPrefix": "Updated. Now commands must begin with `%%NEWPREFIX%%` instead of `%%PREFIX%%`.",
+"invalidSetPrefixSyntax": "Invalid Syntax. Use: `%%PREFIX%%setprefix [NEW PREFIX]`",
 
 //Unknown
 "unknownError": "An unknown error occured.",

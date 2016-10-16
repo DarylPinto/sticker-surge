@@ -23,15 +23,34 @@ db.on('error', err => {
 //get mongo models... (Why mongo models? -Zoolander)
 let Guild = require('../models/guild');
 let User = require('../models/user');
-let Sticker = require('../models/sticker');
+//let Sticker = require('../models/sticker');
 let StickerPack = require('../models/sticker-pack');
 
 //connect to cloudinary
 cloudinary.config(special.cloudinary);
 
+//Create dictionary of guilds and their chosen prefixes/manager roles
+//(Must be stored in memory so that a db call
+//on EVERY sent message is not necessary to determine
+//if the message begins with the prefix or user has correct premission
+let guildSettings = new Object();
+
+Guild.find({})
+	.then(res=>{
+		res.forEach(guild=>{
+			guildSettings[guild.id] = {
+				prefix: guild.prefix,
+				managerRole: guild.managerRole
+			}
+		});
+	}).catch(err=>{
+		util.handleError(err);
+	});
+
 //Start bot
 client.on('ready', () => {
   console.log('I am ready!');
+  console.log(guildSettings);
 });
 
 //When bot is added to a guild
@@ -45,6 +64,9 @@ client.on('guildCreate', guild => {
 	)
 	.then(res=>{
 		console.log(res);
+		guildSettings[res.id].prefix = res.prefix;
+  	console.log(guildSettings);
+		res.save();
 	})
 	.catch(err=>{
 		console.err(err);
@@ -55,7 +77,16 @@ client.on('guildCreate', guild => {
 //When message is sent
 client.on('message', message => {
 
-	let prefix = '$';
+	let prefix;
+	let managerRole;
+
+	if(message.channel.type == 'text'){
+		prefix = guildSettings[message.channel.guild.id].prefix;	
+		managerRole = guildSettings[message.channel.guild.id].managerRole;
+	}else{
+		prefix = '$';
+	}	
+
 	let command = util.getCommand(prefix, message);
 
 	switch(command){
@@ -66,7 +97,10 @@ client.on('message', message => {
 			let messageWords = message.content.trim().split(' ');
 			let stickerName, stickerURL;
 
-			if(messageWords.length < 2 || (!util.msgHasImgAttached(message) && messageWords.length != 3) || !util.linkIsDirectImg(messageWords[2])){
+			if(message.channel.type == 'text' && !util.msgHasRole(message, managerRole)){
+				message.channel.sendMessage(replies.use('insufficientPermission', {'%%ROLE%%': managerRole}));
+				return false;
+			}else if(messageWords.length < 2 || (!util.msgHasImgAttached(message) && messageWords.length != 3) || !util.linkIsDirectImg(messageWords[2])){
 				message.channel.sendMessage(replies.use('invalidAddSyntax', {'%%PREFIX%%': prefix}));
 				return false; 
 			}else{
@@ -100,14 +134,32 @@ client.on('message', message => {
 			break;
 
 		case('setrole'):
+
+			if(message.channel.type != 'text') return false;
+
 			Guild.findOne({id: message.channel.guild.id}, (err, res) => {
 				if(err) util.handleError(err, message);
 				setRole(prefix, message, res);
 			});	
 			break;
 
+		case('setprefix'):
+
+			if(message.channel.type != 'text') return false;
+
+			Guild.findOne({id: message.channel.guild.id}, (err, res) => {
+				if(err) util.handleError(err, message);
+				setPrefix(prefix, message, res);
+			});	
+			break;
+
 		default:
-			//do nothing
+			if(message.channel.type == 'dm' && message.author.id != client.user.id){
+				message.channel.sendMessage('Unknown command.');
+				message.channel.sendMessage(replies.use('personalHelp', {'%%PREFIX%%': prefix}));
+			}else{
+				//do nothing (yes, i know this line isn't necessary. It's for clarity's sake)
+			}
 			break;
 
 	}
@@ -277,7 +329,7 @@ function provideStickerInfo(message, currentGuild){
 		let base62userid = base62.encode(parseInt(message.author.id));
 		message.channel.sendMessage(replies.use('personalStickerInfo', {'%%BASE62USERID%%': base62userid}));	
 	}else if(message.channel.type == 'text'){
-		let base62guildid = base62.encode(message.guild.id);
+		let base62guildid = base62.encode(message.channel.guild.id);
 		message.channel.sendMessage(replies.use('groupStickerInfo', {
 			'%%BASE62GUILDID%%': base62guildid,
 			'%%RECENTSTICKERS%%': currentGuild.recentStickers.map(s=>`:${s}:`).join(', ')
@@ -310,6 +362,8 @@ function setRole(prefix, message, currentGuild){
 		currentGuild.save()
 		.then(() => {
 
+			guildSettings[message.channel.guild.id].managerRole = newRole;
+
 			if(newRole === '@everyone'){
 				message.channel.sendMessage(replies.use('setRoleEveryone'));	
 			}else{
@@ -323,6 +377,35 @@ function setRole(prefix, message, currentGuild){
 		})
 
 	}
+}
+
+function setPrefix(prefix, message, currentGuild){
+	let messageWords = message.content.trim().split(' ');
+
+	//Make sure user has correct permissions
+	if(message.channel.type == 'text' && !util.msgHasRole(message, currentGuild.managerRole)){
+
+		message.channel.sendMessage(replies.use('insufficientPermission', {'%%ROLE%%': currentGuild.managerRole}));
+		return false;
+
+	}else if(messageWords.length < 2){
+
+		message.channel.sendMessage(replies.use('invalidSetPrefixSyntax', {'%%PREFIX%%': prefix}));
+		return false;
+
+	}else if(message.channel.type == 'text'){	
+
+		currentGuild.prefix = messageWords[1];
+		currentGuild.save(()=>{
+			guildSettings[message.channel.guild.id].prefix = messageWords[1];
+			message.channel.sendMessage(replies.use('setPrefix', {
+				'%%NEWPREFIX%%': messageWords[1], 
+				'%%PREFIX%%': prefix
+			}));
+		});
+
+	}
+
 }
 
 client.login(special.token);

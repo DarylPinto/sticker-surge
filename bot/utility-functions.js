@@ -75,7 +75,7 @@ function multiReplace(str, obj) {
 function handleError(err, message){	
 	message = message || null;
 	if(message)	message.channel.sendMessage("An unknown error occured.");
-	console.error(err);
+	console.log(err);
 
 	//stop bot if it can't connect to db (it's useless otherwise)
 	process.exit();
