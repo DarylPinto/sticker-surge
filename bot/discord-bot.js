@@ -55,15 +55,17 @@ client.on('ready', () => {
 //When bot is added to a guild
 client.on('guildCreate', guild => {
 
-	//Add guild to DB if it's not there already
-	Guild.update(
+	Guild.findOneAndUpdate(
 		{id: guild.id},
-		{$setOnInsert: {id: guild.id}},
-		{upsert: true, setDefaultsOnInsert: true}
+		{id: guild.id},
+		{upsert: true,	new: true, setDefaultsOnInsert: true}
 	)
 	.then(res=>{
-		guildSettings[res.id].prefix = res.prefix;
-		res.save();
+		guildSettings[res.id] = {
+			prefix: res.prefix,
+			managerRole: res.managerRole
+		}
+		//console.log(guildSettings);
 	})
 	.catch(err=>{
 		util.handleError(err);
