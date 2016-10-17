@@ -81,7 +81,7 @@ client.on('message', message => {
 		prefix = guildSettings[message.channel.guild.id].prefix;	
 		managerRole = guildSettings[message.channel.guild.id].managerRole;
 	}else{
-		prefix = '$';
+		prefix = '';
 	}	
 
 	let command = util.getCommand(prefix, message);
@@ -119,20 +119,23 @@ client.on('message', message => {
 			break;
 
 		case('removesticker'):
-			removeSticker(prefix, message, res);
+			removeSticker(prefix, message);
 			break;
 
 		case('stickers'):
 			provideStickerInfo(message, res);
 			break;
 
-		case('help'):
-			message.channel.sendMessage(replies.use('groupHelp', {'%%PREFIX%%': prefix}));
+		case('help'):	
+			giveHelp(prefix, message);
 			break;
 
 		case('setrole'):
 
-			if(message.channel.type != 'text') return false;
+			if(message.channel.type != 'text'){
+				giveHelp(prefix, message);
+				return false;
+			}
 
 			Guild.findOne({id: message.channel.guild.id}, (err, res) => {
 				if(err) util.handleError(err, message);
@@ -142,7 +145,10 @@ client.on('message', message => {
 
 		case('setprefix'):
 
-			if(message.channel.type != 'text') return false;
+			if(message.channel.type != 'text'){
+				giveHelp(prefix, message);
+				return false;
+			}
 
 			Guild.findOne({id: message.channel.guild.id}, (err, res) => {
 				if(err) util.handleError(err, message);
@@ -286,7 +292,7 @@ function addPersonalSticker(message, stickerName, stickerURL){
 *
 * @param {message object} message - message that triggered the bot
 */
-function removeSticker(prefix, message, currentGuild){
+function removeSticker(prefix, message){
 	let messageWords = message.content.trim().split(' ');
 	let stickerName;
 
@@ -333,9 +339,18 @@ function provideStickerInfo(message, currentGuild){
 
 }
 
+function giveHelp(prefix, message){
+	if(message.channel.type === 'text'){
+		message.channel.sendMessage(replies.use('groupHelp', {'%%PREFIX%%': prefix}));	
+	}else{
+		message.channel.sendMessage(replies.use('personalHelp', {'%%PREFIX%%': prefix}));	
+	}
+}
+
 function setRole(prefix, message, currentGuild){
 
 	let messageWords = message.content.trim().split(' ');
+	let maxRoleNameLength = 32;
 
 	//Make sure user has correct permissions
 	if(message.channel.type == 'text' && !util.msgHasRole(message, currentGuild.managerRole)){
@@ -346,6 +361,11 @@ function setRole(prefix, message, currentGuild){
 	}else if(messageWords.length != 2){
 
 		message.channel.sendMessage(replies.use('invalidSetRoleSyntax', {'%%PREFIX%%': prefix}));
+		return false;
+
+	}else if(messageWords[1].length > maxRoleNameLength){
+
+		message.channel.sendMessage(replies.use('invalidRoleNameLength', {'%%MAXLENGTH%%': maxRoleNameLength}));
 		return false;
 
 	}else{
@@ -374,7 +394,10 @@ function setRole(prefix, message, currentGuild){
 }
 
 function setPrefix(prefix, message, currentGuild){
+
 	let messageWords = message.content.trim().split(' ');
+	let maxPrefixLength = 3;
+	let illegalCharacters = ['@', '#'];
 
 	//Make sure user has correct permissions
 	if(message.channel.type == 'text' && !util.msgHasRole(message, currentGuild.managerRole)){
@@ -385,6 +408,23 @@ function setPrefix(prefix, message, currentGuild){
 	}else if(messageWords.length < 2){
 
 		message.channel.sendMessage(replies.use('invalidSetPrefixSyntax', {'%%PREFIX%%': prefix}));
+		return false;
+
+	}else if( messageWords[1] === prefix){
+		
+		message.channel.sendMessage(replies.use('prefixAlreadySet', {'%%PREFIX%%': prefix}));
+		return false;
+
+	}else if(messageWords[1].length > maxPrefixLength){
+
+		message.channel.sendMessage(replies.use('invalidSetPrefixLength', {'%%MAXLENGTH%%': maxPrefixLength}));
+		return false;
+
+	}else if( illegalCharacters.indexOf(messageWords[1][0]) > -1){
+		
+		message.channel.sendMessage(replies.use('invalidSetPrefixCharacter', {
+			'%%ILLEGALCHARACTERS%%': illegalCharacters.map(c=>'`'+c+'`').join(' ')
+		}));
 		return false;
 
 	}else if(message.channel.type == 'text'){	
