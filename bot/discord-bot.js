@@ -119,7 +119,7 @@ client.on('message', message => {
 			break;
 
 		case('removesticker'):
-			removeSticker(prefix, message);
+			removeSticker(prefix, message, managerRole);
 			break;
 
 		case('stickers'):
@@ -182,7 +182,7 @@ function addGuildSticker(message, stickerName, stickerURL){
 		Guild.findOne({id: message.channel.guild.id}),
 		cloudinary.uploader.upload(stickerURL)
 	])	
-	.then(values =>{
+	.then(values => {
 
 		let cloudURL = values[1].url;
 		let maxHeight = 300;
@@ -245,7 +245,7 @@ function addPersonalSticker(message, stickerName, stickerURL){
 		),
 		cloudinary.uploader.upload(stickerURL)
 	])	
-	.then(values =>{
+	.then(values => {
 
 		let cloudURL = values[1].url;
 		let maxHeight = 300;
@@ -281,7 +281,7 @@ function addPersonalSticker(message, stickerName, stickerURL){
 			});
 		}
 
-	}).catch(err=>{
+	}).catch(err => {
 		util.handleError(err, message);
 	});
 
@@ -292,13 +292,13 @@ function addPersonalSticker(message, stickerName, stickerURL){
 *
 * @param {message object} message - message that triggered the bot
 */
-function removeSticker(prefix, message){
+function removeSticker(prefix, message, managerRole){
 	let messageWords = message.content.trim().split(' ');
 	let stickerName;
 
 	//Make sure user has correct permissions
-	if(message.channel.type == 'text' && !util.msgHasRole(message, currentGuild.managerRole)){
-		message.channel.sendMessage(replies.use('insufficientPermission', {'%%ROLE%%': currentGuild.managerRole}));
+	if(message.channel.type == 'text' && !util.msgHasRole(message, managerRole)){
+		message.channel.sendMessage(replies.use('insufficientPermission', {'%%ROLE%%': managerRole}));
 		return false;
 	}else if(messageWords.length != 2){
 		message.channel.sendMessage(replies.use('invalidRemoveSyntax', {'%%PREFIX%%': prefix}));
@@ -308,11 +308,61 @@ function removeSticker(prefix, message){
 	stickerName = messageWords[1];
 
 	if(message.channel.type == 'dm'){
-		message.channel.sendMessage(replies.use('removePersonalSticker', {'%%STICKERNAME%%': stickerName}));
-		//remove sticker from db
-	}else if(message.channel.type == 'text' && util.msgHasRole(message, groupStickerRole)){
-		message.channel.sendMessage(replies.use('removeGroupSticker', {'%%STICKERNAME%%': stickerName}));
-		//remove sticker from db
+		
+		User.findOneAndUpdate(
+			{id: message.author.id},
+			{
+				id: message.author.id,
+				username: message.author.username,
+				avatarURL: message.author.avatarURL
+			},
+			{upsert: true,	new: true, setDefaultsOnInsert: true}
+		)
+		.then(user => {
+
+			let oldStickerAmount = user.customStickers.length;
+			user.customStickers = user.customStickers.filter(sticker=>{
+				return sticker.name !== stickerName;
+			});
+			let newStickerAmount = user.customStickers.length;
+			
+			user.save(()=>{
+				if(oldStickerAmount - newStickerAmount > 0){
+					message.channel.sendMessage(replies.use('removePersonalSticker', {'%%STICKERNAME%%': stickerName}));	
+				}else{
+					message.channel.sendMessage(replies.use('removePersonalStickerNotFound'));	
+				}
+			});
+
+		})
+		.catch(err => {
+			util.handleError(err, message);
+		});
+
+	}else if(message.channel.type == 'text' && util.msgHasRole(message, managerRole)){
+		
+		Guild.findOne({id: message.channel.guild.id})
+		.then(currentGuild => {
+
+			let oldStickerAmount = currentGuild.customStickers.length;
+			currentGuild.customStickers = currentGuild.customStickers.filter(sticker=>{
+				return sticker.name !== stickerName;
+			});
+			let newStickerAmount = currentGuild.customStickers.length;
+			
+			currentGuild.save(()=>{
+				if(oldStickerAmount - newStickerAmount > 0){
+					message.channel.sendMessage(replies.use('removeGroupSticker', {'%%STICKERNAME%%': stickerName}));	
+				}else{
+					message.channel.sendMessage(replies.use('removeGroupStickerNotFound'));	
+				}
+			});
+
+		})
+		.catch(err => {
+			util.handleError(err, message);
+		});
+
 	}else{
 		message.channel.sendMessage(replies.unknownError);
 	}

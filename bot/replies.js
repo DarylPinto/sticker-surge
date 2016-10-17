@@ -7,7 +7,7 @@ let replies = {
 
 //Add sticker
 "invalidAddSyntax": "Invalid syntax. Use: `%%PREFIX%%addsticker [NAME] [IMAGE URL]` or upload an image with the comment `%%PREFIX%%addsticker [NAME]`",
-"addPersonalSticker": "`:-%%STICKERNAME%%:` sticker created. Only you can use this sticker, but you can use it on any server that I'm on. (Note the dash at the end of the code.)",
+"addPersonalSticker": "`:-%%STICKERNAME%%:` sticker created. Only you can use this sticker, but you can use it on any server that I'm on. (Note the dash preceding the name.)",
 "addGroupSticker": "`:%%STICKERNAME%%:` sticker created. It can be used on this server by anyone.",
 "stickerAlreadyExists": "A sticker with that name already exists.",
 
@@ -15,6 +15,8 @@ let replies = {
 "invalidRemoveSyntax": "Invalid syntax. Use: `%%PREFIX%%removesticker [NAME]`",
 "removePersonalSticker": "`:-%%STICKERNAME%%:` sticker removed.",
 "removeGroupSticker": "`:%%STICKERNAME%%:` sticker removed.",
+"removeGroupStickerNotFound": "There is no sticker with that name on this server.",
+"removePersonalStickerNotFound": "None of your stickers have that name.",
 
 //Sticker info
 "personalStickerInfo": "To see all your personal stickers, click here: http://discordstickers.io/user/%%BASE62USERID%%",
