@@ -123,7 +123,7 @@ client.on('message', message => {
 			break;
 
 		case('stickers'):
-			provideStickerInfo(message, res);
+			provideStickerInfo(message);
 			break;
 
 		case('help'):	
@@ -375,16 +375,29 @@ function removeSticker(prefix, message, managerRole){
 *
 * @param {message object} message - message that triggered the bot
 */
-function provideStickerInfo(message, currentGuild){
+function provideStickerInfo(message){
 	if(message.channel.type == 'dm'){
+
 		let base62userid = base62.encode(parseInt(message.author.id));
-		message.channel.sendMessage(replies.use('personalStickerInfo', {'%%BASE62USERID%%': base62userid}));	
+		message.channel.sendMessage(replies.use('personalStickerInfo', {'%%BASE62USERID%%': base62userid}));
+
 	}else if(message.channel.type == 'text'){
+
 		let base62guildid = base62.encode(message.channel.guild.id);
-		message.channel.sendMessage(replies.use('groupStickerInfo', {
-			'%%BASE62GUILDID%%': base62guildid,
-			'%%RECENTSTICKERS%%': currentGuild.recentStickers.map(s=>`:${s}:`).join(', ')
-		}));
+
+		Guild.findOne({id: message.channel.guild.id})
+		.then(currentGuild=>{
+
+			message.channel.sendMessage(replies.use('groupStickerInfo', {
+				'%%BASE62GUILDID%%': base62guildid,
+				'%%RECENTSTICKERS%%': currentGuild.recentStickers.map(s=>`:${s}:`).join(', ')
+			}));
+
+		})
+		.catch(err=>{
+			util.handleError(err, message);
+		});
+		
 	}
 
 }
@@ -411,6 +424,11 @@ function setRole(prefix, message, currentGuild){
 	}else if(messageWords.length != 2){
 
 		message.channel.sendMessage(replies.use('invalidSetRoleSyntax', {'%%PREFIX%%': prefix}));
+		return false;
+
+	}else if( messageWords[1] === currentGuild.managerRole){
+		
+		message.channel.sendMessage(replies.use('roleNameAlreadySet', {'%%ROLENAME%%': currentGuild.managerRole}));
 		return false;
 
 	}else if(messageWords[1].length > maxRoleNameLength){
@@ -447,7 +465,7 @@ function setPrefix(prefix, message, currentGuild){
 
 	let messageWords = message.content.trim().split(' ');
 	let maxPrefixLength = 3;
-	let illegalCharacters = ['@', '#'];
+	let illegalCharacters = ['@', '#', '`'];
 
 	//Make sure user has correct permissions
 	if(message.channel.type == 'text' && !util.msgHasRole(message, currentGuild.managerRole)){
@@ -470,10 +488,14 @@ function setPrefix(prefix, message, currentGuild){
 		message.channel.sendMessage(replies.use('invalidSetPrefixLength', {'%%MAXLENGTH%%': maxPrefixLength}));
 		return false;
 
-	}else if( illegalCharacters.indexOf(messageWords[1][0]) > -1){
+	}else if( illegalCharacters.some(p=>messageWords[1].indexOf(p) >= 0) ){
+
+		
+
+		//illegalCharacters.indexOf(messageWords[1][0]) > -1
 		
 		message.channel.sendMessage(replies.use('invalidSetPrefixCharacter', {
-			'%%ILLEGALCHARACTERS%%': illegalCharacters.map(c=>'`'+c+'`').join(' ')
+			'%%ILLEGALCHARACTERS%%': illegalCharacters.map(c=>'**'+c+'**').join(' ')
 		}));
 		return false;
 

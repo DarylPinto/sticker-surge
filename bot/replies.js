@@ -12,7 +12,7 @@ let replies = {
 "stickerAlreadyExists": "A sticker with that name already exists.",
 
 //Remove sticker	
-"invalidRemoveSyntax": "Invalid syntax. Use: `%%PREFIX%%removesticker [NAME]`",
+"invalidRemoveSyntax": "Invalid syntax. Use: `%%PREFIX%%removesticker [STICKER NAME]`",
 "removePersonalSticker": "`:-%%STICKERNAME%%:` sticker removed.",
 "removeGroupSticker": "`:%%STICKERNAME%%:` sticker removed.",
 "removeGroupStickerNotFound": "There is no sticker with that name on this server.",
@@ -33,7 +33,9 @@ let replies = {
 
 \`%%PREFIX%%setrole\` - Set the role required to modify stickers on this server.`,
 
-"personalHelp": `\`%%PREFIX%%stickers\` - View all your stickers.
+"personalHelp": `(Note: None of the following commands use prefixes)
+
+\`%%PREFIX%%stickers\` - View all your stickers.
 
 \`%%PREFIX%%addsticker\` - Add a sticker that you can use on any server.
 
@@ -42,6 +44,7 @@ let replies = {
 //Set Role
 "setRole": `Updated. Now only users with the role **%%NEWROLE%%** can manage this server's stickers!`,
 "setRoleEveryone": `Updated. Now everyone can manage this server's stickers!`,
+"roleNameAlreadySet": "**%%ROLENAME%%** is already the role required to manage stickers on this server.",
 "invalidSetRoleSyntax": "Invalid Syntax. Use: `%%PREFIX%%setrole [ROLE NAME]`",
 "invalidRoleNameLength": "Role name cannot exceed %%MAXLENGTH%% characters.",
 
@@ -50,7 +53,7 @@ let replies = {
 "invalidSetPrefixSyntax": "Invalid Syntax. Use: `%%PREFIX%%setprefix [NEW PREFIX]`",
 "prefixAlreadySet": "Prefix is already set to `%%PREFIX%%`",
 "invalidSetPrefixLength": "Prefix cannot exceed %%MAXLENGTH%% characters.",
-"invalidSetPrefixCharacter": "Prefix cannot begin with the following characters: %%ILLEGALCHARACTERS%%",
+"invalidSetPrefixCharacter": "Prefix cannot include the following characters: %%ILLEGALCHARACTERS%%",
 
 //Unknown
 "unknownError": "An unknown error occured.",
