@@ -43,7 +43,8 @@ Guild.find({})
 				managerRole: guild.managerRole
 			}
 		});
-	}).catch(err=>{
+	})
+	.catch(err=>{
 		util.handleError(err);
 	});
 
@@ -55,6 +56,7 @@ client.on('ready', () => {
 //When bot is added to a guild
 client.on('guildCreate', guild => {
 
+	//Add guild to db if it's not added already
 	Guild.findOneAndUpdate(
 		{id: guild.id},
 		{id: guild.id},
@@ -78,6 +80,9 @@ client.on('message', message => {
 
 	let prefix;
 	let managerRole;
+
+	//init guild if it hasn't been initialized already
+	if( Object.keys(guildSettings).indexOf(message.channel.guild.id) ) initGuild(message.channel.guild);
 
 	if(message.channel.type == 'text'){
 		prefix = guildSettings[message.channel.guild.id].prefix;	
@@ -160,7 +165,7 @@ client.on('message', message => {
 
 		default:
 			if(message.channel.type == 'dm' && message.author.id != client.user.id){
-				message.channel.sendMessage('Unknown command.');
+				message.channel.sendMessage('Unknown command.\n(Note: Commands in this private chat don\'t use prefixes.)');
 				message.channel.sendMessage(replies.use('personalHelp', {'%%PREFIX%%': prefix}));
 			}else{
 				//do nothing (yes, i know this line isn't necessary. It's for clarity's sake)
@@ -170,6 +175,18 @@ client.on('message', message => {
 	}
 	
 });
+
+function initGuild(guild){
+	guildSettings = {
+		prefix: '$',
+		managerRole: '@everyone'
+	};
+	return Guild.findOneAndUpdate(
+		{id: guild.id},
+		{id: guild.id},
+		{upsert: true,	new: true, setDefaultsOnInsert: true}
+	);
+}
 
 /**
 * Adds a sticker to the guild 
@@ -181,7 +198,8 @@ client.on('message', message => {
 function addGuildSticker(message, stickerName, stickerURL){
 
 	Promise.all([
-		Guild.findOne({id: message.channel.guild.id}),
+		//Guild.findOne({id: message.channel.guild.id}),
+		initGuild(message.channel.guild),
 		cloudinary.uploader.upload(stickerURL)
 	])	
 	.then(values => {
