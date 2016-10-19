@@ -7,14 +7,14 @@ const Discord = require('discord.js');
 const mongoose = require('mongoose');
 
 //Assets
-const util = require('./utility-functions');
-const special = require('./special.json');
-const replies = require('./replies.js');
+const util = require('./assets/utility-functions.js');
+const replies = require('./assets/replies.js');
+const special = require('./assets/special.json');
 
 //Mongo Models
-const Guild = require('../models/guild');
-const User = require('../models/user');
-const StickerPack = require('../models/sticker-pack');
+const Guild = require('../models/guild.js');
+const User = require('../models/user.js');
+const StickerPack = require('../models/sticker-pack.js');
 
 //Bot/DB/CDN Setup 
 mongoose.Promise = global.Promise;

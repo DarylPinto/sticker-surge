@@ -1,7 +1,7 @@
 const cloudinary = require('cloudinary');
-const util = require('../utility-functions.js');
-const replies = require('../replies.js');
-const special = require('../special.json');
+const util = require('../assets/utility-functions.js');
+const replies = require('../assets/replies.js');
+const special = require('../assets/special.json');
 
 cloudinary.config(special.cloudinary);
 

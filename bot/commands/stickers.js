@@ -1,5 +1,5 @@
 const base62 = require('base62');
-const replies = require('../replies.js');
+const replies = require('../assets/replies.js');
 
 module.exports = function(message, dbDocument){
 
