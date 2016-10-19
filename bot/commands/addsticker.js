@@ -50,7 +50,8 @@ module.exports = function(message, dbDocument){
 				uses: 0,
 				createdAt: new Date()
 			});
-			dbDocument.save(()=>{
+			dbDocument.save()
+			.then(()=>{
 				replies.use(message, 'addSticker', {'%%STICKERNAME%%': stickerName});
 			});
 		}

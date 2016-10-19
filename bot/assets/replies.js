@@ -22,11 +22,18 @@ let replies = {
 },
 
 //Remove sticker	
-"invalidRemoveSyntax": "Invalid syntax. Use: `%%PREFIX%%removesticker [STICKER NAME]`",
-"removePersonalSticker": "`:-%%STICKERNAME%%:` sticker removed.",
-"removeGroupSticker": "`:%%STICKERNAME%%:` sticker removed.",
-"removeGroupStickerNotFound": "There is no sticker with that name on this server.",
-"removePersonalStickerNotFound": "None of your stickers have that name.",
+"removeSticker": {
+	"text": "`:%%STICKERNAME%%:` sticker removed.",
+	"dm": "`:-%%STICKERNAME%%:` sticker removed."
+},
+"invalidRemoveSyntax": {
+	"text": "Invalid syntax. Use: `%%PREFIX%%removesticker [STICKER NAME]`",
+	"dm": "Invalid syntax. Use: `removesticker [STICKER NAME]`"
+},
+"removeStickerNotFound": {
+	"text": "There is no sticker with that name on this server.",
+	"dm": "None of your stickers have that name."
+},
 
 //Sticker info
 "stickerInfo": {
@@ -35,7 +42,10 @@ let replies = {
 },
 
 //Sticker help
-"groupHelp": `\`%%PREFIX%%stickers\` - View all the stickers on this server, and the names of the 3 most recently used ones.
+"help": {
+
+	//Guild help
+	"text": `\`%%PREFIX%%stickers\` - View all the stickers on this server, and the names of the 3 most recently used ones.
 
 \`%%PREFIX%%addsticker\` - Add a sticker for anyone on this server to use.
 
@@ -45,11 +55,14 @@ let replies = {
 
 \`%%PREFIX%%setrole\` - Set the role required to modify stickers on this server.`,
 
-"personalHelp": `\`%%PREFIX%%stickers\` - View all your stickers.
+	//Direct Message help
+	"dm": `\`stickers\` - View all your stickers.
 
-\`%%PREFIX%%addsticker\` - Add a sticker that you can use on any server.
+\`addsticker\` - Add a sticker that you can use on any server.
 
-\`%%PREFIX%%removesticker\` - Remove one of your stickers.`,
+\`removesticker\` - Remove one of your stickers.`
+
+},
 
 //Set Role
 "setRole": {
@@ -69,11 +82,21 @@ let replies = {
 },
 
 //Set Prefix
-"setPrefix": "Updated. Now commands must begin with `%%NEWPREFIX%%` instead of `%%PREFIX%%`.",
-"invalidSetPrefixSyntax": "Invalid Syntax. Use: `%%PREFIX%%setprefix [NEW PREFIX]`",
-"prefixAlreadySet": "Prefix is already set to `%%PREFIX%%`",
-"invalidSetPrefixLength": "Prefix cannot exceed %%MAXLENGTH%% characters.",
-"invalidSetPrefixCharacter": "Prefix cannot include the following characters: %%ILLEGALCHARACTERS%%",
+"setPrefix": {
+	"text": "Updated. Now commands must begin with `%%NEWPREFIX%%` instead of `%%PREFIX%%`."
+},
+"invalidSetPrefixSyntax": {
+	"text": "Invalid Syntax. Use: `%%PREFIX%%setprefix [NEW PREFIX]`"
+},
+"setPrefixIdentical": {
+	"text": "Prefix is already set to `%%PREFIX%%`"
+},
+"setPrefixTooLong": {
+	"text": "Prefix cannot exceed %%MAXLENGTH%% characters."
+},
+"illegalSetPrefixCharacter": {
+	"text": "Prefix cannot include the following characters: %%ILLEGALCHARACTERS%%"
+},
 
 //Unknown
 "unknownError": "An unknown error occured.",
