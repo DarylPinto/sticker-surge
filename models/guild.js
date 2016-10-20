@@ -12,7 +12,7 @@ const guildSchema = Schema({
 		uses: Number,
 		createdAt: Date
 	}],
-	stickerPacks: [{type: Schema.ObjectId, ref: 'StickerPack'}]
+	stickerPacks: [String]
 });
 
 let Guild = mongoose.model('Guild', guildSchema);

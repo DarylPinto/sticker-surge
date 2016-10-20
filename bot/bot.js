@@ -48,7 +48,7 @@ client.on('message', message => {
 	////////////
 	//Stickers//
 	////////////
-	if( /^:[a-z0-9-]+:$/.test(message.content.trim()) ){
+	if( /^:[a-zA-Z0-9-]+:$/.test(message.content.trim()) ){
 		sendSticker(message);
 		return false;
 	}
@@ -70,6 +70,7 @@ client.on('message', message => {
 
 		//Give help if message doesn't contain a valid command
 		if(!messageHasCommand){
+			message.channel.sendMessage('Unknown command. Here is a list of commands I recognize:');
 			commands.help(message);
 			return false;
 		}
@@ -88,11 +89,11 @@ client.on('message', message => {
 			//Commands
 			if(firstWord.endsWith('stickers')) commands.stickers(message, dbUser);
 
-			if(firstWord.endsWith('addsticker')) commands.addsticker(message, dbUser);
+			else if(firstWord.endsWith('addsticker')) commands.addsticker(message, dbUser);
 
-			if(firstWord.endsWith('removesticker')) commands.removesticker(message, dbUser);
+			else if(firstWord.endsWith('removesticker')) commands.removesticker(message, dbUser);
 
-			if(firstWord.endsWith('help')) commands.help(message, dbUser);
+			else if(firstWord.endsWith('help')) commands.help(message, dbUser);
 
 		}).catch(err => util.handleError(err, message));
 
@@ -122,7 +123,7 @@ client.on('message', message => {
 				commands.stickers(message, dbGuild);
 			}
 
-			if(firstWord.slice(prefix.length) == 'help'){
+			else if(firstWord.slice(prefix.length) == 'help'){
 				commands.help(message, dbGuild);
 			}			
 
@@ -157,7 +158,7 @@ client.on('message', message => {
 });
 
 client.on('messageUpdate', (oldMessage, newMessage) => {
-  if( /^:[a-z0-9-]+:$/.test(newMessage.content.trim()) ){
+  if( /^:[a-zA-Z0-9-]+:$/.test(newMessage.content.trim()) ){
 		sendSticker(newMessage);
 		return false;
 	}

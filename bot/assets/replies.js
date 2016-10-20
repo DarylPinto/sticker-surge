@@ -4,7 +4,7 @@ let replies = {
 
 //Permissions
 "insufficientPermission": {
-	"text":	"You need to have the role **%%ROLE%%** to do that. However, you can manage your own stickers (which are usable on any server) by private messaging me."
+	"text":	"You need to have the role `%%ROLE%%` to do that. However, you can manage your own stickers (which are usable on any server) by private messaging me."
 },
 
 //Add sticker
@@ -91,7 +91,7 @@ let replies = {
 
 //Set Prefix
 "setPrefix": {
-	"text": "Updated. Now commands must begin with `%%NEWPREFIX%%` instead of `%%PREFIX%%`."
+	"text": "Updated. Now commands must begin with `%%NEWPREFIX%%` instead of `%%PREFIX%%`"
 },
 "invalidSetPrefixSyntax": {
 	"text": "Invalid Syntax. Use: `%%PREFIX%%setprefix [NEW PREFIX]`"

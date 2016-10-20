@@ -7,7 +7,7 @@ const User = require('../../models/user.js');
 const StickerPack = require('../../models/sticker-pack.js');
 
 //Add value to beginning of array, array max length is 3, only one of each value
-function addToRecents(array, value){
+function updateRecentStickers(array, value){
 	if(array.includes(value)){
 		let index = array.indexOf(value);
 		array.splice(index, 1);
@@ -18,7 +18,7 @@ function addToRecents(array, value){
 
 module.exports = function(message){
 
-	let command = message.content.replace(/:/g, '');
+	let command = message.content.toLowerCase().replace(/:/g, '');
 
 	let documentArray = [
 		User.findOneAndUpdate(
@@ -29,7 +29,8 @@ module.exports = function(message){
 				avatarURL: message.author.avatarURL
 			},
 			{upsert: true,	new: true, setDefaultsOnInsert: true}
-		)
+		),
+		StickerPack.find({})
 	];
 	if(message.channel.type == 'text'){
 		documentArray.push(
@@ -44,14 +45,33 @@ module.exports = function(message){
 	Promise.all(documentArray)
 	.then(docs => {
 
+		let user = docs[0];
+		let packs = docs[1];
+		let guild = (docs[2]) ? docs[2] : null;
+
+		let relevantPacks = packs;
+
 		//Array of stickers available for command
-		let stickers = docs[0].customStickers.map(sticker=>{
+		let stickers = user.customStickers.map(sticker=>{
 			sticker.name = `-${sticker.name}`;
 			return sticker;
 		});
-		if(docs[1]){	
-			stickers = stickers.concat(docs[1].customStickers);
+		let packKeys = user.stickerPacks;
+		if(guild){	
+			stickers = stickers.concat(guild.customStickers);
+			packKeys = packKeys.concat(guild.stickerPacks);
 		}
+
+		relevantPacks = relevantPacks.filter(pack=>{
+			return packKeys.includes(pack.key);
+		});
+
+		relevantPacks.forEach(pack=>{
+			pack.stickers.forEach(sticker=>{
+				sticker.name = `${pack.key}-${sticker.name}`;
+			});
+			stickers = stickers.concat(pack.stickers);
+		});
 
 		//if message matches sticker
 		if( stickers.map(s=>s.name).includes(command) ){
@@ -64,17 +84,17 @@ module.exports = function(message){
 				`**${util.authorDisplayName(message)}:**`
 			);
 
-			//Add sticker to recents array
-			if(docs[1] && command[0] != '-'){
-				addToRecents(docs[1].recentStickers, command);
-				docs[1].save();
+			//Add sticker to guild recents array
+			if(guild && command[0] != '-'){
+				guild.recentStickers = updateRecentStickers(guild.recentStickers, command);
+				guild.save();
 			}
 
 			//Delete message that was sent to trigger response
 			if(message.channel.type == 'text'){
 				message.delete()
 				.catch(err=>{
-					console.log(`Unable to delete message on guild: ${docs[1].id}`);
+					console.log(`Unable to delete message on guild: ${guild.id}`);
 				});
 			}
 

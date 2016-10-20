@@ -11,8 +11,8 @@ const userSchema = Schema({
 		uses: Number,
 		createdAt: Date
 	}],
-	createdStickerPacks: [{type: Schema.Types.ObjectId, ref: 'StickerPack'}],
-	stickerPacks: [{type: Schema.Types.ObjectId, ref: 'StickerPack'}]
+	createdStickerPacks: [String],
+	stickerPacks: [String]
 });
 
 let User = mongoose.model('User', userSchema);
