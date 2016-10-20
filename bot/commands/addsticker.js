@@ -1,5 +1,6 @@
 const util = require('../assets/utility-functions.js');
 const replies = require('../assets/replies.js');
+const emojis = require('../assets/emojis.json');
 
 module.exports = function(message, dbDocument){
 
@@ -13,6 +14,12 @@ module.exports = function(message, dbDocument){
 	){
 		replies.use(message, 'invalidAddSyntax', {'%%PREFIX%%': prefix});
 		return false; 
+	}else if(emojis.includes(messageWords[1])){
+		replies.use(message, 'addNameConflictsEmojis', {
+			'%%PREFIX%%': prefix,
+			'%%EMOJI%%': messageWords[1].toLowerCase()
+		});
+		return false;
 	}else if(
 		(message.channel.type == 'dm' && ! /^:?-?[a-zA-Z0-9]+:?$/.test(messageWords[1]) ) ||
 		(message.channel.type == 'text' && ! /^:?[a-zA-Z0-9]+:?$/.test(messageWords[1]) )

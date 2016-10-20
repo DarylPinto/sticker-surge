@@ -20,6 +20,10 @@ let replies = {
 	"text": "Invalid syntax. Sticker name must consist of letters and numbers only.",
 	"dm": "Invalid syntax. Sticker name must consist of letters and numbers only."
 },
+"addNameConflictsEmojis": {
+	"text": "Sticker name already in use by an emoji: :%%EMOJI%%:",
+	"dm": "Sticker name already in use by an emoji: :%%EMOJI%%:"
+},
 "stickerAlreadyExists": {
 	"text": "There's already a sticker with that name on this server.",
 	"dm": "You already have a sticker with that name."

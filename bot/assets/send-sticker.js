@@ -63,7 +63,6 @@ module.exports = function(message){
 				`${command}.png`,
 				`**${util.authorDisplayName(message)}:**`
 			);
-			//message.channel.sendMessage(stickers[index].url);
 
 			//Add sticker to recents array
 			if(docs[1] && command[0] != '-'){
