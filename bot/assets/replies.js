@@ -16,6 +16,10 @@ let replies = {
 	"text": "Invalid syntax. Use: `%%PREFIX%%addsticker [NAME] [IMAGE URL]` or upload an image with the comment `%%PREFIX%%addsticker [NAME]`",
 	"dm": "Invalid syntax. Use: `addsticker [NAME] [IMAGE URL]` or upload an image with the comment `addsticker [NAME]`"
 },
+"illegalAddCharacters": {
+	"text": "Invalid syntax. Sticker name must consist of letters and numbers only.",
+	"dm": "Invalid syntax. Sticker name must consist of letters and numbers only."
+},
 "stickerAlreadyExists": {
 	"text": "There's already a sticker with that name on this server.",
 	"dm": "You already have a sticker with that name."
@@ -37,8 +41,8 @@ let replies = {
 
 //Sticker info
 "stickerInfo": {
-	"text": "For a full list of stickers available on this server, click here: http://discordstickers.io/server/%%BASE62ID%%\nThe most recently sent stickers were: %%RECENTSTICKERS%%",
-	"dm": "To see all your stickers, click here: http://discordstickers.io/user/%%BASE62ID%%"
+	"text": "The 3 most recently sent stickers were: %%RECENTSTICKERS%%\nTo see all this server's stickers, click here: http://discordstickers.io/server/%%BASE62ID%%",
+	"dm": "To see all of your stickers, click here: http://discordstickers.io/user/%%BASE62ID%%"
 },
 
 //Sticker help

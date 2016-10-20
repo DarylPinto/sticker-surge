@@ -3,9 +3,14 @@ const Schema = mongoose.Schema;
 
 const stickerPackSchema = Schema({
 	name: String,
-	prefix: String,
+	key: String,
 	creator: {type: Schema.Types.ObjectId, ref: 'User'},
-	stickers: [{type: Schema.Types.ObjectId, ref: 'Sticker'}]
+	stickers: [{
+		name: String,
+		url: String,
+		uses: Number,
+		createdAt: Date
+	}]
 });
 
 let StickerPack = mongoose.model('StickerPack', stickerPackSchema);

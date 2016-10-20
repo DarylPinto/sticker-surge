@@ -30,6 +30,7 @@ module.exports = function(message, dbDocument){
 				'%%NEWPREFIX%%': messageWords[1],
 				'%%PREFIX%%': prefix
 			});
+			replies.use(message, 'help', {'%%PREFIX%%': messageWords[1]});
 		});
 
 	}

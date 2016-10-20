@@ -9,24 +9,24 @@ const mongoose = require('mongoose');
 //Assets
 const util = require('./assets/utility-functions.js');
 const replies = require('./assets/replies.js');
+const sendSticker = require('./assets/send-sticker.js');
 const special = require('./assets/special.json');
 
 //Mongo Models
 const Guild = require('../models/guild.js');
 const User = require('../models/user.js');
-const StickerPack = require('../models/sticker-pack.js');
 
-//Bot/DB/CDN Setup 
+//Bot/DB Init
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/test');
 const db = mongoose.connection;
-const client = new Discord.Client();
 db.on('error', err => util.handleError(err));
+const client = new Discord.Client();
 
 //Bot commands
 const commands = {
 	'stickers': require('./commands/stickers.js'),
-	'addsticker': require('./commands/addsticker.js'),
+	'addsticker': require('./commands/cloudinary-addsticker.js'),
 	'removesticker': require('./commands/removesticker.js'),
 	'setprefix': require('./commands/setprefix.js'),
 	'setrole': require('./commands/setrole.js'),
@@ -45,6 +45,17 @@ client.on('ready', () => {
 //When message is sent
 client.on('message', message => {
 
+	////////////
+	//Stickers//
+	////////////
+	if( /^:[a-z0-9-]+:$/.test(message.content.trim()) ){
+		sendSticker(message);
+		return false;
+	}
+
+	////////////////
+	//Bot commands//
+	////////////////
 	let messageWords = message.content.toLowerCase().trim().split(' ');
 	let firstWord = messageWords[0];
 	let messageHasCommand = Object.keys(commands).some(command=>{
@@ -82,8 +93,6 @@ client.on('message', message => {
 			if(firstWord.endsWith('removesticker')) commands.removesticker(message, dbUser);
 
 			if(firstWord.endsWith('help')) commands.help(message, dbUser);
-
-			//else commands.help(message, dbUser)
 
 		}).catch(err => util.handleError(err, message));
 
@@ -145,6 +154,13 @@ client.on('message', message => {
 	}
 
 
+});
+
+client.on('messageUpdate', (oldMessage, newMessage) => {
+  if( /^:[a-z0-9-]+:$/.test(newMessage.content.trim()) ){
+		sendSticker(newMessage);
+		return false;
+	}
 });
 
 client.login(special.token);

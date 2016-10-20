@@ -25,8 +25,21 @@ function linkIsDirectImg(url){
 }
 
 /**
-* Does the author of this message have the role `roleName` (lowercase only)?
+* Get display name of messge author.
 *
+* @param {message object} message
+* @returns {string}
+*/
+function authorDisplayName(message){
+	if(message.channel.type == 'text' && message.member.nickname != null){
+		return message.member.nickname;
+	}
+	return message.author.username;
+}
+
+/**
+* Does the author of this message have the role `roleName` (lowercase only)?
+* 
 * @param {message object} message
 * @param {string} roleName 
 * @returns {boolean}
@@ -84,6 +97,7 @@ function handleError(err, message){
 module.exports = {
 	msgHasImgAttached,
 	linkIsDirectImg,
+	authorDisplayName,
 	msgHasRole,
 	getCommand,
 	multiReplace,
