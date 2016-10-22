@@ -13,8 +13,8 @@ let replies = {
 	"dm": "`:-%%STICKERNAME%%:` sticker created. Only you can use this sticker, but you can use it on any server that I'm on. (Note the dash preceding the name.)"
 },
 "invalidAddSyntax": {
-	"text": "Invalid syntax. Use: `%%PREFIX%%addsticker [NAME] [IMAGE URL]` or upload an image with the comment `%%PREFIX%%addsticker [NAME]`",
-	"dm": "Invalid syntax. Use: `addsticker [NAME] [IMAGE URL]` or upload an image with the comment `addsticker [NAME]`"
+	"text": "Invalid syntax. Use: `%%PREFIX%%createsticker [NAME] [IMAGE URL]` or upload an image with the comment `%%PREFIX%%createsticker [NAME]`",
+	"dm": "Invalid syntax. Use: `createsticker [NAME] [IMAGE URL]` or upload an image with the comment `createsticker [NAME]`"
 },
 "illegalAddCharacters": {
 	"text": "Invalid syntax. Sticker name must consist of letters and numbers only.",
@@ -35,12 +35,44 @@ let replies = {
 	"dm": "`:-%%STICKERNAME%%:` sticker removed."
 },
 "invalidRemoveSyntax": {
-	"text": "Invalid syntax. Use: `%%PREFIX%%removesticker [STICKER NAME]`",
-	"dm": "Invalid syntax. Use: `removesticker [STICKER NAME]`"
+	"text": "Invalid syntax. Use: `%%PREFIX%%deletesticker [STICKER NAME]`",
+	"dm": "Invalid syntax. Use: `deletesticker [STICKER NAME]`"
 },
 "removeStickerNotFound": {
 	"text": "There is no sticker with that name on this server.",
 	"dm": "None of your stickers have that name."
+},
+
+//Add sticker pack
+"addStickerPack": {
+	"text": "**%%PACKNAME%%** sticker pack has been added to this server.\nTo see the stickers in this pack, click here: http://discordstickers.io/sticker-packs/%%PACKKEY%%",
+	"dm": "You can now use the **%%PACKNAME%%** sticker pack on any server.\nTo see the stickers in this pack, click here: http://discordstickers.io/sticker-packs/%%PACKKEY%%"
+},
+"invalidAddPackSyntax": {
+	"text": "Invalid syntax. Use: `%%PREFIX%%addstickerpack [STICKER PACK KEY]`\nTo see all sticker packs, click here: http://discordstickers.io/sticker-packs",
+	"dm": "Invalid syntax. Use: `addstickerpack [STICKER PACK KEY]`\nTo see all sticker packs, click here: http://discordstickers.io/sticker-packs"
+},
+"addPackAlreadyIncluded": {
+	"text": "This server already has that sticker pack.",
+	"dm": "You already have that sticker pack."
+},
+"addPackDoesntExist": {
+	"text": "There is no sticker pack with the **%%PACKKEY%%** key.",
+	"dm": "There is no sticker pack with the **%%PACKKEY%%** key."
+},
+
+//Remove sticker pack
+"removeStickerPack": {
+	"text": "**%%PACKNAME%%** sticker pack has been removed from this server.",
+	"dm": "**%%PACKNAME%%** sticker pack removed."
+},
+"invalidRemovePackSyntax": {
+	"text": "Invalid syntax. Use: `%%PREFIX%%removestickerpack [STICKER PACK KEY]`",
+	"dm": "Invalid syntax. Use: `removestickerpack [STICKER PACK KEY]`"
+},
+"removePackNotIncluded": {
+	"text": "This server doesn't have that sticker pack.",
+	"dm": "You don't have that sticker pack."
 },
 
 //Sticker info
@@ -55,9 +87,13 @@ let replies = {
 	//Guild help
 	"text": `\`%%PREFIX%%stickers\` - View all the stickers on this server, and the names of the 3 most recently used ones.
 
-\`%%PREFIX%%addsticker\` - Add a sticker for anyone on this server to use.
+\`%%PREFIX%%createsticker\` - Create a sticker for anyone on this server to use.
 
-\`%%PREFIX%%removesticker\` - Remove a sticker from this server.
+\`%%PREFIX%%deletesticker\` - Delete a sticker from this server.
+
+\`%%PREFIX%%addstickerpack\` - Add a sticker pack for anyone on this server to use. (Find sticker packs here: http://discordstickers.io/sticker-packs)
+
+\`%%PREFIX%%removestickerpack\` - Remove a sticker pack from this server. 
 
 \`%%PREFIX%%setprefix\` - Set the prefix used to trigger these commands.
 
@@ -66,9 +102,13 @@ let replies = {
 	//Direct Message help
 	"dm": `\`stickers\` - View all your stickers.
 
-\`addsticker\` - Add a sticker that you can use on any server.
+\`createsticker\` - Create a sticker that you can use on any server.
 
-\`removesticker\` - Remove one of your stickers.`
+\`deletesticker\` - Delete one of your stickers.
+
+\`%%PREFIX%%addstickerpack\` - Add a sticker pack for you to use on any server. (Find sticker packs here: http://discordstickers.io/sticker-packs)
+
+\`%%PREFIX%%removestickerpack\` - Remove a sticker pack.`
 
 },
 

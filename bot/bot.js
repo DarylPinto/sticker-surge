@@ -26,8 +26,10 @@ const client = new Discord.Client();
 //Bot commands
 const commands = {
 	'stickers': require('./commands/stickers.js'),
-	'addsticker': require('./commands/cloudinary-addsticker.js'),
-	'removesticker': require('./commands/removesticker.js'),
+	'createsticker': require('./commands/cloudinary-createsticker.js'),
+	'deletesticker': require('./commands/deletesticker.js'),
+	'addstickerpack': require('./commands/addstickerpack.js'),
+	'removestickerpack': require('./commands/removestickerpack.js'),
 	'setprefix': require('./commands/setprefix.js'),
 	'setrole': require('./commands/setrole.js'),
 	'help': require('./commands/help.js')
@@ -43,7 +45,7 @@ client.on('ready', () => {
 });
 
 //When message is sent
-client.on('message', message => {
+function respondToMessage(message){
 
 	////////////
 	//Stickers//
@@ -89,9 +91,13 @@ client.on('message', message => {
 			//Commands
 			if(firstWord.endsWith('stickers')) commands.stickers(message, dbUser);
 
-			else if(firstWord.endsWith('addsticker')) commands.addsticker(message, dbUser);
+			else if(firstWord.endsWith('createsticker')) commands.createsticker(message, dbUser);
 
-			else if(firstWord.endsWith('removesticker')) commands.removesticker(message, dbUser);
+			else if(firstWord.endsWith('deletesticker')) commands.deletesticker(message, dbUser);
+
+			else if(firstWord.endsWith('addstickerpack')) commands.addstickerpack(message, dbUser);
+
+			else if(firstWord.endsWith('removestickerpack')) commands.removestickerpack(message, dbUser);
 
 			else if(firstWord.endsWith('help')) commands.help(message, dbUser);
 
@@ -129,12 +135,20 @@ client.on('message', message => {
 
 			else if(util.msgHasRole(message, dbGuild.managerRole)){
 
-				if(firstWord.slice(prefix.length) == 'addsticker'){
-					commands.addsticker(message, dbGuild);
+				if(firstWord.slice(prefix.length) == 'createsticker'){
+					commands.createsticker(message, dbGuild);
 				}
 
-				if(firstWord.slice(prefix.length) == 'removesticker'){
-					commands.removesticker(message, dbGuild);
+				if(firstWord.slice(prefix.length) == 'deletesticker'){
+					commands.deletesticker(message, dbGuild);
+				}
+
+				if(firstWord.slice(prefix.length) == 'addstickerpack'){
+					commands.addstickerpack(message, dbGuild);
+				}
+
+				if(firstWord.slice(prefix.length) == 'removestickerpack'){
+					commands.removestickerpack(message, dbGuild);
 				}
 
 				if(firstWord.slice(prefix.length) == 'setrole'){
@@ -154,14 +168,14 @@ client.on('message', message => {
 
 	}
 
+}
 
+client.on('message', message => {
+	respondToMessage(message);
 });
 
 client.on('messageUpdate', (oldMessage, newMessage) => {
-  if( /^:[a-zA-Z0-9-]+:$/.test(newMessage.content.trim()) ){
-		sendSticker(newMessage);
-		return false;
-	}
+	respondToMessage(newMessage);
 });
 
 client.login(special.token);
