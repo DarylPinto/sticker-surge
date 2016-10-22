@@ -4,7 +4,7 @@ let replies = {
 
 //Permissions
 "insufficientPermission": {
-	"text":	"You need to have the role `%%ROLE%%` to do that. However, you can manage your own stickers (which are usable on any server) by private messaging me."
+	"text":	"You need to have the role **%%ROLE%%** to do that. However, you can manage your own stickers (which are usable on any server) by private messaging me."
 },
 
 //Add sticker
@@ -21,8 +21,8 @@ let replies = {
 	"dm": "Invalid syntax. Sticker name must consist of letters and numbers only."
 },
 "addNameConflictsEmojis": {
-	"text": "Sticker name already in use by an emoji: :%%EMOJI%%:",
-	"dm": "Sticker name already in use by an emoji: :%%EMOJI%%:"
+	"text": "Sticker name already in use by an emoji: %%EMOJI%%",
+	"dm": "Sticker name already in use by an emoji: %%EMOJI%%"
 },
 "stickerAlreadyExists": {
 	"text": "There's already a sticker with that name on this server.",
@@ -45,7 +45,7 @@ let replies = {
 
 //Add sticker pack
 "addStickerPack": {
-	"text": "**%%PACKNAME%%** sticker pack has been added to this server.\nTo see the stickers in this pack, click here: http://discordstickers.io/sticker-packs/%%PACKKEY%%",
+	"text": "**%%PACKNAME%%** sticker pack has been added for anyone to use on this server.\nTo see the stickers in this pack, click here: http://discordstickers.io/sticker-packs/%%PACKKEY%%",
 	"dm": "You can now use the **%%PACKNAME%%** sticker pack on any server.\nTo see the stickers in this pack, click here: http://discordstickers.io/sticker-packs/%%PACKKEY%%"
 },
 "invalidAddPackSyntax": {
@@ -93,7 +93,7 @@ let replies = {
 
 \`%%PREFIX%%addstickerpack\` - Add a sticker pack for anyone on this server to use. (Find sticker packs here: http://discordstickers.io/sticker-packs)
 
-\`%%PREFIX%%removestickerpack\` - Remove a sticker pack from this server. 
+\`%%PREFIX%%removestickerpack\` - Remove one of this server's added sticker packs. 
 
 \`%%PREFIX%%setprefix\` - Set the prefix used to trigger these commands.
 
@@ -106,9 +106,9 @@ let replies = {
 
 \`deletesticker\` - Delete one of your stickers.
 
-\`%%PREFIX%%addstickerpack\` - Add a sticker pack for you to use on any server. (Find sticker packs here: http://discordstickers.io/sticker-packs)
+\`addstickerpack\` - Add a sticker pack for you to use on any server. (Find sticker packs here: http://discordstickers.io/sticker-packs)
 
-\`%%PREFIX%%removestickerpack\` - Remove a sticker pack.`
+\`removestickerpack\` - Remove one of your added sticker packs.`
 
 },
 
@@ -124,6 +124,9 @@ let replies = {
 },
 "invalidSetRoleSyntax": {
 	"text": "Invalid Syntax. Use: `%%PREFIX%%setrole [ROLE NAME]`"
+},
+"invalidSetRoleHasEmoji": {
+	"text": "Role name cannot contain emoji."
 },
 "setRoleTooLong": {
 	"text": "Role name cannot exceed %%MAXLENGTH%% characters."
@@ -143,7 +146,7 @@ let replies = {
 	"text": "Prefix cannot exceed %%MAXLENGTH%% characters."
 },
 "illegalSetPrefixCharacter": {
-	"text": "Prefix cannot include the following characters: %%ILLEGALCHARACTERS%%"
+	"text": "Prefix cannot include emoji or any of the following characters: %%ILLEGALCHARACTERS%%"
 },
 
 //Unknown

@@ -80,6 +80,20 @@ function multiReplace(str, obj) {
 };
 
 /**
+* Does string contain an emoji?
+*
+* @param {string} str - string to check
+* @returns {boolean}
+*/
+function stringHasEmoji(str){
+	let hasEmoji = false;
+	for(let i = 0;i < str.length;i++){
+		if(str.charCodeAt(i) >= 55357) hasEmoji = true;
+	}
+	return hasEmoji;
+}
+
+/**
 * Handle an error (usually db connection problem)
 *
 * @param {error} err - Error to handle
@@ -101,5 +115,6 @@ module.exports = {
 	msgHasRole,
 	getCommand,
 	multiReplace,
+	stringHasEmoji,
 	handleError
 }

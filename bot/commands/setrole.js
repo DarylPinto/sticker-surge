@@ -1,4 +1,5 @@
 const base62 = require('base62');
+const util = require('../assets/utility-functions.js');
 const replies = require('../assets/replies.js');
 
 module.exports = function(message, dbDocument){
@@ -8,6 +9,9 @@ module.exports = function(message, dbDocument){
 
 	if(messageWords.length < 2){
 		replies.use(message, 'invalidSetRoleSyntax', {'%%PREFIX%%': dbDocument.prefix});
+		return false;
+	}else if(/.*<:.+:\d+>.*/.test(messageWords[1]) || util.stringHasEmoji(messageWords[1])){
+		replies.use(message, 'invalidSetRoleHasEmoji', {'%%PREFIX%%': dbDocument.prefix});
 		return false;
 	}else if(messageWords[1] == dbDocument.managerRole){
 		replies.use(message, 'setRoleIdentical', {'%%ROLENAME%%': dbDocument.managerRole});

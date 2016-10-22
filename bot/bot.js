@@ -26,7 +26,7 @@ const client = new Discord.Client();
 //Bot commands
 const commands = {
 	'stickers': require('./commands/stickers.js'),
-	'createsticker': require('./commands/cloudinary-createsticker.js'),
+	'createsticker': require('./commands/createsticker.js'),
 	'deletesticker': require('./commands/deletesticker.js'),
 	'addstickerpack': require('./commands/addstickerpack.js'),
 	'removestickerpack': require('./commands/removestickerpack.js'),
@@ -41,7 +41,7 @@ const commands = {
 
 //Start bot
 client.on('ready', () => {
-  console.log('I am ready!');
+  console.log('Discord Stickers bot is online!');
 });
 
 //When message is sent

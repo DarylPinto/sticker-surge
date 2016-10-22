@@ -1,3 +1,4 @@
+const util = require('../assets/utility-functions.js');
 const replies = require('../assets/replies.js');
 
 module.exports = function(message, dbDocument){
@@ -16,7 +17,7 @@ module.exports = function(message, dbDocument){
 	}else if(messageWords[1].length > maxPrefixLength){
 		replies.use(message, 'setPrefixTooLong', {'%%MAXLENGTH%%': maxPrefixLength});
 		return false;
-	}else if(illegalCharacters.includes(messageWords[1])){
+	}else if(illegalCharacters.includes(messageWords[1]) || util.stringHasEmoji(messageWords[1])){
 		replies.use(message, 'illegalSetPrefixCharacter', {
 			'%%ILLEGALCHARACTERS%%': illegalCharacters.map(c=>'**'+c+'**').join(' ')
 		});

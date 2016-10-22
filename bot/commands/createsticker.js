@@ -1,11 +1,21 @@
+const cloudinary = require('cloudinary');
 const util = require('../assets/utility-functions.js');
 const replies = require('../assets/replies.js');
+const special = require('../assets/special.json');
 const emojis = require('../assets/emojis.json');
+
+cloudinary.config(special.cloudinary);
 
 module.exports = function(message, dbDocument){
 
 	let messageWords = message.content.trim().split(' ');
 	let prefix = dbDocument.prefix || '';
+	let guildEmojis = [];
+
+	//Detect guild emojis
+	if(message.channel.type == 'text'){
+		guildEmojis = message.channel.guild.emojis.array();
+	}
 
 	if(
 		messageWords.length < 2 ||
@@ -17,7 +27,16 @@ module.exports = function(message, dbDocument){
 	}else if(emojis.includes(messageWords[1])){
 		replies.use(message, 'addNameConflictsEmojis', {
 			'%%PREFIX%%': prefix,
-			'%%EMOJI%%': messageWords[1].toLowerCase()
+			'%%EMOJI%%': ":"+messageWords[1].toLowerCase()+":"
+		});
+		return false;
+	}else if(guildEmojis.map(e=>e.name).includes(messageWords[1])){
+
+		let index = guildEmojis.map(e=>e.name).indexOf(messageWords[1]);
+
+		replies.use(message, 'addNameConflictsEmojis', {
+			'%%PREFIX%%': prefix,
+			'%%EMOJI%%': guildEmojis[index]
 		});
 		return false;
 	}else if(
@@ -31,25 +50,40 @@ module.exports = function(message, dbDocument){
 	let stickerName = messageWords[1].toLowerCase().replace(/(-|:)/g, '');
 	let stickerURL = (util.msgHasImgAttached(message)) ? message.attachments.array()[0].proxyURL : messageWords[2];
 
-	//check if sticker exists
-	let stickerExists = false;
-	dbDocument.customStickers.forEach(s=>{
-		if(s.name == stickerName) stickerExists = true;
-	});
+	cloudinary.uploader.upload(stickerURL)
+	.then(upload => {
 
-	if(stickerExists){
-		replies.use(message, 'stickerAlreadyExists');
-	}else{
-		dbDocument.customStickers.push({
-			name: stickerName,
-			url: stickerURL,
-			uses: 0,
-			createdAt: new Date()
+		let cloudURL = upload.url;
+		let maxHeight = 300;
+		let maxWidth = 300;
+
+		//If uploaded image is bigger than limits set above, save a size-modified cloudinary URL
+		if(upload.height > maxHeight || upload.width > maxWidth){
+			let temp = cloudURL.split('/image/upload/');
+			cloudURL = temp.join(`/image/upload/w_${maxWidth.toString()},h_${maxHeight.toString()},c_fit/`);	
+		}
+
+		//check if sticker exists
+		let stickerExists = false;
+		dbDocument.customStickers.forEach(s=>{
+			if(s.name == stickerName) stickerExists = true;
 		});
-		dbDocument.save()
-		.then(()=>{
-			replies.use(message, 'addSticker', {'%%STICKERNAME%%': stickerName});
-		});
-	}
+
+		if(stickerExists){
+			replies.use(message, 'stickerAlreadyExists');
+		}else{
+			dbDocument.customStickers.push({
+				name: stickerName,
+				url: cloudURL,
+				uses: 0,
+				createdAt: new Date()
+			});
+			dbDocument.save()
+			.then(()=>{
+				replies.use(message, 'addSticker', {'%%STICKERNAME%%': stickerName});
+			});
+		}
+
+	}).catch(err => util.handleError(err, message));
 
 }
