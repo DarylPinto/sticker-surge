@@ -31,8 +31,8 @@ let replies = {
 
 //Remove sticker	
 "removeSticker": {
-	"text": "`:%%STICKERNAME%%:` sticker removed.",
-	"dm": "`:-%%STICKERNAME%%:` sticker removed."
+	"text": "`:%%STICKERNAME%%:` sticker deleted.",
+	"dm": "`:-%%STICKERNAME%%:` sticker deleted."
 },
 "invalidRemoveSyntax": {
 	"text": "Invalid syntax. Use: `%%PREFIX%%deletesticker [STICKER NAME]`",

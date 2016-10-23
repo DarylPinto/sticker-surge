@@ -18,7 +18,10 @@ function updateRecentStickers(array, value){
 
 module.exports = function(message){
 
-	let command = message.content.toLowerCase().replace(/:/g, '');
+	let command = message.content.toLowerCase().replace(/:/g, '');	
+	let stickers = [];
+	let user = null;
+	let guild = null;
 
 	let documentArray = [
 		User.findOneAndUpdate(
@@ -30,7 +33,6 @@ module.exports = function(message){
 			},
 			{upsert: true,	new: true, setDefaultsOnInsert: true}
 		),
-		StickerPack.find({})
 	];
 	if(message.channel.type == 'text'){
 		documentArray.push(
@@ -45,36 +47,68 @@ module.exports = function(message){
 	Promise.all(documentArray)
 	.then(docs => {
 
-		let user = docs[0];
-		let packs = docs[1];
-		let guild = (docs[2]) ? docs[2] : null;
+		user = docs[0];
+		guild = (docs[1]) ? docs[1] : null;
 
-		let relevantPacks = packs;
-
-		//Array of stickers available for command
-		let stickers = user.customStickers.map(sticker=>{
-			sticker.name = `-${sticker.name}`;
-			return sticker;
-		});
-		let packKeys = user.stickerPacks;
-		if(guild){	
-			stickers = stickers.concat(guild.customStickers);
-			packKeys = packKeys.concat(guild.stickerPacks);
-		}
-
-		relevantPacks = relevantPacks.filter(pack=>{
-			return packKeys.includes(pack.key);
+		//Push custom stickers into stickers array
+		user.customStickers.forEach(sticker=>{
+			let stickerCopy = util.cloneObj(sticker._doc);
+			stickerCopy.name = '-'+stickerCopy.name;	
+			stickers.push(stickerCopy);
 		});
 
-		relevantPacks.forEach(pack=>{
+		if(guild) stickers = stickers.concat(guild.customStickers);
+
+		//Find sticker packs used by the user & guild
+		let stickerPackKeys = user.stickerPacks;
+		if(guild) stickerPackKeys = stickerPackKeys.concat(guild.stickerPacks);
+
+		//Remove duplicates from sticker pack keys array
+		return stickerPackKeys.filter( (elem, index, arr) => {
+			return index == arr.indexOf(elem);
+		});
+
+	})
+	.then(stickerPackKeys => {
+		return StickerPack.find({'key': {$in: stickerPackKeys} });
+	})
+	.then(stickerPacks => {
+
+		//Push sticker pack stickers into sticker array
+		stickerPacks.forEach(pack=>{
 			pack.stickers.forEach(sticker=>{
-				sticker.name = `${pack.key}-${sticker.name}`;
+				let stickerCopy = util.cloneObj(sticker._doc);
+				stickerCopy.name = pack.key + '-'+stickerCopy.name;
+				stickers.push(stickerCopy);
 			});
-			stickers = stickers.concat(pack.stickers);
 		});
+
+		//console.log(stickers.map(s=>s.name));
 
 		//if message matches sticker
 		if( stickers.map(s=>s.name).includes(command) ){
+
+			//Increment sticker usage count
+			if(command.indexOf('-') == 0){ //user sticker
+				let stickerName = command.slice(1);
+				let index = user.customStickers.map(s=>s.name).indexOf(stickerName);
+				user.customStickers[index].uses++;
+				user.save();
+			}else if(command.indexOf('-') == -1){ //guild sticker
+				let index = guild.customStickers.map(s=>s.name).indexOf(command);
+				guild.customStickers[index].uses++;
+				guild.save();
+			}else if(command.indexOf('-') > 0){ //sticker pack sticker
+				let hyphenIndex = command.indexOf('-');
+				let stickerName = command.slice(hyphenIndex + 1);
+				let packKey = command.slice(0, hyphenIndex);
+				let stickerPack = stickerPacks.filter(pack=>{
+					return pack.key == packKey;
+				})[0];
+				let index = stickerPack.stickers.map(s=>s.name).indexOf(stickerName);
+				stickerPack.stickers[index].uses++;
+				stickerPack.save();
+			}
 
 			//Send sticker
 			let index = stickers.map(s=>s.name).indexOf(command);	
@@ -84,14 +118,14 @@ module.exports = function(message){
 				`**${util.authorDisplayName(message)}:**`
 			);
 
-			//Add sticker to guild recents array
-			if(guild && command[0] != '-'){
-				guild.recentStickers = updateRecentStickers(guild.recentStickers, command);
-				guild.save();
-			}
-
-			//Delete message that was sent to trigger response
+			//Delete message that was sent to trigger response, and save guild recentStickers
 			if(message.channel.type == 'text'){
+
+				if(command[0] != '-'){
+					guild.recentStickers = updateRecentStickers(guild.recentStickers, command);
+					guild.save();
+				}
+
 				message.delete()
 				.catch(err=>{
 					console.log(`Unable to delete message on guild: ${guild.id}`);

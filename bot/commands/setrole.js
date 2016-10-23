@@ -31,7 +31,7 @@ module.exports = function(message, dbDocument){
 			if(newRole === '@everyone'){
 				replies.use(message, 'setRoleEveryone');	
 			}else{
-				replies.use(message, 'setRole', {'%%NEWROLE%%': newRole});		
+				replies.use(message, 'setRole', {'%%NEWROLE%%': messageWords[1]});		
 			}
 
 		}).catch(err => util.handleError(err, message));

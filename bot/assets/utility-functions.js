@@ -94,6 +94,30 @@ function stringHasEmoji(str){
 }
 
 /**
+* Create deep copy of an object
+* 
+* @param {object} obj - source object to deep copy
+* @returns {object} - cloned object
+*/
+function cloneObj(obj){
+	let clonedObj = {};
+	for(var key in obj){
+		if(obj.hasOwnProperty(key)){
+			clonedObj[key] = obj[key];
+		}
+	}
+	return clonedObj;
+}
+
+function findObjInArray(arr, key, value){
+	matched = null;
+	arr.forEach(item=>{
+		if(item.key == value) matched = item;
+	});
+	return matched;
+}
+
+/**
 * Handle an error (usually db connection problem)
 *
 * @param {error} err - Error to handle
@@ -116,5 +140,6 @@ module.exports = {
 	getCommand,
 	multiReplace,
 	stringHasEmoji,
+	cloneObj,
 	handleError
 }

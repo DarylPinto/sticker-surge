@@ -19,7 +19,7 @@ function updateRecentStickers(array, value){
 module.exports = function(message){
 
 	let command = message.content.toLowerCase().replace(/:/g, '');	
-	let stickers = [];
+	let user = null;
 	let guild = null;
 
 	let documentArray = [
@@ -46,61 +46,77 @@ module.exports = function(message){
 	Promise.all(documentArray)
 	.then(docs => {
 
-		let user = docs[0];
+		user = docs[0];
 		guild = (docs[1]) ? docs[1] : null;
-
-		//Push custom stickers into stickers array
-		user.customStickers.forEach(sticker=>{
-			sticker.name = '-'+sticker.name;
-		});
-		stickers = user.customStickers;
-		if(guild) stickers = stickers.concat(guild.customStickers);
 
 		//Find sticker packs used by the user & guild
 		let stickerPackKeys = user.stickerPacks;
 		if(guild) stickerPackKeys = stickerPackKeys.concat(guild.stickerPacks);
 
 		//Remove duplicates from sticker pack keys array
-		return stickerPackKeys.filter(function(elem, index, arr) {
+		return stickerPackKeys.filter( (elem, index, arr) => {
 			return index == arr.indexOf(elem);
-		})
+		});
 
 	})
 	.then(stickerPackKeys => {
 		return StickerPack.find({'key': {$in: stickerPackKeys} });
 	})
 	.then(stickerPacks => {
-		
-		stickerPacks.forEach(pack=>{
-			pack.stickers.forEach(sticker=>{
-				sticker.name = pack.key + '-'+sticker.name;
-			});	
-			stickers = stickers.concat(pack.stickers);
-		});
 
-		//if message matches sticker
-		if( stickers.map(s=>s.name).includes(command) ){
+		let sticker = null;
+		let stickerParentDoc = null;
+
+		/**STICKER PACK STICKER**/
+		if(command.indexOf('-') > 0){
+			let stickerName = command.slice(command.indexOf('-')+1);
+			let packKey = command.slice(0, command.indexOf('-'));
+			let stickerPack = stickerPacks.filter(p=>p.key == packKey)[0];
+
+			stickerParentDoc = stickerPack;
+			sticker = stickerPack.stickers.filter(s=>s.name == stickerName)[0];
+		}
+		/**USER STICKER**/
+		else if(command.indexOf('-') > -1){
+			let stickerName = command.slice(1);
+			stickerParentDoc = user;
+			sticker = user.customStickers.filter(s=>s.name == stickerName)[0];
+		}
+		/**GUILD STICKER**/
+		else if(command.indexOf('-') == -1){
+			stickerParentDoc = guild;
+			sticker = guild.customStickers.filter(s=>s.name == command)[0];
+		}
+
+		//If command matches a sticker,
+		if(sticker){
 
 			//Send sticker
-			let index = stickers.map(s=>s.name).indexOf(command);	
 			message.channel.sendFile(
-				stickers[index].url,
+				sticker.url,
 				`${command}.png`,
 				`**${util.authorDisplayName(message)}:**`
 			);
 
-			//Delete message that was sent to trigger response, and save guild recentStickers
+			//If guild channel,
 			if(message.channel.type == 'text'){
 
-				if(command[0] != '-'){
+				//Update guild recents array
+				if(stickerParentDoc != user){
 					guild.recentStickers = updateRecentStickers(guild.recentStickers, command);
 					guild.save();
 				}
 
+				//Increment sticker use count
+				sticker.uses++;
+				stickerParentDoc.save();
+
+				//Delete message that was sent to trigger response, and save guild recentStickers
 				message.delete()
 				.catch(err=>{
 					console.log(`Unable to delete message on guild: ${guild.id}`);
 				});
+
 			}
 
 		}
