@@ -50,8 +50,8 @@ module.exports = function(message){
 		guild = (docs[1]) ? docs[1] : null;
 
 		//Find sticker packs used by the user & guild
-		let stickerPackKeys = user.stickerPacks.map(p=>p.key);
-		if(guild) stickerPackKeys = stickerPackKeys.concat(guild.stickerPacks.map(p=>p.key));
+		let stickerPackKeys = user.stickerPacks;
+		if(guild) stickerPackKeys = stickerPackKeys.concat(guild.stickerPacks);
 
 		//Remove duplicates from sticker pack keys array
 		return stickerPackKeys.filter( (elem, index, arr) => {
@@ -60,7 +60,6 @@ module.exports = function(message){
 
 	})
 	.then(stickerPackKeys => {
-		console.log(stickerPackKeys);
 		return StickerPack.find({'key': {$in: stickerPackKeys} });
 	})
 	.then(stickerPacks => {
