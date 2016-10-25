@@ -77,7 +77,7 @@ let replies = {
 
 //Sticker info
 "stickerInfo": {
-	"text": "The 3 most recently sent stickers were: %%RECENTSTICKERS%%\nTo see all this server's stickers, click here: http://discordstickers.io/server/%%BASE62ID%%",
+	"text": "The 3 most recently sent stickers that anyone here can use are: %%RECENTSTICKERS%%\nTo see all this server's stickers, click here: http://discordstickers.io/server/%%BASE62ID%%",
 	"dm": "To see all of your stickers, click here: http://discordstickers.io/user/%%BASE62ID%%"
 },
 
