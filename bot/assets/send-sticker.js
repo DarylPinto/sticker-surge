@@ -50,8 +50,8 @@ module.exports = function(message){
 		guild = (docs[1]) ? docs[1] : null;
 
 		//Find sticker packs used by the user & guild
-		let stickerPackKeys = user.stickerPacks;
-		if(guild) stickerPackKeys = stickerPackKeys.concat(guild.stickerPacks);
+		let stickerPackKeys = user.stickerPacks.map(p=>p.key);
+		if(guild) stickerPackKeys = stickerPackKeys.concat(guild.stickerPacks.map(p=>p.key));
 
 		//Remove duplicates from sticker pack keys array
 		return stickerPackKeys.filter( (elem, index, arr) => {
@@ -60,6 +60,7 @@ module.exports = function(message){
 
 	})
 	.then(stickerPackKeys => {
+		console.log(stickerPackKeys);
 		return StickerPack.find({'key': {$in: stickerPackKeys} });
 	})
 	.then(stickerPacks => {
@@ -124,3 +125,10 @@ module.exports = function(message){
 	}).catch(err => util.handleError(err, message));
 
 }
+
+/*TODO
+
+Use sticker.__parentDoc to find parent doc instead of stickerParentDoc variable
+check if sending a sticker with no hypen in it (guild style sticker) in a dm, causes a crash
+
+*/
