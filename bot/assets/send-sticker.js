@@ -64,8 +64,7 @@ module.exports = function(message){
 	})
 	.then(stickerPacks => {
 
-		let sticker = null;
-		let stickerParentDoc = null;
+		let sticker = null;	
 
 		/**STICKER PACK STICKER**/
 		if(command.indexOf('-') > 0){
@@ -73,18 +72,15 @@ module.exports = function(message){
 			let packKey = command.slice(0, command.indexOf('-'));
 			let stickerPack = stickerPacks.filter(p=>p.key == packKey)[0];
 
-			stickerParentDoc = stickerPack;
 			sticker = stickerPack.stickers.filter(s=>s.name == stickerName)[0];
 		}
 		/**USER STICKER**/
 		else if(command.indexOf('-') > -1){
 			let stickerName = command.slice(1);
-			stickerParentDoc = user;
 			sticker = user.customStickers.filter(s=>s.name == stickerName)[0];
 		}
 		/**GUILD STICKER**/
-		else if(command.indexOf('-') == -1){
-			stickerParentDoc = guild;
+		else if(command.indexOf('-') == -1 && guild){
 			sticker = guild.customStickers.filter(s=>s.name == command)[0];
 		}
 
@@ -102,14 +98,14 @@ module.exports = function(message){
 			if(message.channel.type == 'text'){
 
 				//Update guild recents array
-				if(stickerParentDoc != user){
+				if(sticker.__parent != user){
 					guild.recentStickers = updateRecentStickers(guild.recentStickers, command);
 					guild.save();
 				}
 
 				//Increment sticker use count
 				sticker.uses++;
-				stickerParentDoc.save();
+				sticker.__parent.save();
 
 				//Delete message that was sent to trigger response, and save guild recentStickers
 				message.delete()
@@ -124,10 +120,3 @@ module.exports = function(message){
 	}).catch(err => util.handleError(err, message));
 
 }
-
-/*TODO
-
-Use sticker.__parentDoc to find parent doc instead of stickerParentDoc variable
-check if sending a sticker with no hypen in it (guild style sticker) in a dm, causes a crash
-
-*/
