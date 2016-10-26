@@ -1,3 +1,7 @@
+const cloudinary = require('cloudinary');
+const special = require('../../common/assets/special.json');
+const sizeOf = require('request-image-size');
+
 /**
 * Does message have an image attachment?
 *
@@ -93,6 +97,34 @@ function stringHasEmoji(str){
 	return hasEmoji;
 }
 
+//Promise wrapper for cloudinary upload
+//Cloudinary upload function already returns a promise, but
+//doing so makes it unable to use uploadSettings
+function cloudUpload(file, uploadSettings = {}){
+	return new Promise((resolve, reject) => {
+		cloudinary.uploader.upload(file, (res, err) => {
+			if(err){
+				reject(err);
+			}else{
+				resolve(res);
+			}
+		}, uploadSettings);
+	});
+}
+
+//Promise wrapper for size of image URL
+function sizeOfImageURL(url){
+	return new Promise((resolve, reject) => {
+		sizeOf(url, (err, res) => {
+			if(err){
+				reject(err);
+			}else{
+				resolve(res);
+			}
+		});
+	});
+}
+
 /**
 * Handle an error (usually db connection problem)
 *
@@ -116,5 +148,7 @@ module.exports = {
 	getCommand,
 	multiReplace,
 	stringHasEmoji,
+	cloudUpload,
+	sizeOfImageURL,
 	handleError
 }

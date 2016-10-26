@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const util = require('./utility-functions.js');
 
 //Mongo Models
-const Guild = require('../../models/guild.js');
-const User = require('../../models/user.js');
-const StickerPack = require('../../models/sticker-pack.js');
+const Guild = require('../../common/models/guild.js');
+const User = require('../../common/models/user.js');
+const StickerPack = require('../../common/models/sticker-pack.js');
 
 //Add value to beginning of array, array max length is 3, only one of each value
 function updateRecentStickers(array, value){
@@ -18,7 +18,7 @@ function updateRecentStickers(array, value){
 
 module.exports = function(message){
 
-	let command = message.content.toLowerCase().replace(/:/g, '');	
+	let command = message.content.toLowerCase().trim().replace(/:/g, '');	
 	let user = null;
 	let guild = null;
 
@@ -54,13 +54,12 @@ module.exports = function(message){
 		if(guild) stickerPackKeys = stickerPackKeys.concat(guild.stickerPacks);
 
 		//Remove duplicates from sticker pack keys array
-		return stickerPackKeys.filter( (elem, index, arr) => {
+		stickerPackKeys = stickerPackKeys.filter( (elem, index, arr) => {
 			return index == arr.indexOf(elem);
 		});
 
-	})
-	.then(stickerPackKeys => {
 		return StickerPack.find({'key': {$in: stickerPackKeys} });
+
 	})
 	.then(stickerPacks => {
 

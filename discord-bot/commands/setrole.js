@@ -4,7 +4,7 @@ const replies = require('../assets/replies.js');
 
 module.exports = function(message, dbDocument){
 
-	let messageWords = message.content.trim().split(' ');
+	let messageWords = message.content.trim().split(/\s+/);
 	let maxRoleNameLength = 32;
 
 	if(messageWords.length < 2){

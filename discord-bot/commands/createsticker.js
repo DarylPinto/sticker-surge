@@ -1,16 +1,18 @@
 const cloudinary = require('cloudinary');
 const util = require('../assets/utility-functions.js');
 const replies = require('../assets/replies.js');
-const special = require('../assets/special.json');
-const emojis = require('../assets/emojis.json');
+const special = require('../../common/assets/special.json');
+const emojis = require('../../common/assets/emojis.json');
 
 cloudinary.config(special.cloudinary);
 
 module.exports = function(message, dbDocument){
 
-	let messageWords = message.content.trim().split(' ');
+	let messageWords = message.content.trim().split(/\s+/);
 	let prefix = dbDocument.prefix || '';
 	let guildEmojis = [];
+	let maxHeight = 300;
+	let maxWidth = 300;
 
 	//Detect guild emojis
 	if(message.channel.type == 'text'){
@@ -50,18 +52,20 @@ module.exports = function(message, dbDocument){
 	let stickerName = messageWords[1].toLowerCase().replace(/(-|:)/g, '');
 	let stickerURL = (util.msgHasImgAttached(message)) ? message.attachments.array()[0].proxyURL : messageWords[2];
 
-	cloudinary.uploader.upload(stickerURL)
-	.then(upload => {
+	util.sizeOfImageURL(stickerURL)
+	.then(dimensions => {
 
-		let cloudURL = upload.url;
-		let maxHeight = 300;
-		let maxWidth = 300;
+		let uploadSettings = {crop: "fit", format: "png"};
 
-		//If uploaded image is bigger than limits set above, save a size-modified cloudinary URL
-		if(upload.height > maxHeight || upload.width > maxWidth){
-			let temp = cloudURL.split('/image/upload/');
-			cloudURL = temp.join(`/image/upload/w_${maxWidth.toString()},h_${maxHeight.toString()},c_fit/`);	
+		if(dimensions.height >= maxHeight || dimensions.width >= maxWidth){
+			uploadSettings.height = maxHeight;
+			uploadSettings.width = maxWidth;
 		}
+
+		return util.cloudUpload(stickerURL, uploadSettings);
+
+	})
+	.then(upload =>{
 
 		//check if sticker exists
 		let stickerExists = false;
@@ -74,7 +78,7 @@ module.exports = function(message, dbDocument){
 		}else{
 			dbDocument.customStickers.push({
 				name: stickerName,
-				url: cloudURL,
+				url: upload.url,
 				uses: 0,
 				createdAt: new Date()
 			});
@@ -84,6 +88,6 @@ module.exports = function(message, dbDocument){
 			});
 		}
 
-	}).catch(err => util.handleError(err, message));
+	}).catch(err => util.handleError(err));
 
 }

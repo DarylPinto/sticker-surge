@@ -10,11 +10,11 @@ const mongoose = require('mongoose');
 const util = require('./assets/utility-functions.js');
 const replies = require('./assets/replies.js');
 const sendSticker = require('./assets/send-sticker.js');
-const special = require('./assets/special.json');
+const special = require('../common/assets/special.json');
 
 //Mongo Models
-const Guild = require('../models/guild.js');
-const User = require('../models/user.js');
+const Guild = require('../common/models/guild.js');
+const User = require('../common/models/user.js');
 
 //Bot/DB Init
 mongoose.Promise = global.Promise;

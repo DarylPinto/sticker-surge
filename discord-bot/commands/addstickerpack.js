@@ -1,10 +1,10 @@
 const util = require('../assets/utility-functions.js');
 const replies = require('../assets/replies.js');
-const StickerPack = require('../../models/sticker-pack.js');
+const StickerPack = require('../../common/models/sticker-pack.js');
 
 module.exports = function(message, dbDocument){
 
-	let messageWords = message.content.trim().split(' ');
+	let messageWords = message.content.trim().split(/\s+/);
 	let prefix = dbDocument.prefix || '';	
 
 	if(messageWords.length < 2){

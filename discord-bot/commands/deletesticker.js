@@ -2,7 +2,7 @@ const replies = require('../assets/replies.js');
 
 module.exports = function(message, dbDocument){
 
-	let messageWords = message.content.toLowerCase().trim().split(' ');
+	let messageWords = message.content.toLowerCase().trim().split(/\s+/);
 	let prefix = dbDocument.prefix || '';
 
 	if(messageWords.length != 2){

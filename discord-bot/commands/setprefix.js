@@ -3,7 +3,7 @@ const replies = require('../assets/replies.js');
 
 module.exports = function(message, dbDocument){
 
-	let messageWords = message.content.trim().split(' ');
+	let messageWords = message.content.trim().split(/\s+/);
 	let maxPrefixLength = 3;
 	let illegalCharacters = ['@', '#', '`'];
 	let prefix = dbDocument.prefix;
