@@ -60,7 +60,7 @@ module.exports = function(message, dbDocument){
 		if(dimensions.height >= maxHeight || dimensions.width >= maxWidth){
 			uploadSettings.height = maxHeight;
 			uploadSettings.width = maxWidth;
-			uploadSettings.crop: "fit";
+			uploadSettings.crop = "fit";
 		}
 
 		return util.cloudUpload(stickerURL, uploadSettings);
