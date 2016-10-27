@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const index = require('./routes/index');
 const users = require('./routes/users');
@@ -9,6 +10,14 @@ const stickerPacks = require('./routes/sticker-packs');
 
 let app = express();
 let port = 3000;
+
+//DB Init
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/test');
+const db = mongoose.connection;
+db.on('error', err => console.error(err));
+
+app.locals.db = db;
 
 //View Engine
 app.set('views', path.join(__dirname, 'views'));
