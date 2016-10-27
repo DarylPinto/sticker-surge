@@ -8,14 +8,14 @@ const Guild = require('../../common/models/guild.js');
 //Get all guilds
 router.get('/', function(req, res, next){
 	Guild.find({})
-	.then(guilds => { res.json(guilds) })
+	.then(guilds => res.json(guilds))
 	.catch(err => res.send(err));	
 });
 
 //Get individual guild
 router.get('/:id', function(req, res, next){
 	Guild.findOne({id: req.params.id})
-	.then(guild => { res.json(guild) })
+	.then(guild => res.json(guild))
 	.catch(err => res.send(err));		
 });
 
