@@ -55,11 +55,12 @@ module.exports = function(message, dbDocument){
 	util.sizeOfImageURL(stickerURL)
 	.then(dimensions => {
 
-		let uploadSettings = {crop: "fit", format: "png"};
+		let uploadSettings = {format: "png"};
 
 		if(dimensions.height >= maxHeight || dimensions.width >= maxWidth){
 			uploadSettings.height = maxHeight;
 			uploadSettings.width = maxWidth;
+			uploadSettings.crop: "fit";
 		}
 
 		return util.cloudUpload(stickerURL, uploadSettings);

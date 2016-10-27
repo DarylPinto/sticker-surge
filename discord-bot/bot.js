@@ -45,7 +45,7 @@ client.on('ready', () => {
 });
 
 //When message is sent
-function respondToMessage(message){
+client.on('message', message => {
 
 	////////////
 	//Stickers//
@@ -168,14 +168,13 @@ function respondToMessage(message){
 
 	}
 
-}
-
-client.on('message', message => {
-	respondToMessage(message);
 });
 
+//Allow sticker to be sent via editing message incase of a user typo
 client.on('messageUpdate', (oldMessage, newMessage) => {
-	respondToMessage(newMessage);
+	if( /^:[a-zA-Z0-9-]+:$/.test(newMessage.content.trim()) ){
+		sendSticker(newMessage);
+	}
 });
 
 client.login(special.token);

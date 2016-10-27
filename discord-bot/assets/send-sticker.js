@@ -71,7 +71,7 @@ module.exports = function(message){
 			let packKey = command.slice(0, command.indexOf('-'));
 			let stickerPack = stickerPacks.filter(p=>p.key == packKey)[0];
 
-			sticker = stickerPack.stickers.filter(s=>s.name == stickerName)[0];
+			if(stickerPack) sticker = stickerPack.stickers.filter(s=>s.name == stickerName)[0];
 		}
 		/**USER STICKER**/
 		else if(command.indexOf('-') > -1){
