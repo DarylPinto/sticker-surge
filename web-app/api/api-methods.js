@@ -33,6 +33,15 @@ return new Promise((resolve, reject) => {
 });
 }
 
+function arrayDiff(original, updated){
+
+	let removals = original.filter(i=>updated.indexOf(i) == -1);
+	let additions = updated.filter(i=>original.indexOf(i) == -1);
+
+	return {additions: additions, removals: removals};
+
+}
+
 function validateStickerPostRequest(req, dbDocument, stickerArrayName){
 return new Promise((resolve, reject) => {
 
@@ -95,6 +104,13 @@ return new Promise((resolve, reject) => {
 });
 }
 
+function removeProps(keyArr, dbDoc){
+	let doc = dbDoc._doc;
+	keyArr.forEach(key=>delete doc[key]);
+	return doc;
+}
+
 module.exports = {
-	validateStickerPostRequest
+	validateStickerPostRequest,
+	removeProps
 }

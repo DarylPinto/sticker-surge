@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const rp = require('request-promise');
-const fileType = require('file-type');
 const api = require('./api-methods.js');
 const emojis =  require('../../common/assets/emojis.json');
 
@@ -17,14 +15,14 @@ const StickerPack = require('../../common/models/sticker-pack.js');
 //Get all users
 router.get('/', function(req, res, next){
 	User.find({})
-	.then(users => res.json(users))
+	.then(users => res.json(users.map(u=>api.removeProps(['__v', '_id'], u))))
 	.catch(err => res.json({status: "error", message: "Database error"}));	
 });
 
 //Get individual user
 router.get('/:id', function(req, res, next){
 	User.findOne({id: req.params.id})
-	.then(user => res.json(user))
+	.then(user => res.json(api.removeProps(['__v', '_id'], user)))
 	.catch(err => res.json({status: "error", message: "Database error"}));	
 });
 
@@ -84,7 +82,7 @@ router.post('/:id/custom-stickers', function(req, res, next){
 		.catch(err => res.json({status: "error", message: "Database error"}));
 
 	})
-	.catch(err => res.json({status: "error", message: "Database error"}));
+	.catch(err => res.json({status: "error", message: err}));
 
 });
 
@@ -113,7 +111,7 @@ router.post('/:id/sticker-packs', function(req, res, next){
 		}
 
 		if(user.stickerPacks.includes(pack.key)){
-			res.json({status: "error", message: "User already has "+pack.name+" sticker pack installed"});
+			res.json({status: "error", message: "User already has "+pack.name+" sticker pack"});
 			return;
 		}
 
@@ -176,7 +174,7 @@ router.delete('/:id/sticker-packs/:key', function(req, res, next){
 		}
 
 		if(!user.stickerPacks.includes(pack.key)){
-			res.json({status: "error", message: "User does not have "+pack.name+" sticker pack installed"});
+			res.json({status: "error", message: "User does not have "+pack.name+" sticker pack"});
 			return;
 		}
 

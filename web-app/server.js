@@ -36,12 +36,12 @@ app.use(bodyParser.urlencoded({extended: false}));
 //Views
 app.use('/', index);
 app.use('/users', users);
-app.use('/guilds', guilds);
+app.use('/servers', guilds);
 app.use('/sticker-packs', stickerPacks);
 
 //API
 app.use('/api/users', api_users);
-app.use('/api/servers', api_guilds);
+app.use('/api/guilds', api_guilds);
 app.use('/api/sticker-packs', api_stickerPacks);
 
 app.listen(port, function(){
