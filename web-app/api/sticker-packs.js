@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 //Model
-const StickerPack = require('../../../common/models/sticker-pack.js');
+const StickerPack = require('../../common/models/sticker-pack.js');
 
 //Get all sticker packs
 router.get('/', function(req, res, next){

@@ -3,7 +3,7 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 //Model
-const Guild = require('../../../common/models/guild.js');
+const Guild = require('../../common/models/guild.js');
 
 //Get all guilds
 router.get('/', function(req, res, next){

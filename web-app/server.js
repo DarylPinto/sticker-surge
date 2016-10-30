@@ -8,9 +8,9 @@ const users = require('./routes/users');
 const guilds = require('./routes/guilds');
 const stickerPacks = require('./routes/sticker-packs');
 
-const api_users = require('./routes/api/users');
-const api_guilds = require('./routes/api/guilds');
-const api_stickerPacks = require('./routes/api/sticker-packs');
+const api_users = require('./api/users');
+const api_guilds = require('./api/guilds');
+const api_stickerPacks = require('./api/sticker-packs');
 
 let app = express();
 let port = 3000;
@@ -19,7 +19,7 @@ let port = 3000;
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/test');
 const db = mongoose.connection;
-db.on('error', err => console.error(err));
+db.on('error', err => {if(err) throw err});
 
 //View Engine
 app.set('views', path.join(__dirname, 'views'));
