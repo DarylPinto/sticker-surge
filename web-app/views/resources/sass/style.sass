@@ -1,0 +1,42 @@
+@import _mixins
+@import _reset
+
+$brand-yellow: #f4b96b
+$brand-blue: #73d0f2
+
+*
+	font-family: "Rubik", sans-serif
+
+header
+	height: 115px
+	width: 100%
+	background-color: $brand-yellow
+	.container
+		width: 100%
+		max-width: 1200px
+		height: inherit
+		display: flex
+		justify-content: space-between
+		align-items: center
+		margin: 0 auto
+	.main-nav
+		height: inherit
+		a
+			height: inherit
+			display: inline-flex
+			align-items: center
+			padding-left: 15px
+			padding-right: 15px
+		li
+			display: inline-block
+			color: white
+			cursor: pointer
+			font-weight: 100
+			font-size: 19px
+
+
+//Home page (Landing page)
+#landing-page
+	text-align: center
+	#tagline
+		font-family: "Righteous", sans-serif

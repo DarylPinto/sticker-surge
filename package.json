@@ -1,13 +1,13 @@
 {
-  "name": "discord-stickers",
+  "name": "stickers-for-discord",
   "version": "1.0.0",
-  "description": "Custom stickers and emotes for discord servers!",
+  "description": "Custom stickers and sticker packs for discord servers!",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "#"
+    "url": "https://github.com/darylpinto/stickers-for-discord"
   },
   "keywords": [
     "Discord",

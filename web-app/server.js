@@ -35,9 +35,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 //Views
 app.use('/', index);
-app.use('/users', users);
+/*app.use('/users', users);
 app.use('/servers', guilds);
-app.use('/sticker-packs', stickerPacks);
+app.use('/sticker-packs', stickerPacks);*/
 
 //API
 app.use('/api/users', api_users);
