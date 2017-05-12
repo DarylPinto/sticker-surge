@@ -2,6 +2,7 @@ const rp = require('request-promise');
 const express = require('express');
 const sessions = require('client-sessions');
 const path = require('path');
+const covert = require('../covert.js');
 
 const app = express();
 const port = 3000;
@@ -9,7 +10,7 @@ const port = 3000;
 //Middleware
 app.use(sessions({
 	cookieName: 'session',
-	secret: 'sampletextsampletext',
+	secret: covert.session.secret,
 	duration: 10 * 60 * 1000,
 	activeDuration: 5 * 60 * 1000
 }));
