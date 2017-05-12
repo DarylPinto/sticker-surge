@@ -19,12 +19,23 @@ app.use(sessions({
 app.use('/', express.static('frontend/public'));
 
 //Routes
-const auth = require('./routes/auth.js');
-app.use('/login', auth.login);
-app.use('/callback', auth.callback);
+app.use('/login', require('./routes/auth.js').login);
+app.use('/callback', require('./routes/auth.js').callback);
 
 app.get('/dash', (req, res) => {	
 	res.json(req.session.tok);
+});
+
+//API
+/*
+app.use('/api/user', require('./api/user.js'));
+app.use('/api/guild', require('./api/guild.js'));
+app.use('/api/sticker-pack', require('./api/sticker-pack.js'));
+*/
+
+//Redirect all other traffic to app root
+app.get('*', (req, res) => {
+	res.sendFile(__dirname+'/frontend/public/index.html');
 });
 
 app.listen(port, () => {

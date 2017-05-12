@@ -6,15 +6,15 @@
 
 	<div class="container">
 		
-		<router-link to="/" class="logo">
-			<img src="images/logo.png" alt="Stickers for Discord">
+		<router-link to="/">
+			<img src="images/logo.png" class="logo" alt="Stickers for Discord">
 		</router-link>
 
 		<nav class="main-nav">
-			<router-link to="/user/me">Your Stickers</router-link>
-			<router-link to="/guilds">Your Servers</router-link>
+			<router-link to="/user/123">Your Stickers</router-link>
+			<router-link to="/server/456">Your Servers</router-link>
 			<router-link to="/sticker-packs">Sticker Packs</router-link>
-			<a href="/login">Login</a>
+			<a href="/login">Log In</a>
 		</nav>	
 
 	</div>	
@@ -22,24 +22,18 @@
 </header>
 </template>
 
-<style scoped lang="sass">
+<style lang="sass">
 
-	$brand-orange: #fcb862
+	$brand-red: #fc6262
 	$header-height: 100px
 
-	*
-		font-family: 'Rubik', sans-serif
-
 	header
-		background-color: $brand-orange
+		background-color: $brand-red
 		height: $header-height 
 		width: 100%
 		display: flex
 		justify-content: center
 		.container
-			width: 100%
-			max-width: 1000px
-			height: $header-height 
 			display: flex
 			justify-content: space-between
 			a
@@ -47,12 +41,18 @@
 				height: $header-height 
 				display: inline-flex
 				align-items: center
-			nav a
+			.logo
+				max-height: 65px
+				width: auto
+			.main-nav
+				font-size: 0
+			.main-nav a
 				padding-left: 10px
 				padding-right: 10px
+				font-size: 18px
 				font-weight: 300
 				text-decoration: none
-				&:hover
+				&:hover, &.router-link-active
 					background-color: rgba(255,255,255,0.1)
 
 </style>

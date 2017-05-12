@@ -42,7 +42,17 @@ module.exports = {
 				test: /\.vue$/,
 				exclude: /(node_modules)/,
 				loader: 'vue-loader'
-			}
+			},
+
+			//images
+			{
+				test: /.*\.(gif|png|jpe?g|svg)$/i,
+				exclude: /(node_modules)/,
+				loaders: [
+					'file-loader?hash=sha512&digest=hex&name=images/[name].[ext]',
+					'image-webpack-loader?{optimizationLevel: 7, interlaced: false, pngquant:{quality: "80-90", speed: 4}, mozjpeg: {quality: 85}}'
+				]
+			},
 
 		]
 	},

@@ -18,8 +18,14 @@ module.exports = {
 <template>
 <main>
 
-	<header-bar></header-bar>	
-	<h1>Stickers for Discord</h1>	
-
+	<header-bar></header-bar>
+	<div class="container">
+		<h1>Home</h1>	
+	</div>
+	
 </main>
 </template>
+
+<style lang="sass">
+
+</style>
