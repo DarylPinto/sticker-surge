@@ -7,6 +7,5 @@ module.exports = {
 			delete clone[prop];
 		});
 		return clone;
-	}
-
+	},
 }

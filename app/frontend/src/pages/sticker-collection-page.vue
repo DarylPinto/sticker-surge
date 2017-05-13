@@ -13,26 +13,31 @@ module.exports = {
 	data: function(){
 		return {
 			username: '',
-			stickers: []
+			customStickers: []
+		}
+	},
+
+	methods: {
+		loadStickers(){	
+			axios.get(`/api/${this.page_type}/${this.$route.params.id}`)
+			.then(res => {
+				this.customStickers = res.data.customStickers;
+				this.username = res.data.username;	
+				this.$el.querySelector('.faded-out').classList.remove('faded-out');	
+			}).catch(err => console.log(err));
+		}
+	},
+
+	watch: {
+		'$route': function(){
+			this.loadStickers();
 		}
 	},
 
 	mounted: function(){
-
-		//this.$el.querySelector('.container').classList.add('faded-out');
-
-		axios.get(`/api/${this.page_type}s/${this.$route.params.id}`)
-		.then(res => {
-
-			let stickers = res.data.customStickers;
-			stickers.reverse();
-			this.stickers = stickers;
-			this.username = res.data.username;	
-			this.$el.querySelector('.faded-out').classList.remove('faded-out');
-
-		}).catch(err => console.log(err));
-
+		this.loadStickers();	
 	}
+
 }
 
 </script>
@@ -48,7 +53,7 @@ module.exports = {
 		<section>
 			<h2>Custom Stickers</h2>
 			<div class="sticker-area">
-				<sticker v-for="sticker in stickers" :link="sticker.url" :name="sticker.name"></sticker>
+				<sticker v-for="sticker in customStickers" :link="sticker.url" :name="'-'+sticker.name"></sticker>
 			</div>	
 		</section>
 
@@ -76,7 +81,7 @@ module.exports = {
 	h2
 		font-size: 30px
 		font-weight: 300
-		border-bottom: 2px solid rgba(255, 255, 255, 0.43)
+		border-bottom: 2px solid rgba(255, 255, 255, 0.45)
 		margin-bottom: 20px
 		padding-bottom: 10px
 

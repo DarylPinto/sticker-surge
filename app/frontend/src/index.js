@@ -18,8 +18,8 @@ const router = new VueRouter({
 	mode: 'history',
 	routes: [
 		{ path: '/', component: Home },
-		{ path: '/user/:id', component: StickerCollection, props: {page_type: 'user'} },
-		{ path: '/server/:id', component: StickerCollection, props: {page_type: 'guild'} }
+		{ path: '/user/:id', component: StickerCollection, props: {page_type: 'users'} },
+		{ path: '/server/:id', component: StickerCollection, props: {page_type: 'guilds'} }
 	]
 });
 

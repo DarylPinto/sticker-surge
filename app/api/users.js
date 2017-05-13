@@ -10,8 +10,13 @@ const util = require('./utilities.js');
 router.get('/:id', (req, res) => {
 	User.findOne({id: req.params.id})
 	.then(user => {
-		if(user) res.json(util.removeProps(user._doc, ['_id', '__v']))
-		else res.json({status: 404, message: 'User not found'})
+		if(user){
+			let data = util.removeProps(user._doc, ['_id', '__v']);
+			data.customStickers = data.customStickers.map(s => util.removeProps(s._doc, ['_id']));
+			res.json(data);
+		}else{
+			res.json({status: 404, message: 'User not found'});
+		}
 	})
 	.catch(err => res.json({status: 503, message: 'Database error'}));
 });
@@ -42,7 +47,7 @@ router.post('/:id/stickers', (req, res) => {
 			res.json({status: 400, message: 'User already has a custom sticker with that name'});
 			return null;
 		}
-		user.customStickers.push(req.body);
+		user.customStickers.unshift(req.body);
 		return user.save();
 	})	
 	.then(user => {
