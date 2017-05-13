@@ -4,7 +4,9 @@
   "description": "",
   "author": "Daryl Pinto",
   "license": "MPLv2",
-  "dependencies": {},
+  "dependencies": {
+    "axios": "^0.16.1"
+  },
   "devDependencies": {
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",

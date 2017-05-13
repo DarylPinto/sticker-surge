@@ -1,5 +1,7 @@
 const rp = require('request-promise');
 const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 const sessions = require('client-sessions');
 const path = require('path');
 const covert = require('../covert.js');
@@ -7,7 +9,14 @@ const covert = require('../covert.js');
 const app = express();
 const port = 3000;
 
+//DB init
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/stickers-for-discord');
+const db = mongoose.connection;
+db.on('error', err => {if(err) throw err});
+
 //Middleware
+app.use(bodyParser.json());
 app.use(sessions({
 	cookieName: 'session',
 	secret: covert.session.secret,
@@ -27,10 +36,10 @@ app.get('/dash', (req, res) => {
 });
 
 //API
+app.use('/api/users', require('./api/users.js'));
 /*
-app.use('/api/user', require('./api/user.js'));
-app.use('/api/guild', require('./api/guild.js'));
-app.use('/api/sticker-pack', require('./api/sticker-pack.js'));
+app.use('/api/guilds', require('./api/guilds.js'));
+app.use('/api/sticker-packs', require('./api/sticker-packs.js'));
 */
 
 //Redirect all other traffic to app root

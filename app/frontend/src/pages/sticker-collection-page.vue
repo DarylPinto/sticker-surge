@@ -1,5 +1,6 @@
 <script>
 import Vue from 'vue';
+import axios from 'axios';
 import header from '../components/header.vue';
 import sticker from '../components/sticker.vue';
 
@@ -7,14 +8,31 @@ Vue.component('header-bar', header);
 Vue.component('sticker', sticker);
 
 module.exports = {
-
-	props: ['type'],
+	props: ['page_type'],
 
 	data: function(){
 		return {
+			username: '',
+			stickers: []
 		}
-	}
+	},
 
+	mounted: function(){
+
+		//this.$el.querySelector('.container').classList.add('faded-out');
+
+		axios.get(`/api/${this.page_type}s/${this.$route.params.id}`)
+		.then(res => {
+
+			let stickers = res.data.customStickers;
+			stickers.reverse();
+			this.stickers = stickers;
+			this.username = res.data.username;	
+			this.$el.querySelector('.faded-out').classList.remove('faded-out');
+
+		}).catch(err => console.log(err));
+
+	}
 }
 
 </script>
@@ -23,17 +41,14 @@ module.exports = {
 <main>
 
 	<header-bar></header-bar>
-	<div class="container">
+	<div class="container faded-out">
 
-		<h1>{{type}} {{$route.params.id}}</h1>
+		<h1>{{username}}</h1>
 
 		<section>
 			<h2>Custom Stickers</h2>
 			<div class="sticker-area">
-				<sticker link="http://i.imgur.com/sZf6MAL.png" name="fry"></sticker>	
-				<sticker link="http://i.imgur.com/Fv3BM56.png" name="kappa"></sticker>	
-				<sticker link="http://i.imgur.com/dIxAL3I.png" name="mrbean"></sticker>	
-				<sticker link="http://i.imgur.com/hdpVMQy.png" name="sandbag"></sticker>
+				<sticker v-for="sticker in stickers" :link="sticker.url" :name="sticker.name"></sticker>
 			</div>	
 		</section>
 
@@ -42,6 +57,11 @@ module.exports = {
 </template>
 
 <style lang="sass">
+
+	.container
+		transition: .5s
+		&.faded-out
+			opacity: 0
 
 	.sticker-area
 		font-size: 0
