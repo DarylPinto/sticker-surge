@@ -11055,7 +11055,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/Users/daryl/Documents/Github/stickers-for-discord/app/frontend/src/components/header.vue"
+Component.options.__file = "C:\\Users\\Daryl\\Documents\\GitHub\\stickers-for-discord\\app\\frontend\\src\\components\\header.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] header.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -11132,7 +11132,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/Users/daryl/Documents/Github/stickers-for-discord/app/frontend/src/pages/home-page.vue"
+Component.options.__file = "C:\\Users\\Daryl\\Documents\\GitHub\\stickers-for-discord\\app\\frontend\\src\\pages\\home-page.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] home-page.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -11176,7 +11176,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/Users/daryl/Documents/Github/stickers-for-discord/app/frontend/src/pages/sticker-collection-page.vue"
+Component.options.__file = "C:\\Users\\Daryl\\Documents\\GitHub\\stickers-for-discord\\app\\frontend\\src\\pages\\sticker-collection-page.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] sticker-collection-page.vue: functional components are not supported with templates, they should use render functions.")}
 
@@ -16620,7 +16620,7 @@ exports = module.exports = __webpack_require__(1)(undefined);
 
 
 // module
-exports.push([module.i, "\n.sticker {\n  font-size: 18px;\n  background-color: #36393E;\n  border-radius: 5px;\n  overflow: hidden;\n  width: calc(25% - 11.5px);\n  margin-right: 15px;\n  margin-bottom: 15px;\n  display: inline-flex;\n  flex-direction: column;\n  justify-content: space-between;\n  align-items: center;\n}\n.sticker:nth-child(4n) {\n    margin-right: 0;\n}\n.sticker .image {\n    height: 230px;\n    width: 100%;\n    background-repeat: no-repeat;\n    background-position: center center;\n    border: 10px solid transparent;\n    box-sizing: border-box;\n    background-size: contain;\n}\n.sticker p {\n    background-color: #737373;\n    color: #c3c3c3;\n    text-align: center;\n    width: 100%;\n    font-weight: 300;\n    padding: 15px 0;\n    text-transform: lowercase;\n}\n", ""]);
+exports.push([module.i, "\n.sticker {\n  font-size: 18px;\n  background-color: #36393E;\n  border-radius: 5px;\n  overflow: hidden;\n  width: calc(25% - 11.5px);\n  margin-right: 15px;\n  margin-bottom: 15px;\n  display: inline-flex;\n  flex-direction: column;\n  justify-content: space-between;\n  align-items: center;\n}\n.sticker:nth-child(4n) {\n    margin-right: 0;\n}\n.sticker .image {\n    height: 230px;\n    width: 100%;\n    background-repeat: no-repeat;\n    background-position: center center;\n    border: 10px solid transparent;\n    box-sizing: border-box;\n    background-size: contain;\n}\n.sticker p {\n    background-color: #737373;\n    color: #eaeaea;\n    text-align: center;\n    width: 100%;\n    padding: 15px 0;\n    text-transform: lowercase;\n}\n", ""]);
 
 // exports
 
@@ -16795,7 +16795,7 @@ var Component = __webpack_require__(2)(
   /* moduleIdentifier (server only) */
   null
 )
-Component.options.__file = "/Users/daryl/Documents/Github/stickers-for-discord/app/frontend/src/components/sticker.vue"
+Component.options.__file = "C:\\Users\\Daryl\\Documents\\GitHub\\stickers-for-discord\\app\\frontend\\src\\components\\sticker.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
 if (Component.options.functional) {console.error("[vue-loader] sticker.vue: functional components are not supported with templates, they should use render functions.")}
 

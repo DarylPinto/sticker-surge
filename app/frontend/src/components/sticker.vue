@@ -39,10 +39,9 @@ module.exports = {
 			background-size: contain
 		p
 			background-color: #737373
-			color: #c3c3c3
+			color: #eaeaea 
 			text-align: center
 			width: 100%
-			font-weight: 300
 			padding: 15px 0
 			text-transform: lowercase
 

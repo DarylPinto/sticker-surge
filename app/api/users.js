@@ -41,17 +41,24 @@ router.post('/', (req, res) => {
 //POST new custom sticker to existing user
 router.post('/:id/stickers', (req, res) => {
 
+	if(!req.body.name.match(/^[a-z0-9]+$/g)){
+		return res.json({status: 400, message: 'Sticker name must contain lowercase letters and numbers only'});
+	}
+
 	User.findOne({id: req.params.id})
 	.then(user => {
 		if(user.customStickers.map(s => s.name).includes(req.body.name)){
-			res.json({status: 400, message: 'User already has a custom sticker with that name'});
+			res.json({status: 400, message: `User already has a custom sticker named: ${req.body.name}`});
 			return null;
 		}
 		user.customStickers.unshift(req.body);
 		return user.save();
 	})	
 	.then(user => {
-		if(user) res.json(util.removeProps(user._doc, ['_id', '__v']))
+		if(!user) return false;
+		let data = util.removeProps(user._doc, ['_id', '__v']);
+		data.customStickers = data.customStickers.map(s => util.removeProps(s._doc, ['_id']));
+		res.json(data);
 	})
 	.catch(err => res.json({status: 503, message: 'Database error'}));
 
@@ -69,7 +76,7 @@ router.delete('/:id/stickers', (req, res) => {
 		let sticker_names = user.customStickers.map(s => s.name);
 		let deletion_request_index = sticker_names.indexOf(req.body.name);
 		if(deletion_request_index === -1){
-			res.json({status: 400, message: 'User does not have a custom sticker with that name'});
+			res.json({status: 400, message: `User does not have a custom sticker named: ${req.body.name}`});
 			return null;
 		}
 
@@ -77,7 +84,7 @@ router.delete('/:id/stickers', (req, res) => {
 		return user.save();
 	})	
 	.then(user => {
-		if(user) res.json({status: 204, message: 'Successfully deleted custom sticker'})
+		if(user) res.json({status: 204, message: `Successfully deleted custom sticker: ${req.body.name}`})
 	})
 	.catch(err => res.json({status: 503, message: 'Database error'}));
 
