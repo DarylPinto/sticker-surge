@@ -57,5 +57,3 @@ callback: express.Router().get('/', (req, res) => {
 
 /********/
 }
-
-//FVK98zqafYiHPeLolY60P0WgA4EIPO

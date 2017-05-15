@@ -39,9 +39,7 @@ module.exports = {
 			}).catch(err => console.log(err.message));
 		},
 		deleteSticker(){
-			axios.delete(`/api/${this.page_type}/${this.$route.params.id}/stickers`, {
-				name: this.stickerName
-			})
+			axios.delete(`/api/${this.page_type}/${this.$route.params.id}/stickers/${this.stickerName}`)
 			.then(res => {
 				this.loadStickers();
 				console.log(res);

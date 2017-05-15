@@ -23,6 +23,20 @@ router.get('/:id', (req, res) => {
 	.catch(err => res.status(503).send('Database error'));
 });
 
+//GET a user's custom sticker
+router.get('/:id/stickers/:stickername', (req, res) => {
+	User.findOne({id: req.params.id})
+	.then(user => {
+		if(user){
+			let custom_stickers = user._doc.customStickers;
+			let sticker = custom_stickers.find(s => s.name === req.params.stickername);
+			res.json(util.removeProps(sticker._doc, ['_id']));
+		}else{
+			res.status(404).send('User does not have a custom sticker with that name');
+		}
+	})
+	.catch(err => res.status(503).send('Database error'));
+});
 
 ////////
 //POST//
@@ -94,9 +108,9 @@ router.post('/:id/stickers', (req, res) => {
 //////////
 
 //DELETE existing user's custom sticker
-router.delete('/:id/stickers', (req, res) => {
+router.delete('/:id/stickers/:stickername', (req, res) => {
 
-	/*rp({
+	rp({
 		method: 'GET',
 		uri: 'https://discordapp.com/api/users/@me',
 		headers: {
@@ -109,8 +123,7 @@ router.delete('/:id/stickers', (req, res) => {
 		if(data.id != req.params.id) return res.status(401).send('Unauthorized');
 		return User.findOne({id: req.params.id})
 
-	})*/
-	User.findOne({id: req.params.id})
+	})
 	.then(user => {
 		
 		if(!user){
@@ -119,10 +132,10 @@ router.delete('/:id/stickers', (req, res) => {
 		}
 
 		let sticker_names = user.customStickers.map(s => s.name);
-		let deletion_request_index = sticker_names.indexOf(req.body.name);
+		let deletion_request_index = sticker_names.indexOf(req.params.stickername);
 		if(deletion_request_index === -1){
 			console.log(sticker_names);	
-			res.status(400).send('User does not have a custom sticker with that name');
+			res.status(404).send('User does not have a custom sticker with that name');
 			return null;
 		}
 		user.customStickers.splice(deletion_request_index, 1);
