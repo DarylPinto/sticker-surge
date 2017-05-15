@@ -23,7 +23,8 @@ module.exports = {
 login: express.Router().get('/', (req, res) => {
 	const authorizationUri = oauth2.authorizationCode.authorizeURL({
 		redirect_uri: 'http://localhost:3000/callback',
-		scope: 'identify guilds'
+		scope: 'identify'
+		//scope: 'identify guilds'
 	});
 
 	res.redirect(authorizationUri);
@@ -36,27 +37,25 @@ callback: express.Router().get('/', (req, res) => {
 	oauth2.authorizationCode.getToken({
 		code: req.query.code,
 		redirect_uri: 'http://localhost:3000/callback'	
-	}).then(result => {
+	})
+	.then(result => {
+
 		const token = oauth2.accessToken.create(result);
 		const access_token = token.token.access_token;
-		/*return rp({
-			method: 'GET',
-			uri: 'https://discordapp.com/api/users/@me/guilds',
-			headers: {
-				'Authorization': `Bearer ${access_token}`
-			}
-		});*/
+		const refresh_token = token.token.refresh_token;
+
 		req.session.tok = access_token;
-		res.redirect('/dash');
-	})/*.then(data => {
-		//console.log(data);
-		res.status(200).json(JSON.parse(data));
-	})*/.catch(err => {
+		res.json({access_token, refresh_token});
+		//res.redirect('/your-stickers');
+	})
+	.catch(err => {
 		console.error(err);
-		res.send('Authorization Error');
+		res.redirect('/');
 	});
 
 })
 
 /********/
 }
+
+//FVK98zqafYiHPeLolY60P0WgA4EIPO

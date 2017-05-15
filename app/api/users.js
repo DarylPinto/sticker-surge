@@ -1,6 +1,8 @@
 const router = require('express').Router();
+const rp = require('request-promise');
 const User = require('./models/user-model.js');
-const util = require('./utilities.js');
+const util = require('./utilities/utilities.js');
+const emojis = require('./utilities/emojis.json');
 
 ///////
 //GET//
@@ -15,10 +17,10 @@ router.get('/:id', (req, res) => {
 			data.customStickers = data.customStickers.map(s => util.removeProps(s._doc, ['_id']));
 			res.json(data);
 		}else{
-			res.json({status: 404, message: 'User not found'});
+			res.status(404).send('User not found');
 		}
 	})
-	.catch(err => res.json({status: 503, message: 'Database error'}));
+	.catch(err => res.status(503).send('Database error'));
 });
 
 
@@ -31,36 +33,59 @@ router.post('/', (req, res) => {
 	let user = new User(req.body);
 
 	user.save()
-	.then(() => res.json({
-		status: 201,
-		resource: util.removeProps(user._doc, ['_id', '__v'])
-	}))
-	.catch(err => res.json({status: 503, message: 'Database error'}));
+	.then(() => res.status(201).json(util.removeProps(user._doc, ['_id', '__v'])))
+	.catch(err => res.status(503).send('Database error'));
 });
 
 //POST new custom sticker to existing user
 router.post('/:id/stickers', (req, res) => {
 
-	if(!req.body.name.match(/^[a-z0-9]+$/g)){
-		return res.json({status: 400, message: 'Sticker name must contain lowercase letters and numbers only'});
-	}
+	if(!req.body.name.match(/^[a-z0-9]+$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
+	if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');
 
-	User.findOne({id: req.params.id})
+	rp({
+		method: 'GET',
+		uri: 'https://discordapp.com/api/users/@me',
+		headers: {
+			'Authorization': `Bearer ${req.session.tok}`
+		}
+	})
+	.then(data => {
+
+		data = JSON.parse(data);
+		if(data.id != req.params.id) return res.status(401).send('Unauthorized');
+		return User.findOne({id: req.params.id})
+
+	})
 	.then(user => {
+
+		if(!user){
+			res.status(404).send('User not found');
+			return null;
+		}
+
 		if(user.customStickers.map(s => s.name).includes(req.body.name)){
-			res.json({status: 400, message: `User already has a custom sticker named: ${req.body.name}`});
+			res.status(400).send('User already has a custom sticker with that name');
 			return null;
 		}
 		user.customStickers.unshift(req.body);
 		return user.save();
+
 	})	
 	.then(user => {
+
 		if(!user) return false;
 		let data = util.removeProps(user._doc, ['_id', '__v']);
 		data.customStickers = data.customStickers.map(s => util.removeProps(s._doc, ['_id']));
-		res.json(data);
+		return res.status(201).json(data);
+
 	})
-	.catch(err => res.json({status: 503, message: 'Database error'}));
+	.catch(err => {
+
+		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');
+		res.status(503).send('Database error');
+
+	});
 
 });
 
@@ -70,23 +95,52 @@ router.post('/:id/stickers', (req, res) => {
 
 //DELETE existing user's custom sticker
 router.delete('/:id/stickers', (req, res) => {
-	
+
+	/*rp({
+		method: 'GET',
+		uri: 'https://discordapp.com/api/users/@me',
+		headers: {
+			'Authorization': `Bearer ${req.session.tok}`
+		}
+	})
+	.then(data => {
+
+		data = JSON.parse(data);
+		if(data.id != req.params.id) return res.status(401).send('Unauthorized');
+		return User.findOne({id: req.params.id})
+
+	})*/
 	User.findOne({id: req.params.id})
 	.then(user => {
-		let sticker_names = user.customStickers.map(s => s.name);
-		let deletion_request_index = sticker_names.indexOf(req.body.name);
-		if(deletion_request_index === -1){
-			res.json({status: 400, message: `User does not have a custom sticker named: ${req.body.name}`});
+		
+		if(!user){
+			res.status(404).send('User not found');
 			return null;
 		}
 
+		let sticker_names = user.customStickers.map(s => s.name);
+		let deletion_request_index = sticker_names.indexOf(req.body.name);
+		if(deletion_request_index === -1){
+			console.log(sticker_names);	
+			res.status(400).send('User does not have a custom sticker with that name');
+			return null;
+		}
 		user.customStickers.splice(deletion_request_index, 1);
 		return user.save();
+
 	})	
 	.then(user => {
-		if(user) res.json({status: 204, message: `Successfully deleted custom sticker: ${req.body.name}`})
+
+		if(user) res.send('Successfully deleted custom sticker');
+
 	})
-	.catch(err => res.json({status: 503, message: 'Database error'}));
+	.catch(err => {
+
+		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');
+		console.log(err.message);
+		res.status(503).send('Database error');
+
+	});
 
 });
 

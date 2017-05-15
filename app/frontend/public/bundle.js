@@ -14617,7 +14617,9 @@ module.exports = {
 	data: function data() {
 		return {
 			username: '',
-			customStickers: []
+			customStickers: [],
+			stickerName: '',
+			stickerURL: ''
 		};
 	},
 
@@ -14628,9 +14630,34 @@ module.exports = {
 			_axios2.default.get('/api/' + this.page_type + '/' + this.$route.params.id).then(function (res) {
 				_this.customStickers = res.data.customStickers;
 				_this.username = res.data.username;
-				_this.$el.querySelector('.faded-out').classList.remove('faded-out');
+				_this.$el.querySelector('.sticker-collection').classList.remove('faded-out');
 			}).catch(function (err) {
 				return console.log(err);
+			});
+		},
+		addSticker: function addSticker() {
+			var _this2 = this;
+
+			_axios2.default.post('/api/' + this.page_type + '/' + this.$route.params.id + '/stickers', {
+				name: this.stickerName,
+				url: this.stickerURL
+			}).then(function (res) {
+				_this2.loadStickers();
+				console.log(res);
+			}).catch(function (err) {
+				return console.log(err.message);
+			});
+		},
+		deleteSticker: function deleteSticker() {
+			var _this3 = this;
+
+			_axios2.default.delete('/api/' + this.page_type + '/' + this.$route.params.id + '/stickers', {
+				name: this.stickerName
+			}).then(function (res) {
+				_this3.loadStickers();
+				console.log(res);
+			}).catch(function (err) {
+				return console.log(err.message);
 			});
 		}
 	},
@@ -16634,7 +16661,7 @@ exports = module.exports = __webpack_require__(1)(undefined);
 
 
 // module
-exports.push([module.i, "\n.container {\n  transition: .5s;\n}\n.container.faded-out {\n    opacity: 0;\n}\n.sticker-area {\n  font-size: 0;\n}\nh1 {\n  font-weight: 100;\n  font-size: 90px;\n  margin-top: 40px;\n  margin-bottom: 20px;\n  margin-left: -8px;\n}\nh2 {\n  font-size: 30px;\n  font-weight: 300;\n  border-bottom: 2px solid rgba(255, 255, 255, 0.45);\n  margin-bottom: 20px;\n  padding-bottom: 10px;\n}\n", ""]);
+exports.push([module.i, "\n.sticker-collection {\n  transition: .3s;\n}\n.sticker-collection.faded-out {\n    opacity: 0;\n}\n.sticker-collection h1 {\n    font-weight: 100;\n    font-size: 90px;\n    margin-top: 40px;\n    margin-bottom: 20px;\n    margin-left: -8px;\n}\n.sticker-collection h2 {\n    font-size: 30px;\n    font-weight: 300;\n    border-bottom: 2px solid rgba(255, 255, 255, 0.45);\n    margin-bottom: 20px;\n    padding-bottom: 10px;\n}\n.sticker-collection input, .sticker-collection button {\n    color: black;\n}\n.sticker-area {\n  font-size: 0;\n}\n", ""]);
 
 // exports
 
@@ -16648,7 +16675,7 @@ exports = module.exports = __webpack_require__(1)(undefined);
 
 
 // module
-exports.push([module.i, "", ""]);
+exports.push([module.i, "\n.home-page {\n  text-align: center;\n}\n.home-page h1 {\n    font-family: 'Righteous', sans-serif;\n    font-size: 75px;\n    margin-top: 80px;\n    margin-bottom: 80px;\n}\n.home-page a {\n    background-color: #60b0b9;\n    display: inline-block;\n    font-size: 18px;\n    text-decoration: none;\n    border-radius: 40px;\n    padding: 13px 25px;\n}\n", ""]);
 
 // exports
 
@@ -16844,8 +16871,54 @@ if (false) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('main', [_c('header-bar'), _vm._v(" "), _c('div', {
-    staticClass: "container faded-out"
-  }, [_c('h1', [_vm._v(_vm._s(_vm.username))]), _vm._v(" "), _c('section', [_c('h2', [_vm._v("Custom Stickers")]), _vm._v(" "), _c('div', {
+    staticClass: "container sticker-collection faded-out"
+  }, [_c('h1', [_vm._v(_vm._s(_vm.username))]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.stickerName),
+      expression: "stickerName"
+    }],
+    attrs: {
+      "placeholder": "name"
+    },
+    domProps: {
+      "value": (_vm.stickerName)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.stickerName = $event.target.value
+      }
+    }
+  }), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.stickerURL),
+      expression: "stickerURL"
+    }],
+    attrs: {
+      "placeholder": "url"
+    },
+    domProps: {
+      "value": (_vm.stickerURL)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.stickerURL = $event.target.value
+      }
+    }
+  }), _vm._v(" "), _c('button', {
+    on: {
+      "click": _vm.addSticker
+    }
+  }, [_vm._v("Add sticker")]), _vm._v(" "), _c('button', {
+    on: {
+      "click": _vm.deleteSticker
+    }
+  }, [_vm._v("Delete sticker")]), _vm._v(" "), _c('section', [_c('h2', [_vm._v("Custom Stickers")]), _vm._v(" "), _c('div', {
     staticClass: "sticker-area"
   }, _vm._l((_vm.customStickers), function(sticker) {
     return _c('sticker', {
@@ -16872,8 +16945,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('main', [_c('header-bar'), _vm._v(" "), _vm._m(0)], 1)
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "container"
-  }, [_c('h1', [_vm._v("Home")])])
+    staticClass: "container home-page"
+  }, [_c('h1', [_vm._v("Express yourself with"), _c('br'), _vm._v("Stickers for Discord")]), _vm._v(" "), _c('a', {
+    attrs: {
+      "href": "https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=268463104",
+      "target": "_blank"
+    }
+  }, [_vm._v("Add to Discord")])])
 }]}
 module.exports.render._withStripped = true
 if (false) {
@@ -16902,9 +16980,9 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   })]), _vm._v(" "), _c('nav', {
     staticClass: "main-nav"
-  }, [_c('router-link', {
+  }, [_c('a', {
     attrs: {
-      "to": "/user/82161988473454592"
+      "href": "/your-stickers"
     }
   }, [_vm._v("Your Stickers")]), _vm._v(" "), _c('router-link', {
     attrs: {

@@ -30,6 +30,7 @@ app.use('/', express.static('frontend/public'));
 //Routes
 app.use('/login', require('./routes/auth.js').login);
 app.use('/callback', require('./routes/auth.js').callback);
+app.use('/your-stickers', require('./routes/your-stickers.js'));
 
 app.get('/dash', (req, res) => {	
 	res.json(req.session.tok);

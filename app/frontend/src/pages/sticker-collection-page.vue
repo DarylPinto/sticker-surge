@@ -13,7 +13,9 @@ module.exports = {
 	data: function(){
 		return {
 			username: '',
-			customStickers: []
+			customStickers: [],
+			stickerName: '',
+			stickerURL: ''
 		}
 	},
 
@@ -23,8 +25,27 @@ module.exports = {
 			.then(res => {
 				this.customStickers = res.data.customStickers;
 				this.username = res.data.username;	
-				this.$el.querySelector('.faded-out').classList.remove('faded-out');	
+				this.$el.querySelector('.sticker-collection').classList.remove('faded-out');
 			}).catch(err => console.log(err));
+		},
+		addSticker(){
+			axios.post(`/api/${this.page_type}/${this.$route.params.id}/stickers`, {
+				name: this.stickerName,
+				url: this.stickerURL
+			})
+			.then(res => {
+				this.loadStickers();
+				console.log(res);
+			}).catch(err => console.log(err.message));
+		},
+		deleteSticker(){
+			axios.delete(`/api/${this.page_type}/${this.$route.params.id}/stickers`, {
+				name: this.stickerName
+			})
+			.then(res => {
+				this.loadStickers();
+				console.log(res);
+			}).catch(err => console.log(err.message));
 		}
 	},
 
@@ -46,9 +67,14 @@ module.exports = {
 <main>
 
 	<header-bar></header-bar>
-	<div class="container faded-out">
+	<div class="container sticker-collection faded-out">
 
 		<h1>{{username}}</h1>
+	
+		<input v-model="stickerName" placeholder="name">
+		<input v-model="stickerURL" placeholder="url">
+		<button @click="addSticker">Add sticker</button>
+		<button @click="deleteSticker">Delete sticker</button>
 
 		<section>
 			<h2>Custom Stickers</h2>
@@ -63,26 +89,27 @@ module.exports = {
 
 <style lang="sass">
 
-	.container
-		transition: .5s
+	.sticker-collection	
+		transition: .3s
 		&.faded-out
 			opacity: 0
+		h1
+			font-weight: 100
+			font-size: 90px
+			margin-top: 40px
+			margin-bottom: 20px
+			margin-left: -8px
+
+		h2
+			font-size: 30px
+			font-weight: 300
+			border-bottom: 2px solid rgba(255, 255, 255, 0.45)
+			margin-bottom: 20px
+			padding-bottom: 10px
+		input, button
+			color: black
 
 	.sticker-area
 		font-size: 0
-
-	h1
-		font-weight: 100
-		font-size: 90px
-		margin-top: 40px
-		margin-bottom: 20px
-		margin-left: -8px
-
-	h2
-		font-size: 30px
-		font-weight: 300
-		border-bottom: 2px solid rgba(255, 255, 255, 0.45)
-		margin-bottom: 20px
-		padding-bottom: 10px
 
 </style>

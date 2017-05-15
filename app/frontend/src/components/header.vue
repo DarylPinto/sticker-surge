@@ -11,7 +11,8 @@
 		</router-link>
 
 		<nav class="main-nav">
-			<router-link to="/user/82161988473454592">Your Stickers</router-link>
+			<!-- <router-link to="/user/82161988473454592">DRL</router-link> -->
+			<a href="/your-stickers">Your Stickers</a>
 			<router-link to="/server/456">Your Servers</router-link>
 			<router-link to="/sticker-packs">Sticker Packs</router-link>
 			<a href="/login">Log In</a>
