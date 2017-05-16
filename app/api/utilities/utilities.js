@@ -8,4 +8,14 @@ module.exports = {
 		});
 		return clone;
 	},
+
+	//Get object `obj` with only the properties in `propArr`
+	withProps(obj, propArr){
+		let clone = {}; 
+		propArr.forEach(prop => {
+			clone[prop] = obj[prop];
+		});
+		return clone;
+	}
+	
 }

@@ -31,7 +31,7 @@ module.exports = {
 		addSticker(){
 			axios.post(`/api/${this.page_type}/${this.$route.params.id}/stickers`, {
 				name: this.stickerName,
-				url: this.stickerURL
+				url: this.stickerURL	
 			})
 			.then(res => {
 				this.loadStickers();
@@ -68,11 +68,11 @@ module.exports = {
 	<div class="container sticker-collection faded-out">
 
 		<h1>{{username}}</h1>
-	
+		
 		<input v-model="stickerName" placeholder="name">
 		<input v-model="stickerURL" placeholder="url">
 		<button @click="addSticker">Add sticker</button>
-		<button @click="deleteSticker">Delete sticker</button>
+		<button @click="deleteSticker">Delete sticker</button>	
 
 		<section>
 			<h2>Custom Stickers</h2>

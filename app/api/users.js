@@ -54,8 +54,11 @@ router.post('/', (req, res) => {
 //POST new custom sticker to existing user
 router.post('/:id/stickers', (req, res) => {
 
+	if(!req.body.name || !req.body.url) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^[a-z0-9]+$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
 	if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');
+
+	req.body.name = req.body.name.toLowerCase();
 
 	rp({
 		method: 'GET',
@@ -81,7 +84,7 @@ router.post('/:id/stickers', (req, res) => {
 		if(user.customStickers.map(s => s.name).includes(req.body.name)){
 			res.status(400).send('User already has a custom sticker with that name');
 			return null;
-		}
+		}	
 		user.customStickers.unshift(req.body);
 		return user.save();
 
