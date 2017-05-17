@@ -16,6 +16,7 @@
 			<router-link to="/server/456">Your Servers</router-link>
 			<router-link to="/sticker-packs">Sticker Packs</router-link>
 			<a href="/login">Log In</a>
+			<a href="/logout">Log Out</a>
 		</nav>	
 
 	</div>	

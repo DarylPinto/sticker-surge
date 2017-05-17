@@ -1,7 +1,12 @@
 const rp = require('request-promise');
 const express = require('express');
 const simpleOauth = require('simple-oauth2');
+const sessions = require('client-sessions');
+const Cryptr = require('cryptr');
+const User = require('../api/models/user-model.js');
 const covert = require('../../covert.js');
+
+const cryptr = new Cryptr(covert.refresh_token_key);
 
 const oauth2 = simpleOauth.create({
 	client: {
@@ -30,6 +35,11 @@ login: express.Router().get('/', (req, res) => {
 	res.redirect(authorizationUri);
 }),
 
+//Logout route (heh it rhymes)
+logout: express.Router().get('/', (req, res) => {
+	req.session.reset();
+	res.redirect('/');
+}),
 
 //Callback route (Redirect URI)
 callback: express.Router().get('/', (req, res) => {
@@ -42,10 +52,28 @@ callback: express.Router().get('/', (req, res) => {
 
 		const token = oauth2.accessToken.create(result).token;
 		const access_token = token.access_token;
-		//const refresh_token = token.refresh_token;
+		const refresh_token = token.refresh_token;
+
+		rp({
+			method: 'GET',
+			uri: 'https://discordapp.com/api/users/@me',
+			headers: {
+				'Authorization': `Bearer ${access_token}`
+			}
+		})
+		.then(data => {	
+			req.session.id = JSON.parse(data).id;	
+			return User.findOne({id: JSON.parse(data).id});
+		})
+		.then(user => {
+			if(user.refresh_token === '')	user.refresh_token = cryptr.encrypt(refresh_token);
+			user.save();
+		})
+		.catch(err => {
+			console.error(err);
+		});
 
 		req.session.tok = access_token;
-		//res.json({access_token, refresh_token});
 		res.redirect('/your-stickers');
 	})
 	.catch(err => {

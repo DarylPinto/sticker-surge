@@ -21,7 +21,10 @@ app.use(sessions({
 	cookieName: 'session',
 	secret: covert.session.secret,
 	duration: 10 * 60 * 1000,
-	activeDuration: 5 * 60 * 1000
+	activeDuration: 5 * 60 * 1000,
+	cookie: {
+		httpOnly: true
+	}
 }));
 
 //Public dir 
@@ -29,12 +32,9 @@ app.use('/', express.static('frontend/public'));
 
 //Routes
 app.use('/login', require('./routes/auth.js').login);
+app.use('/logout', require('./routes/auth.js').logout);
 app.use('/callback', require('./routes/auth.js').callback);
 app.use('/your-stickers', require('./routes/your-stickers.js'));
-
-app.get('/dash', (req, res) => {	
-	res.json(req.session.tok);
-});
 
 //API
 app.use('/api/users', require('./api/users.js'));
