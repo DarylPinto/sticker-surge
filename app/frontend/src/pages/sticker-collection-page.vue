@@ -26,7 +26,7 @@ module.exports = {
 				this.customStickers = res.data.customStickers;
 				this.username = res.data.username;	
 				this.$el.querySelector('.sticker-collection').classList.remove('faded-out');
-			}).catch(err => console.log(err));
+			}).catch(err => console.error(err.response.data));
 		},
 		addSticker(){
 			axios.post(`/api/${this.page_type}/${this.$route.params.id}/stickers`, {
@@ -36,14 +36,14 @@ module.exports = {
 			.then(res => {
 				this.loadStickers();
 				console.log(res);
-			}).catch(err => console.log(err.message));
+			}).catch(err => console.error(err.response.data));
 		},
 		deleteSticker(){
 			axios.delete(`/api/${this.page_type}/${this.$route.params.id}/stickers/${this.stickerName}`)
 			.then(res => {
 				this.loadStickers();
 				console.log(res);
-			}).catch(err => console.log(err.message));
+			}).catch(err => console.error(err.response.data));
 		}
 	},
 

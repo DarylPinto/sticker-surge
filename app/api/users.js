@@ -4,36 +4,44 @@ const User = require('./models/user-model.js');
 const util = require('./utilities/utilities.js');
 const emojis = require('./utilities/emojis.json');
 
+const removedFields = {
+	'_id': false,
+	'__v': false,
+	'refresh_token': false,
+	'customStickers._id': false
+}
+
 ///////
 //GET//
 ///////
 
 //GET user by id
 router.get('/:id', (req, res) => {
-	User.findOne({id: req.params.id})
-	.then(user => {
-		if(user){
-			let data = util.removeProps(user._doc, ['_id', '__v']);
-			data.customStickers = data.customStickers.map(s => util.removeProps(s._doc, ['_id']));
-			res.json(data);
-		}else{
-			res.status(404).send('User not found');
-		}
+	User.findOne({id: req.params.id}, removedFields)
+	.then(user => {	
+		if(!user) return res.status(404).send('User not found');
+		res.json(user);	
+	})
+	.catch(err => res.status(503).send('Database error'));
+});
+
+//GET user's stickers
+router.get('/:id/stickers', (req, res) => {
+	User.findOne({id: req.params.id}, removedFields)
+	.then(user => {	
+		if(!user) return res.status(404).send('User not found');
+		res.json(user.customStickers);	
 	})
 	.catch(err => res.status(503).send('Database error'));
 });
 
 //GET a user's custom sticker
 router.get('/:id/stickers/:stickername', (req, res) => {
-	User.findOne({id: req.params.id})
+	User.findOne({id: req.params.id}, removedFields)
 	.then(user => {
-		if(user){
-			let custom_stickers = user._doc.customStickers;
-			let sticker = custom_stickers.find(s => s.name === req.params.stickername);
-			res.json(util.removeProps(sticker._doc, ['_id']));
-		}else{
-			res.status(404).send('User does not have a custom sticker with that name');
-		}
+		if(!user) return res.status(404).send('User does not have a custom sticker with that name');
+		let sticker = user._doc.customStickers.find(s => s.name === req.params.stickername);
+		return res.json(sticker);	
 	})
 	.catch(err => res.status(503).send('Database error'));
 });
@@ -44,10 +52,11 @@ router.get('/:id/stickers/:stickername', (req, res) => {
 
 //POST new user
 router.post('/', (req, res) => {
-	let user = new User(req.body);
+	if(!req.body.username || !req.body.id) return res.status(400).send('Invalid body data');	
 
-	user.save()
-	.then(() => res.status(201).json(util.removeProps(user._doc, ['_id', '__v'])))
+	new User(req.body).save()
+	.then(() => User.findOne({id: req.body.id}, removedFields))
+	.then(user => res.status(201).json(user))
 	.catch(err => res.status(503).send('Database error'));
 });
 
@@ -76,11 +85,6 @@ router.post('/:id/stickers', (req, res) => {
 	})
 	.then(user => {
 
-		if(!user){
-			res.status(404).send('User not found');
-			return null;
-		}
-
 		if(user.customStickers.map(s => s.name).includes(req.body.name)){
 			res.status(400).send('User already has a custom sticker with that name');
 			return null;
@@ -92,9 +96,8 @@ router.post('/:id/stickers', (req, res) => {
 	.then(user => {
 
 		if(!user) return false;
-		let data = util.removeProps(user._doc, ['_id', '__v']);
-		data.customStickers = data.customStickers.map(s => util.removeProps(s._doc, ['_id']));
-		return res.status(201).json(data);
+		let sticker = user.customStickers.find(s => s.name === req.body.name);
+		return res.status(201).json(util.removeProps(sticker._doc, ['_id']));
 
 	})
 	.catch(err => {
@@ -124,7 +127,7 @@ router.delete('/:id/stickers/:stickername', (req, res) => {
 
 		data = JSON.parse(data);
 		if(data.id != req.params.id) return res.status(401).send('Unauthorized');
-		return User.findOne({id: req.params.id})
+		return User.findOne({id: req.params.id});
 
 	})
 	.then(user => {
@@ -137,7 +140,6 @@ router.delete('/:id/stickers/:stickername', (req, res) => {
 		let sticker_names = user.customStickers.map(s => s.name);
 		let deletion_request_index = sticker_names.indexOf(req.params.stickername);
 		if(deletion_request_index === -1){
-			console.log(sticker_names);	
 			res.status(404).send('User does not have a custom sticker with that name');
 			return null;
 		}
@@ -152,8 +154,7 @@ router.delete('/:id/stickers/:stickername', (req, res) => {
 	})
 	.catch(err => {
 
-		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');
-		console.log(err.message);
+		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');	
 		res.status(503).send('Database error');
 
 	});

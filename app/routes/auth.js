@@ -40,13 +40,13 @@ callback: express.Router().get('/', (req, res) => {
 	})
 	.then(result => {
 
-		const token = oauth2.accessToken.create(result);
-		const access_token = token.token.access_token;
-		const refresh_token = token.token.refresh_token;
+		const token = oauth2.accessToken.create(result).token;
+		const access_token = token.access_token;
+		//const refresh_token = token.refresh_token;
 
 		req.session.tok = access_token;
-		res.json({access_token, refresh_token});
-		//res.redirect('/your-stickers');
+		//res.json({access_token, refresh_token});
+		res.redirect('/your-stickers');
 	})
 	.catch(err => {
 		console.error(err);
