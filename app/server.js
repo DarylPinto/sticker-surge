@@ -23,7 +23,7 @@ app.use(sessions({
 	duration: 10 * 60 * 1000,
 	activeDuration: 5 * 60 * 1000,
 	cookie: {
-		httpOnly: true
+		httpOnly: false
 	}
 }));
 

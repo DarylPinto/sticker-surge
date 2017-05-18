@@ -30,10 +30,6 @@ function getNewAccessToken(id){return new Promise((resolve, reject) => {
 
 router.get('/', (req, res) => {
 
-	console.log(req.session);
-
-	getNewAccessToken(req.session.id);
-
 	if(!req.session.tok) return res.redirect('/login');	
 
 	rp({
@@ -50,7 +46,11 @@ router.get('/', (req, res) => {
 	.catch(err => {
 		console.log(err.message);
 		if(err.message.includes('401: Unauthorized')){	
-			getNewAccessToken(req.session.id);
+			getNewAccessToken(req.session.id)
+			.then(token => {
+				req.session.tok = token;
+				res.redirect('/your-stickers');
+			});
 		}
 	});
 

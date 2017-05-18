@@ -44,6 +44,10 @@ logout: express.Router().get('/', (req, res) => {
 //Callback route (Redirect URI)
 callback: express.Router().get('/', (req, res) => {
 
+	let access_token;
+	let refresh_token;
+	let user_id;
+
 	oauth2.authorizationCode.getToken({
 		code: req.query.code,
 		redirect_uri: 'http://localhost:3000/callback'	
@@ -51,29 +55,27 @@ callback: express.Router().get('/', (req, res) => {
 	.then(result => {
 
 		const token = oauth2.accessToken.create(result).token;
-		const access_token = token.access_token;
-		const refresh_token = token.refresh_token;
+		access_token = token.access_token;
+		refresh_token = token.refresh_token;
 
-		rp({
+		return rp({
 			method: 'GET',
 			uri: 'https://discordapp.com/api/users/@me',
-			headers: {
-				'Authorization': `Bearer ${access_token}`
-			}
-		})
-		.then(data => {	
-			req.session.id = JSON.parse(data).id;	
-			return User.findOne({id: JSON.parse(data).id});
-		})
-		.then(user => {
-			if(user.refresh_token === '')	user.refresh_token = cryptr.encrypt(refresh_token);
-			user.save();
-		})
-		.catch(err => {
-			console.error(err);
+			headers: {'Authorization': `Bearer ${access_token}`}
 		});
 
+	})
+	.then(data => {
+		user_id = JSON.parse(data).id;
+		return User.findOne({id: user_id});
+	})
+	.then(user => {
+		if(user.refresh_token === '')	user.refresh_token = cryptr.encrypt(refresh_token);
+		return user.save();
+	})
+	.then(user => {
 		req.session.tok = access_token;
+		req.session.id = user_id;
 		res.redirect('/your-stickers');
 	})
 	.catch(err => {
