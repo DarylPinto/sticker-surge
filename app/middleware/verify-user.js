@@ -30,7 +30,8 @@ module.exports = function(options = {api: false}){
 
 return function(req, res, next){
 
-	if(!req.session.token || !req.session.id)	return res.redirect('/login');
+	if(!options.api && (!req.session.token || !req.session.id))	return res.redirect('/login');
+	if(options.api && (!req.session.token || !req.session.id)) return res.status(401).send('Unauthorized');
 
 	rp({
 		method: 'GET',
@@ -58,8 +59,9 @@ return function(req, res, next){
 				return user.save();
 			})
 			.then(() => {
-				if (!options.api) res.redirect('/login');
-				if(options.api) res.status(401).send('Unauthorized');
+				console.log(options);
+				if(options.api) return res.status(401).send('Unauthorized');
+				if(!options.api) return res.redirect('/login');
 			})
 			.catch(err => {
 				console.log(err);

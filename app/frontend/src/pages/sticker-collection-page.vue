@@ -37,14 +37,21 @@ module.exports = {
 			.then(res => {
 				this.loadStickers();
 				console.log(res);
-			}).catch(err => console.error(err.response.data));
+			}).catch(err => {
+				console.error(err.response.data);
+				if(err.response.status === 401) window.location.href = '/login';
+			});
 		},
 		deleteSticker(){
 			axios.delete(`/api/${this.pageType}/${this.$route.params.id}/stickers/${this.stickerName}`)
 			.then(res => {
 				this.loadStickers();
 				console.log(res);
-			}).catch(err => console.error(err.response.data));
+			}).catch(err => {
+				console.error(err.response.data);
+				if(err.response.status === 401) window.location.href = '/login';
+			});
+
 		}
 	},
 
