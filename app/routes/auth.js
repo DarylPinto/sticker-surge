@@ -2,6 +2,7 @@ const rp = require('request-promise');
 const express = require('express');
 const simpleOauth = require('simple-oauth2');
 const sessions = require('client-sessions');
+const setCookie = require('set-cookie');
 const Cryptr = require('cryptr');
 const User = require('../api/models/user-model.js');
 const covert = require('../../covert.js');
@@ -26,6 +27,7 @@ module.exports = {
 
 //Login route
 login: express.Router().get('/', (req, res) => {
+
 	const authorizationUri = oauth2.authorizationCode.authorizeURL({
 		redirect_uri: 'http://localhost:3000/callback',
 		scope: 'identify'
@@ -38,6 +40,7 @@ login: express.Router().get('/', (req, res) => {
 //Logout route (heh it rhymes)
 logout: express.Router().get('/', (req, res) => {
 	req.session.reset();
+	setCookie('id', '', {res});
 	res.redirect('/');
 }),
 
@@ -74,8 +77,11 @@ callback: express.Router().get('/', (req, res) => {
 		return user.save();
 	})
 	.then(user => {
-		req.session.tok = access_token;
+		req.session.token = access_token;
+		//id is set twice, once as a tamper-proof httpOnly cookie for authentication,
 		req.session.id = user_id;
+		//the other is a regular un-encrypted cookie for the view to use
+		setCookie('id', user_id, {res});
 		res.redirect('/your-stickers');
 	})
 	.catch(err => {

@@ -8,20 +8,21 @@ Vue.component('header-bar', header);
 Vue.component('sticker', sticker);
 
 module.exports = {
-	props: ['page_type'],
+	props: ['pageType'],
 
 	data: function(){
 		return {
 			username: '',
 			customStickers: [],
 			stickerName: '',
-			stickerURL: ''
+			stickerURL: '',
+			userId: this.$cookie.get('id')
 		}
 	},
 
 	methods: {
 		loadStickers(){	
-			axios.get(`/api/${this.page_type}/${this.$route.params.id}`)
+			axios.get(`/api/${this.pageType}/${this.$route.params.id}`)
 			.then(res => {
 				this.customStickers = res.data.customStickers;
 				this.username = res.data.username;	
@@ -29,7 +30,7 @@ module.exports = {
 			}).catch(err => console.error(err.response.data));
 		},
 		addSticker(){
-			axios.post(`/api/${this.page_type}/${this.$route.params.id}/stickers`, {
+			axios.post(`/api/${this.pageType}/${this.$route.params.id}/stickers`, {
 				name: this.stickerName,
 				url: this.stickerURL	
 			})
@@ -39,7 +40,7 @@ module.exports = {
 			}).catch(err => console.error(err.response.data));
 		},
 		deleteSticker(){
-			axios.delete(`/api/${this.page_type}/${this.$route.params.id}/stickers/${this.stickerName}`)
+			axios.delete(`/api/${this.pageType}/${this.$route.params.id}/stickers/${this.stickerName}`)
 			.then(res => {
 				this.loadStickers();
 				console.log(res);
@@ -54,7 +55,7 @@ module.exports = {
 	},
 
 	mounted: function(){
-		this.loadStickers();	
+		this.loadStickers();
 	}
 
 }
@@ -64,7 +65,7 @@ module.exports = {
 <template>
 <main>
 
-	<header-bar></header-bar>
+	<header-bar :userId="userId"></header-bar>
 	<div class="container sticker-collection faded-out">
 
 		<h1>{{username}}</h1>

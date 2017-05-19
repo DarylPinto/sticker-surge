@@ -1,4 +1,14 @@
 <script>
+
+	module.exports = {
+		props: ['userId'],
+		data: function(){
+			return {
+				loggedIn: this.userId.length > 0
+			}
+		}
+	}
+
 </script>
 
 <template>
@@ -11,12 +21,16 @@
 		</router-link>
 
 		<nav class="main-nav">
-			<!-- <router-link to="/user/82161988473454592">DRL</router-link> -->
-			<a href="/your-stickers">Your Stickers</a>
+
+			<a href="/your-stickers" v-if="!loggedIn">Your Stickers</a>
+			<router-link :to="`/user/${userId}`" v-if="loggedIn">Your Stickers</router-link>
+
 			<router-link to="/server/456">Your Servers</router-link>
 			<router-link to="/sticker-packs">Sticker Packs</router-link>
-			<a href="/login">Log In</a>
-			<a href="/logout">Log Out</a>
+
+			<a href="/login" v-if="!loggedIn">Log In</a>
+			<a href="/logout" v-if="loggedIn">Log Out</a>
+			
 		</nav>	
 
 	</div>	

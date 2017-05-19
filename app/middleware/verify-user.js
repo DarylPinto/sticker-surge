@@ -1,5 +1,4 @@
 const rp = require('request-promise');
-const router = require('express').Router();
 const Cryptr = require('cryptr');
 const User = require('../api/models/user-model.js');
 const covert = require('../../covert.js');
@@ -19,8 +18,7 @@ function getNewAccessToken(id){return new Promise((resolve, reject) => {
 		})
 	})	
 	.then(data => {
-		console.log(data);
-		resolve(data);
+		resolve(JSON.parse(data).access_token);
 	})
 	.catch(err => {
 		reject(err);
@@ -28,9 +26,11 @@ function getNewAccessToken(id){return new Promise((resolve, reject) => {
 
 })};
 
-router.get('/', (req, res) => {
+module.exports = function(options = {api: false}){
 
-	if(!req.session.token) return res.redirect('/login');	
+return function(req, res, next){
+
+	if(!req.session.token || !req.session.id)	return res.redirect('/login');
 
 	rp({
 		method: 'GET',
@@ -40,20 +40,35 @@ router.get('/', (req, res) => {
 		}
 	})
 	.then(data => {
-		data = JSON.parse(data);
-		res.redirect(`/user/${data.id}`);
+		next();
 	})
-	.catch(err => {
-		console.log(err.message);
-		if(err.message.includes('401: Unauthorized')){	
-			getNewAccessToken(req.session.id)
-			.then(token => {
-				req.session.token = token;
-				res.redirect('/your-stickers');
+	.catch(error => {
+
+		//User access_token has expired, get a new token
+		getNewAccessToken(req.session.id)
+		.then(token => {
+			req.session.token = token;	
+			next();
+		})
+		.catch(err => {
+			//User refresh_token is expired, 
+			//redirect to login or return 401 if ajax request	
+			User.findOne({id: req.session.id}).then(user => {
+				user.refresh_token = '';
+				return user.save();
+			})
+			.then(() => {
+				if (!options.api) res.redirect('/login');
+				if(options.api) res.status(401).send('Unauthorized');
+			})
+			.catch(err => {
+				console.log(err);
 			});
-		}
+			
+		});
+
 	});
 
-});
+}
 
-module.exports = router;
+}
