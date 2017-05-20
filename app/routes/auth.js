@@ -2,7 +2,6 @@ const rp = require('request-promise');
 const express = require('express');
 const simpleOauth = require('simple-oauth2');
 const sessions = require('client-sessions');
-const setCookie = require('set-cookie');
 const Cryptr = require('cryptr');
 const User = require('../api/models/user-model.js');
 const covert = require('../../covert.js');
@@ -40,7 +39,7 @@ login: express.Router().get('/', (req, res) => {
 //Logout route (heh it rhymes)
 logout: express.Router().get('/', (req, res) => {
 	req.session.reset();
-	setCookie('id', '', {res});
+	res.clearCookie('id');
 	res.redirect('/');
 }),
 
@@ -69,8 +68,13 @@ callback: express.Router().get('/', (req, res) => {
 
 	})
 	.then(data => {
-		user_id = JSON.parse(data).id;
-		return User.findOne({id: user_id});
+		data = JSON.parse(data);
+		user_id = data.id;
+		return User.findOneAndUpdate(
+			{id: user_id},
+			{id: user_id,	username: data.username, avatar: data.avatar},
+			{upsert: true,	new: true, setDefaultsOnInsert: true}
+		);
 	})
 	.then(user => {
 		if(user.refresh_token === '')	user.refresh_token = cryptr.encrypt(refresh_token);
@@ -78,10 +82,10 @@ callback: express.Router().get('/', (req, res) => {
 	})
 	.then(user => {
 		req.session.token = access_token;
-		//id is set twice, once as a tamper-proof httpOnly cookie for authentication,
 		req.session.id = user_id;
+		//id is set twice, once as a tamper-proof httpOnly cookie for authentication,
 		//the other is a regular un-encrypted cookie for the view to use
-		setCookie('id', user_id, {res});
+		res.cookie('id', user_id);
 		res.redirect('/your-stickers');
 	})
 	.catch(err => {

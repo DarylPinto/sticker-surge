@@ -4,7 +4,7 @@
 		props: ['userId'],
 		data: function(){
 			return {
-				loggedIn: this.userId.length > 0
+				loggedIn: this.userId != null
 			}
 		}
 	}
@@ -12,7 +12,7 @@
 </script>
 
 <template>
-<header>
+<header id="main-header">
 
 	<div class="container">
 		
@@ -22,10 +22,10 @@
 
 		<nav class="main-nav">
 
-			<a href="/your-stickers" v-if="!loggedIn">Your Stickers</a>
+			<!-- <a href="/your-stickers" v-if="!loggedIn">Your Stickers</a> -->
 			<router-link :to="`/user/${userId}`" v-if="loggedIn">Your Stickers</router-link>
 
-			<router-link to="/server/456">Your Servers</router-link>
+			<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
 			<router-link to="/sticker-packs">Sticker Packs</router-link>
 
 			<a href="/login" v-if="!loggedIn">Log In</a>
@@ -43,7 +43,7 @@
 	$brand-red: #fc6262
 	$header-height: 100px
 
-	header
+	#main-header
 		background-color: $brand-red
 		height: $header-height 
 		width: 100%
@@ -52,6 +52,7 @@
 		.container
 			display: flex
 			justify-content: space-between
+			margin: 0
 			a
 				color: white
 				height: $header-height 

@@ -8,8 +8,12 @@ module.exports = {
 
 	data: function(){
 		return {
-			userId: this.$cookie.get('id')
+			userId: this.$cookie.get('id') || null
 		}
+	},
+
+	mounted: function(){
+		document.title = 'Stickers for Discord';
 	}
 
 }

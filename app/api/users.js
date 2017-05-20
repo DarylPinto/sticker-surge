@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const rp = require('request-promise');
-const verifyUserApiReq = require('../middleware/verify-user.js')({api: true});
+const verifyUserAjax = require('../middleware/verify-user.js')({ajax: true});
 const User = require('./models/user-model.js');
 const util = require('./utilities/utilities.js');
 const emojis = require('./utilities/emojis.json');
@@ -62,7 +62,7 @@ router.post('/', (req, res) => {
 });
 
 //POST new custom sticker to existing user
-router.post('/:id/stickers', verifyUserApiReq, (req, res) => {
+router.post('/:id/stickers', verifyUserAjax, (req, res) => {
 
 	if(!req.body.name || !req.body.url) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^[a-z0-9]+$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
@@ -103,7 +103,7 @@ router.post('/:id/stickers', verifyUserApiReq, (req, res) => {
 //////////
 
 //DELETE existing user's custom sticker
-router.delete('/:id/stickers/:stickername', verifyUserApiReq, (req, res) => {
+router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 
 	if(req.session.id != req.params.id) return res.status(401).send('Unauthorized');
 

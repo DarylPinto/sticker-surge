@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const sessions = require('client-sessions');
 const path = require('path');
-const verifyUser = require('./middleware/verify-user.js')({api: false});
+const verifyUser = require('./middleware/verify-user.js')({ajax: false});
 const covert = require('../covert.js');
 
 const app = express();
@@ -21,8 +21,7 @@ app.use(bodyParser.json());
 app.use(sessions({
 	cookieName: 'session',
 	secret: covert.session.secret,
-	duration: 10 * 60 * 1000,
-	activeDuration: 5 * 60 * 1000,
+	duration: 365 * 24 * 60 * 60 * 1000,
 	cookie: {
 		httpOnly: true
 	}
@@ -30,6 +29,16 @@ app.use(sessions({
 
 //Public dir 
 app.use('/', express.static('frontend/public'));
+
+app.get('/setcookie/:key/:value', (req,res) => {
+	res.cookie(req.params.key, req.params.value);
+	res.send('Done!');
+});
+
+app.get('/clearcookie/:key', (req,res) => {
+	res.clearCookie(req.params.key);
+	res.send('Done!');
+});
 
 app.get('/force-token-expiry', (req, res) => {
 	req.session.token = 'hehexd';

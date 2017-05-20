@@ -26,12 +26,12 @@ function getNewAccessToken(id){return new Promise((resolve, reject) => {
 
 })};
 
-module.exports = function(options = {api: false}){
+module.exports = function(options = {ajax: false}){
 
 return function(req, res, next){
 
-	if(!options.api && (!req.session.token || !req.session.id))	return res.redirect('/login');
-	if(options.api && (!req.session.token || !req.session.id)) return res.status(401).send('Unauthorized');
+	if(!options.ajax && (!req.session.token || !req.session.id))	return res.redirect('/login');
+	if(options.ajax && (!req.session.token || !req.session.id)) return res.status(401).send('Unauthorized');
 
 	rp({
 		method: 'GET',
@@ -48,20 +48,19 @@ return function(req, res, next){
 		//User access_token has expired, get a new token
 		getNewAccessToken(req.session.id)
 		.then(token => {
-			req.session.token = token;	
+			req.session.token = token;
 			next();
 		})
 		.catch(err => {
 			//User refresh_token is expired, 
-			//redirect to login or return 401 if ajax request	
+			//redirect to login or return 401 if ajax request
 			User.findOne({id: req.session.id}).then(user => {
 				user.refresh_token = '';
 				return user.save();
 			})
 			.then(() => {
-				console.log(options);
-				if(options.api) return res.status(401).send('Unauthorized');
-				if(!options.api) return res.redirect('/login');
+				if(options.ajax) return res.status(401).send('Unauthorized');
+				if(!options.ajax) return res.redirect('/login');
 			})
 			.catch(err => {
 				console.log(err);

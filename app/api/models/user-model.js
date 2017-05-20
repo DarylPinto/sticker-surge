@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const userSchema = Schema({
 	id: {type: String, unique: true},
 	username: {type: String, required: true},
+	avatar: {type: String, required: true},
 	refresh_token: {type: String, default: ''},
 	customStickers: [{
 		name: {type: String, required: true},

@@ -13,19 +13,26 @@ module.exports = {
 	data: function(){
 		return {
 			username: '',
+			avatarURL: '',
 			customStickers: [],
 			stickerName: '',
 			stickerURL: '',
-			userId: this.$cookie.get('id')
+			userId: this.$cookie.get('id') || null
 		}
 	},
 
+	computed: {
+		isUsersPage: function(){return this.userId === this.$route.params.id}
+	},
+
 	methods: {
-		loadStickers(){	
+		loadPageData(){	
 			axios.get(`/api/${this.pageType}/${this.$route.params.id}`)
 			.then(res => {
 				this.customStickers = res.data.customStickers;
-				this.username = res.data.username;	
+				this.username = res.data.username;
+				this.avatarURL = res.data.avatar ? `https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png` : null;
+				document.title = `${res.data.username} - Stickers for Discord`;
 				this.$el.querySelector('.sticker-collection').classList.remove('faded-out');
 			}).catch(err => console.error(err.response.data));
 		},
@@ -35,7 +42,7 @@ module.exports = {
 				url: this.stickerURL	
 			})
 			.then(res => {
-				this.loadStickers();
+				this.loadPageData();
 				console.log(res);
 			}).catch(err => {
 				console.error(err.response.data);
@@ -45,7 +52,7 @@ module.exports = {
 		deleteSticker(){
 			axios.delete(`/api/${this.pageType}/${this.$route.params.id}/stickers/${this.stickerName}`)
 			.then(res => {
-				this.loadStickers();
+				this.loadPageData();
 				console.log(res);
 			}).catch(err => {
 				console.error(err.response.data);
@@ -57,12 +64,12 @@ module.exports = {
 
 	watch: {
 		'$route': function(){
-			this.loadStickers();
+			this.loadPageData();
 		}
 	},
 
 	mounted: function(){
-		this.loadStickers();
+		this.loadPageData();
 	}
 
 }
@@ -74,13 +81,18 @@ module.exports = {
 
 	<header-bar :userId="userId"></header-bar>
 	<div class="container sticker-collection faded-out">
-
-		<h1>{{username}}</h1>
 		
-		<input v-model="stickerName" placeholder="name">
-		<input v-model="stickerURL" placeholder="url">
-		<button @click="addSticker">Add sticker</button>
-		<button @click="deleteSticker">Delete sticker</button>	
+		<header class="user">
+			<img v-if="avatarURL" :src="avatarURL" :alt="username">
+			<h1>{{username}}</h1>	
+		</header>
+		
+		<div v-if="isUsersPage">
+			<input v-model="stickerName" placeholder="name">
+			<input v-model="stickerURL" placeholder="url">
+			<button @click="addSticker">Add sticker</button>
+			<button @click="deleteSticker">Delete sticker</button>		
+		</div>	
 
 		<section>
 			<h2>Custom Stickers</h2>
@@ -99,12 +111,19 @@ module.exports = {
 		transition: .3s
 		&.faded-out
 			opacity: 0
+		header
+			margin-top: 40px
+			margin-bottom: 40px
+			display: flex
+			align-items: center
+			img
+				border-radius: 100%
+				height: 100px
 		h1
 			font-weight: 100
 			font-size: 90px
-			margin-top: 40px
-			margin-bottom: 20px
-			margin-left: -8px
+			display: inline-block
+			margin-left: 15px
 
 		h2
 			font-size: 30px

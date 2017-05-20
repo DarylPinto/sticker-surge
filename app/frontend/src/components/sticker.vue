@@ -38,7 +38,7 @@ module.exports = {
 			box-sizing: border-box
 			background-size: contain
 		p
-			background-color: #737373
+			background-color: #505154
 			color: #eaeaea 
 			text-align: center
 			width: 100%
