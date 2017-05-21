@@ -1,11 +1,12 @@
 <script>
 module.exports = {
-	props: ['link', 'name']
+	props: ['link', 'name', 'isUsersPage'],
 }
 </script>
 
 <template>
 <div class="sticker">
+	<span v-if="isUsersPage" class="delete-sticker" @click="$emit('deleteSticker')">X</span>
 	<div class="image" :style="'background-image: url('+link+')'"></div>
 	<p>:{{name}}:</p>
 </div>
@@ -27,8 +28,23 @@ module.exports = {
 		flex-direction: column
 		justify-content: space-between
 		align-items: center
+		position: relative
 		&:nth-child(4n)
 			margin-right: 0
+		&:hover .delete-sticker
+			color: rgba(255,255,255,0.3)
+		.delete-sticker
+			position: absolute
+			top: 10px
+			right: 17px
+			transform: scale(1.2, 1)
+			font-weight: 100
+			font-size: 27px
+			cursor: default
+			color: transparent
+			transition: .2s
+			&:hover
+				color: rgba(255,255,255,0.5)
 		.image
 			height: 230px
 			width: 100%
