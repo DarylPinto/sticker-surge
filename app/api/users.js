@@ -66,7 +66,7 @@ router.post('/:id/stickers', verifyUserAjax, (req, res) => {
 
 	if(!req.body.name || !req.body.url) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
-	if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');
+	//if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');
 	if(req.session.id != req.params.id) return res.status(401).send('Unauthorized');
 
 	req.body.name = req.body.name.toLowerCase().replace(/(:|-)/g, '');

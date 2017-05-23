@@ -1,12 +1,12 @@
 <script>
 module.exports = {
-	props: ['link', 'name', 'isUsersPage'],
+	props: ['link', 'name', 'isEditable'],
 }
 </script>
 
 <template>
 <div class="sticker">
-	<span v-if="isUsersPage" class="delete-sticker" @click="$emit('deleteSticker')">X</span>
+	<span v-if="isEditable" class="delete-sticker" @click="$emit('deleteSticker')">X</span>
 	<div class="image" :style="'background-image: url('+link+')'"></div>
 	<p>:{{name}}:</p>
 </div>

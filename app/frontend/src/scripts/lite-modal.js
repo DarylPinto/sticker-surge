@@ -61,7 +61,7 @@ module.exports = {
 	init: function(){
 
 		//Prevent script from being initialized more than once
-		if(this.hasInitialized) return false;
+		if(this.hasInitialized || qs('#modal-bg')) return false;
 		this.hasInitialized = true;
 
 		var _this = this;

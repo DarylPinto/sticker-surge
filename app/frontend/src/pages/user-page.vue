@@ -1,0 +1,102 @@
+<script>
+import Vue from 'vue';
+import axios from 'axios';
+import header from '../components/header.vue';
+import stickerCollection from '../components/sticker-collection.vue';
+
+Vue.component('header-bar', header);
+Vue.component('stickerCollection', stickerCollection);
+
+module.exports = {
+	props: ['pageType'],
+
+	data: function(){
+		return {
+			username: '',
+			avatarURL: '',
+			customStickers: [],
+			stickerName: '',
+			stickerURL: '',
+			stickerCreationError: '',
+			//liteModal: liteModal,
+			userId: this.$cookie.get('id') || null
+		}
+	},
+
+	computed: {
+		isUsersPage: function(){return this.userId === this.$route.params.id}
+	},
+
+	methods: {
+
+		loadPageData(){	
+			axios.get(`/api/${this.pageType}/${this.$route.params.id}`)
+			.then(res => {
+				this.customStickers = res.data.customStickers;
+				this.username = res.data.username;
+				this.avatarURL = res.data.avatar ? `https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png` : null;
+				document.title = `${res.data.username} - Stickers for Discord`;
+				this.$el.querySelector('.sticker-collection').classList.remove('faded-out');
+				//liteModal.init();
+			}).catch(err => {
+				if(err.response.status === 404) window.location.replace('/');
+			});
+		}
+
+	},
+
+	watch: {
+		'$route': function(){
+			this.$el.querySelector('.sticker-collection').classList.add('faded-out');
+			this.loadPageData();
+		}
+	},
+
+	mounted: function(){
+		this.loadPageData();
+	}
+
+}
+
+</script>
+
+<template>
+<main>
+
+	<header-bar :userId="userId"></header-bar>
+	<div class="container user-page faded-out">
+		
+		<header>
+			<img v-if="avatarURL" :src="avatarURL" :alt="username">
+			<h1>{{username}}</h1>	
+		</header>
+
+		<stickerCollection v-on:reload="loadPageData" name="Custom Stickers" :stickers="customStickers" pageType="users" :isEditable="isUsersPage"></stickerCollection>
+
+	</div>
+
+</main>
+</template>
+
+<style lang="sass">
+
+	.user-page
+		margin-bottom: 120px
+		transition: .3s
+		&.faded-out
+			//opacity: 0
+		header
+			margin-top: 40px
+			margin-bottom: 40px
+			display: flex
+			align-items: center
+		img
+			border-radius: 100%
+			height: 100px
+		h1
+			font-weight: 100
+			font-size: 90px
+			display: inline-block
+			margin-left: 15px
+
+</style>

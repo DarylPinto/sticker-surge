@@ -4,7 +4,7 @@ import VueRouter from 'vue-router';
 import VueCookie from 'vue-cookie';
 
 import homePage from './pages/home-page.vue';
-import stickerCollectionPage from './pages/sticker-collection-page.vue';
+import userPage from './pages/user-page.vue';
 
 require.context('./images', true, /.*\.(gif|png|jpe?g|svg)$/i);
 
@@ -13,15 +13,15 @@ require.context('./images', true, /.*\.(gif|png|jpe?g|svg)$/i);
 Vue.use(VueRouter);
 Vue.use(VueCookie);
 
-const Home = Vue.component('home-page', homePage);
-const StickerCollection = Vue.component('sticker-collection-page', stickerCollectionPage);
+const HomePage = Vue.component('home-page', homePage);
+const UserPage = Vue.component('user-page', userPage);
 
 const router = new VueRouter({
 	mode: 'history',
 	routes: [
-		{ path: '/', component: Home },
-		{ path: '/user/:id', component: StickerCollection, props: {pageType: 'users'} },
-		{ path: '/server/:id', component: StickerCollection, props: {pageType: 'guilds'} }
+		{ path: '/', component: HomePage },
+		{ path: '/user/:id', component: UserPage, props: {pageType: 'users'} },
+		// { path: '/server/:id', component: StickerCollection, props: {pageType: 'guilds'} }
 	]
 });
 
