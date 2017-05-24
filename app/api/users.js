@@ -3,7 +3,11 @@ const rp = require('request-promise');
 const verifyUserAjax = require('../middleware/verify-user.js')({ajax: true});
 const User = require('./models/user-model.js');
 const util = require('./utilities/utilities.js');
+const imageToCdn = require('./utilities/image-to-cdn.js');
 const emojis = require('./utilities/emojis.json');
+
+let multer = require('multer');
+let upload = multer({dest: '../sticker-temp/'});
 
 const removedFields = {
 	'_id': false,
@@ -62,7 +66,7 @@ router.post('/', (req, res) => {
 });
 
 //POST new custom sticker to existing user
-router.post('/:id/stickers', verifyUserAjax, (req, res) => {
+router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), (req, res) => {
 
 	if(!req.body.name || !req.body.url) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
@@ -71,7 +75,13 @@ router.post('/:id/stickers', verifyUserAjax, (req, res) => {
 
 	req.body.name = req.body.name.toLowerCase().replace(/(:|-)/g, '');
 
-	User.findOne({id: req.params.id})
+	//TODO: This endpoint must accept a URL or a File
+
+	imageToCdn(req.body.url)
+	.then(cdn_url => {
+		req.body.url = cdn_url;
+		return User.findOne({id: req.params.id});
+	})
 	.then(user => {
 
 		if(user.customStickers.map(s => s.name).includes(req.body.name)){

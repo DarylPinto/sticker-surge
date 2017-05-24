@@ -30,20 +30,17 @@ app.use(sessions({
 //Public dir 
 app.use('/', express.static('frontend/public'));
 
-app.get('/setcookie/:key/:value', (req,res) => {
-	res.cookie(req.params.key, req.params.value);
-	res.send('Done!');
-});
+/*app.post('/imgform', upload.single('sticker'), (req, res) => {	
 
-app.get('/clearcookie/:key', (req,res) => {
-	res.clearCookie(req.params.key);
-	res.send('Done!');
-});
-
-app.get('/force-token-expiry', (req, res) => {
-	req.session.token = 'hehexd';
-	res.redirect('/');
-});
+	cloudinary.uploader.upload(path.join(__dirname, req.file.path), function(result, err){
+		if(err){
+			console.log(err);
+			res.send(err.message);
+		}
+		console.log(result);
+		res.send(result);	
+	}, {format: 'png'});
+});*/
 
 //Routes
 app.use('/login', require('./routes/auth.js').login);

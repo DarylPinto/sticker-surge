@@ -28,7 +28,7 @@ module.exports = {
 		<h1>Express yourself with<br>Stickers for Discord</h1>
 		<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=268463104" class="btn" target="_blank">Add to Discord</a>	
 	</div>
-	
+
 </main>
 </template>
 
