@@ -6,7 +6,7 @@ module.exports = {
 
 <template>
 <div class="sticker">
-	<span v-if="isEditable" class="delete-sticker" @click="$emit('deleteSticker')">X</span>
+	<i class="material-icons delete-sticker" v-if="isEditable" @click="$emit('deleteSticker')">clear</i>
 	<div class="image" :style="'background-image: url('+link+')'"></div>
 	<p>:{{name}}:</p>
 </div>
@@ -35,11 +35,10 @@ module.exports = {
 			color: rgba(255,255,255,0.3)
 		.delete-sticker
 			position: absolute
-			top: 10px
-			right: 17px
-			transform: scale(1.2, 1)
+			top: 8px
+			right: 10px	
 			font-weight: 100
-			font-size: 27px
+			font-size: 30px
 			cursor: default
 			color: transparent
 			transition: .2s

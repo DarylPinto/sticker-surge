@@ -63,7 +63,10 @@ module.exports = {
 	<header>
 		<h2>{{name}}</h2>
 		<div class="section-options">
-			<input type="text" placeholder="Search" v-model="stickerSearchString">
+			<span class="search-box">
+				<i class="material-icons">search</i>
+				<input type="text" placeholder="Search" v-model="stickerSearchString">	
+			</span>	
 			<button v-if="isEditable" class="btn" @click="openModal('#sticker-creation-modal')">Add a Sticker</button>	
 		</div>
 	</header>	
@@ -71,7 +74,7 @@ module.exports = {
 		<sticker
 			v-for="sticker in stickers"
 			v-on:deleteSticker="showConfirmDialog('Are you sure you want to delete -'+sticker.name+'?', function(){deleteSticker(sticker.name)})"
-			v-if="sticker.name.includes(stickerSearchString)"
+			v-show="sticker.name.includes(stickerSearchString)"
 			:link="sticker.url"
 			:name="'-'+sticker.name"
 			:prefix="null"
@@ -80,6 +83,7 @@ module.exports = {
 	</div>
 
 	<form v-if="isEditable" id="sticker-creation-modal" class="lite-modal" @submit.prevent="addSticker">
+		<i class="material-icons close-x" @click="closeModal">clear</i>
 		<h1>Add a sticker</h1>
 		<input v-model="newSticker.name" placeholder="name" pattern="^:?-?[a-z0-9]+:?$" title="Lowercase letters and numbers only" required>
 		<input v-model="newSticker.url" placeholder="url" required>
@@ -107,21 +111,38 @@ module.exports = {
 					margin-right: 15px
 					&:last-child
 						margin-right: 0
-				input
-					padding: 8px 15px
+				.search-box
 					border: 1px solid #7d7d7d
-					background-color: transparent
-					border-radius: 40px	
-					outline: 0
-
+					border-radius: 40px
+					display: flex
+					align-items: center
+					padding-left: 10px
+					i
+						font-size: 20px
+						color: #7d7d7d
+					input
+						padding: 8px 15px
+						padding-left: 4px
+						font-size: 16px
+						width: 140px
+						background-color: transparent
+						border: none
+						outline: 0
 
 	.lite-modal
+		position: relative
 		background-color: #36393E
 		padding: 30px
 		box-shadow: 0 0 10px black
 		border: 1px solid rgba(255, 255, 255, 0.15)
 		border-radius: 4px
 		text-align: center
+		.close-x
+			position: absolute
+			top: 10px
+			right: 13px
+			color: rgba(255, 255, 255, 0.45)
+			cursor: default
 		h1
 			font-weight: 100
 			font-size: 40px
