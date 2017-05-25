@@ -11,31 +11,24 @@ module.exports = {
 	data: function(){
 		return {
 			stickerSearchString: '',
-			newSticker: {
-				name: '',
-				url: ''
-			}
+			stickerUploadPreview: ''
 		}
 	},
 	methods: {
+
 		addSticker(){
-			axios.post(`/api/${this.pageType}/${this.$route.params.id}/stickers`, {
-				name: this.newSticker.name,
-				url: this.newSticker.url
-			})
+			let stickerCreationForm = new FormData(this.$el.querySelector('#sticker-creation-modal'));
+			axios.post(`/api/${this.pageType}/${this.$route.params.id}/stickers`, stickerCreationForm, {'Content-Type': 'multipart/form-data'})
 			.then(res => {
-				this.newSticker.name = '';
-				this.newSticker.url = '';
-				//this.stickerCreationError = '';
 				this.closeModal();
 				this.$emit('reload');
 			}).catch(err => {
 				if(err.response.status === 401) window.location.href = '/login';
-				this.stickerCreationError = err.response.data;
+				console.error(err.response.data);
 			});
 		},
+
 		deleteSticker(stickerName){
-			console.log(`/api/${this.pageType}/${this.$route.params.id}/stickers/${stickerName}`);
 			axios.delete(`/api/${this.pageType}/${this.$route.params.id}/stickers/${stickerName}`)
 			.then(res => {
 				this.$emit('reload');
@@ -43,13 +36,30 @@ module.exports = {
 				if(err.response.status === 401) window.location.href = '/login';
 			});
 		},
+
 		initModal: liteModal.init.bind(liteModal),
 		openModal: liteModal.open.bind(liteModal),
-		closeModal: liteModal.close.bind(liteModal),
+		closeModal: function(){
+			liteModal.close();
+			window.setTimeout(() => {	
+				this.stickerUploadPreview = '';	
+			}, 350);	
+		},
+		showStickerPreview(e){
+			let file = e.target.files[0];
+			if(!file) return false;
+			let reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.addEventListener('load', () => {
+				this.stickerUploadPreview = reader.result;
+			});
+		},
+
 		showConfirmDialog(text, callback){
 			if(!confirm(text)) return false;
 			callback();
 		}
+
 	},
 	mounted: function(){
 		this.initModal();
@@ -82,11 +92,20 @@ module.exports = {
 		</sticker>
 	</div>
 
+	<form method="POST" action="/api/users/82161988473454592/stickers" enctype="multipart/form-data">
+		<input type="text" name="name">
+		<input type="file" name="sticker">
+		<button>send</button>
+	</form>
+
 	<form v-if="isEditable" id="sticker-creation-modal" class="lite-modal" @submit.prevent="addSticker">
 		<i class="material-icons close-x" @click="closeModal">clear</i>
 		<h1>Add a sticker</h1>
-		<input v-model="newSticker.name" placeholder="name" pattern="^:?-?[a-z0-9]+:?$" title="Lowercase letters and numbers only" required>
-		<input v-model="newSticker.url" placeholder="url" required>
+
+		<img v-show="stickerUploadPreview" :src="stickerUploadPreview">
+
+		<input v-show="!stickerUploadPreview" name="sticker" type="file" placeholder="Image" accept="image/png, image/jpeg" @change="showStickerPreview($event)" required>
+		<input name="name" placeholder="name" pattern="^:?-?[a-z0-9]+:?$" title="Lowercase letters and numbers only" required>
 		<button class="btn">Add</button>
 	</form>
 
@@ -137,6 +156,9 @@ module.exports = {
 		border: 1px solid rgba(255, 255, 255, 0.15)
 		border-radius: 4px
 		text-align: center
+		img
+			max-width: 300px
+			max-height: 300px
 		.close-x
 			position: absolute
 			top: 10px

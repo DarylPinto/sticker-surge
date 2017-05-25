@@ -1,10 +1,11 @@
+const fs = require('fs');
 const covert = require('../../../covert.js');
 const cloudinary = require('cloudinary');
 cloudinary.config(covert.cloudinary);
 
 //Take image (url string or file) and upload to cloudinary
 //return Promise with cloudinary URL
-module.exports = function(image){
+module.exports = function(image, imageIsLocal){
 
 	uploadSettings = {
 		crop: 'fit',
@@ -12,7 +13,7 @@ module.exports = function(image){
 		width: 300,
 		format: 'png'
 	}
-
+	
 	return new Promise((resolve, reject) => {
 
 		//TODO: check if url is a cloudinary url already
@@ -22,6 +23,7 @@ module.exports = function(image){
 				reject(err);
 			}else{
 				resolve(res.secure_url);
+				if(imageIsLocal) fs.unlink(image);
 			}
 		}, uploadSettings);
 	});

@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const path = require('path');
 const rp = require('request-promise');
 const verifyUserAjax = require('../middleware/verify-user.js')({ajax: true});
 const User = require('./models/user-model.js');
@@ -7,7 +8,7 @@ const imageToCdn = require('./utilities/image-to-cdn.js');
 const emojis = require('./utilities/emojis.json');
 
 let multer = require('multer');
-let upload = multer({dest: '../sticker-temp/'});
+let upload = multer({dest: './sticker-temp/'});
 
 const removedFields = {
 	'_id': false,
@@ -68,40 +69,50 @@ router.post('/', (req, res) => {
 //POST new custom sticker to existing user
 router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), (req, res) => {
 
-	if(!req.body.name || !req.body.url) return res.status(400).send('Invalid body data');
+	console.log(req.body);
+	console.log(req.body.name);
+	console.log(req.body.url);
+	console.log(req.file);
+
+	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
-	//if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');
 	if(req.session.id != req.params.id) return res.status(401).send('Unauthorized');
 
-	req.body.name = req.body.name.toLowerCase().replace(/(:|-)/g, '');
+	let data = {
+		name: req.body.name.toLowerCase().replace(/(:|-)/g, ''),
+		sticker: (req.file) ? path.join(__dirname+'/../', req.file.path) : req.body.url
+	}	
 
-	//TODO: This endpoint must accept a URL or a File
+	let imageIsLocal = (req.file) ? true : false;
 
-	imageToCdn(req.body.url)
+	imageToCdn(data.sticker, imageIsLocal)
 	.then(cdn_url => {
-		req.body.url = cdn_url;
+
+		data.sticker = cdn_url;
 		return User.findOne({id: req.params.id});
+
 	})
 	.then(user => {
 
-		if(user.customStickers.map(s => s.name).includes(req.body.name)){
+		if(user.customStickers.map(s => s.name).includes(data.name)){
 			res.status(400).send('User already has a custom sticker with that name');
 			return null;
 		}	
-		user.customStickers.unshift(req.body);
+		user.customStickers.unshift(data);
 		return user.save();
 
 	})	
 	.then(user => {
 
 		if(!user) return false;
-		let sticker = user.customStickers.find(s => s.name === req.body.name);
+		let sticker = user.customStickers.find(s => s.name === data.name);
 		return res.status(201).json(util.removeProps(sticker._doc, ['_id']));
 
 	})
 	.catch(err => {
 
 		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');
+		console.log(err.message);
 		res.status(503).send('Database error');
 
 	});
