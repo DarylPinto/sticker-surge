@@ -69,52 +69,43 @@ router.post('/', (req, res) => {
 //POST new custom sticker to existing user
 router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), (req, res) => {
 
-	console.log(req.body);
-	console.log(req.body.name);
-	console.log(req.body.url);
-	console.log(req.file);
-
 	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
 	if(req.session.id != req.params.id) return res.status(401).send('Unauthorized');
 
 	let data = {
 		name: req.body.name.toLowerCase().replace(/(:|-)/g, ''),
-		sticker: (req.file) ? path.join(__dirname+'/../', req.file.path) : req.body.url
+		sticker_path: (req.file) ? path.join(__dirname+'/../', req.file.path) : req.body.url
 	}	
 
 	let imageIsLocal = (req.file) ? true : false;
 
-	imageToCdn(data.sticker, imageIsLocal)
-	.then(cdn_url => {
-
-		data.sticker = cdn_url;
-		return User.findOne({id: req.params.id});
-
-	})
+	User.findOne({id: req.params.id})
 	.then(user => {
-
 		if(user.customStickers.map(s => s.name).includes(data.name)){
 			res.status(400).send('User already has a custom sticker with that name');
 			return null;
-		}	
-		user.customStickers.unshift(data);
+		}
+		return Promise.all([user, imageToCdn(data.sticker_path, imageIsLocal)]);
+	})
+	.then(arr => {
+		if(!arr) return false;
+
+		let user = arr[0];
+		let sticker = {name: data.name, url: arr[1]};
+
+		user.customStickers.unshift(sticker);
 		return user.save();
-
-	})	
+	})
 	.then(user => {
-
 		if(!user) return false;
 		let sticker = user.customStickers.find(s => s.name === data.name);
 		return res.status(201).json(util.removeProps(sticker._doc, ['_id']));
-
 	})
 	.catch(err => {
-
 		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');
 		console.log(err.message);
 		res.status(503).send('Database error');
-
 	});
 
 });

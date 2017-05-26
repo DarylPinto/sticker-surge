@@ -17,7 +17,7 @@ module.exports = {
 	methods: {
 
 		addSticker(){
-			let stickerCreationForm = new FormData(this.$el.querySelector('#sticker-creation-modal'));
+			let stickerCreationForm = new FormData(document.querySelector('#sticker-creation-modal'));
 			axios.post(`/api/${this.pageType}/${this.$route.params.id}/stickers`, stickerCreationForm, {'Content-Type': 'multipart/form-data'})
 			.then(res => {
 				this.closeModal();

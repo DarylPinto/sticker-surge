@@ -16,7 +16,10 @@ module.exports = function(image, imageIsLocal){
 	
 	return new Promise((resolve, reject) => {
 
-		//TODO: check if url is a cloudinary url already
+		if(!imageIsLocal && image.includes('res.cloudinary.com/stickers-for-discord/')){
+			resolve(image);
+			return;
+		}
 
 		cloudinary.uploader.upload(image, (res, err) => {
 			if(err){
