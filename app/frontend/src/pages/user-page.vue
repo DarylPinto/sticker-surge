@@ -18,7 +18,7 @@ module.exports = {
 			stickerName: '',
 			stickerURL: '',
 			stickerCreationError: '',
-			//liteModal: liteModal,
+			pageLoaded: false,
 			userId: this.$cookie.get('id') || null
 		}
 	},
@@ -37,7 +37,7 @@ module.exports = {
 				this.avatarURL = res.data.avatar ? `https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png` : null;
 				document.title = `${res.data.username} - Stickers for Discord`;
 				this.$el.querySelector('.sticker-collection').classList.remove('faded-out');
-				//liteModal.init();
+				this.pageLoaded = true;
 			}).catch(err => {
 				if(err.response.status === 404) window.location.replace('/');
 			});
@@ -64,7 +64,7 @@ module.exports = {
 <main>
 
 	<header-bar :userId="userId"></header-bar>
-	<div class="container user-page faded-out">
+	<div class="container user-page" :class="{transparent: !pageLoaded}">
 		
 		<header>
 			<img v-if="avatarURL" :src="avatarURL" :alt="username">
@@ -83,8 +83,8 @@ module.exports = {
 	.user-page
 		margin-bottom: 120px
 		transition: .3s
-		&.faded-out
-			//opacity: 0
+		&.transparent
+			opacity: 0
 		header
 			margin-top: 40px
 			margin-bottom: 40px

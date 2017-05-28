@@ -63,15 +63,15 @@ module.exports = {
 
 	},
 	mounted: function(){
-		//Initialize the modal and set it so
-		//image preview and sticker name fields
-		//are cleared when the modal is closed
+		//While initializing lite-modal, we'll pass in a
+		//callback to be executed when modal is closed
 		this.initModal(() => {
-			window.setTimeout(() => {	
-				this.stickerUploadPreview = '';
-				this.newStickerName = '';
-			}, 350);
+			document.querySelector('#sticker-creation-modal input[type="file"]').value = '';
+			this.stickerUploadPreview = '';
+			this.newStickerName = '';
 		});
+		//Then we change the closeModal method on the vue instance to include callback
+		this.closeModal = liteModal.closeWithCB.bind(liteModal);
 	}
 }
 </script>
@@ -79,6 +79,7 @@ module.exports = {
 <template>
 <section class="sticker-collection">
 
+	<!-- Main Page -->
 	<header>
 		<h2>{{name}}</h2>
 		<div class="section-options">
@@ -101,6 +102,7 @@ module.exports = {
 		</sticker>
 	</div>
 
+	<!-- Sticker Creation Modal -->
 	<form v-if="isEditable" id="sticker-creation-modal" class="lite-modal" @submit.prevent="addSticker">
 		<i class="material-icons close-x" @click="closeModal">clear</i>
 		<h1>Add a sticker</h1>
@@ -111,10 +113,11 @@ module.exports = {
 			<p>Drag image or click to upload</p>
 			<input name="sticker" type="file" placeholder="Image" accept="image/png, image/jpeg" @change="showStickerPreview($event)" required>	
 		</div>	
-		<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" title="Lowercase letters and numbers only" required>
+		<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" autocomplete="off" spellcheck="false" title="Lowercase letters and numbers only" required>
 		<button class="btn">Add</button>
 	</form>
 
+	<!-- Loading Overlay -->
 	<div v-if="loadingScreenActive" class="loading-overlay">
 		<img src="/images/loading-spin.svg" alt="">
 	</div>

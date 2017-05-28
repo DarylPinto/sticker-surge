@@ -58,7 +58,7 @@ var css = `
 // Modal open/close functions
 module.exports = {
 	hasInitialized: false,
-	init: function(onClose){
+	init: function(closeCB){
 
 		//Prevent script from being initialized more than once
 		if(this.hasInitialized || qs('#modal-bg')) return false;
@@ -67,6 +67,13 @@ module.exports = {
 		var _this = this;
 		style.textContent = css;
 		d.head.appendChild(style);
+
+		this.closeWithCB = function(){
+			_this.close();
+			window.setTimeout(function(){
+				if(closeCB) closeCB();	
+			}, 350);	
+		}
 
 		// Create modal background
 		var bg = d.createElement('div');
@@ -80,17 +87,13 @@ module.exports = {
 		});
 
 		// Clicking modal background closes modal
-		bg.addEventListener('click', function(){
-			_this.close();
-			onClose();
+		bg.addEventListener('click', function(e){
+			_this.closeWithCB();
 		});
 
 		// Escape key closes modal
 		d.addEventListener('keydown', function(e) {
-			if(e.keyCode == 27){
-				_this.close();
-				onClose();
-			}
+			if(e.keyCode == 27) _this.closeWithCB();
 		});
 
 		// Prevent event bubbling (clicking within modal shouldn't close it)
