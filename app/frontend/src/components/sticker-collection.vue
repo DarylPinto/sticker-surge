@@ -53,6 +53,7 @@ module.exports = {
 			reader.readAsDataURL(file);
 			reader.addEventListener('load', () => {
 				this.stickerUploadPreview = reader.result;
+				document.querySelector('input[name="name"]').focus();
 			});
 		},
 

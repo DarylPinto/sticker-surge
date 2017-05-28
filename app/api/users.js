@@ -8,7 +8,14 @@ const imageToCdn = require('./utilities/image-to-cdn.js');
 const emojis = require('./utilities/emojis.json');
 
 let multer = require('multer');
-let upload = multer({dest: './sticker-temp/'});
+let upload = multer({
+	dest: './sticker-temp/',
+	limits: {fileSize: 5 * 1024 * 1024} //5MB max image upload
+});
+let handleMulterError = function(err, req, res, next){
+	if(err)	res.status(400).send(err.message);
+	else next();
+}
 
 const removedFields = {
 	'_id': false,
@@ -67,7 +74,7 @@ router.post('/', (req, res) => {
 });
 
 //POST new custom sticker to existing user
-router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), (req, res) => {
+router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMulterError, (req, res) => {
 
 	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
