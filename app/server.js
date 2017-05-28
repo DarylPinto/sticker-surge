@@ -30,18 +30,6 @@ app.use(sessions({
 //Public dir 
 app.use('/', express.static('frontend/public'));
 
-/*app.post('/imgform', upload.single('sticker'), (req, res) => {	
-
-	cloudinary.uploader.upload(path.join(__dirname, req.file.path), function(result, err){
-		if(err){
-			console.log(err);
-			res.send(err.message);
-		}
-		console.log(result);
-		res.send(result);	
-	}, {format: 'png'});
-});*/
-
 //Routes
 app.use('/login', require('./routes/auth.js').login);
 app.use('/logout', require('./routes/auth.js').logout);
