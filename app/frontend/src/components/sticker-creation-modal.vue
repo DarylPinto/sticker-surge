@@ -4,10 +4,9 @@ import emojis from '../data/emojis.json';
 import liteModal from '../scripts/lite-modal.js';
 
 module.exports = {
-	props: ['apiURL', 'stickers'],
+	props: ['stickers'],
 	data: function(){
 		return {
-			loadingScreenActive: false,	
 			stickerUploadPreview: '',
 			stickerUploadError: '',
 			newStickerName: ''
@@ -15,27 +14,18 @@ module.exports = {
 	},
 	methods: {
 
-		addSticker(){	
+		emitAddSticker(){
 			//Error checking
 			if(this.stickers.map(s => s.name).indexOf(this.newStickerName) > -1){
 				this.stickerUploadError = "Name already in use by another sticker.";
 				return false;
 			}
 
-			//Send data
-			let stickerCreationForm = new FormData(document.querySelector('.sticker-creation-modal'));
+			//Emit add sticker event
+			let stickerCreationFormData = new FormData(document.querySelector('.sticker-creation-modal'));
 			this.stickerUploadError = '';
-			this.loadingScreenActive = true;
-			axios.post(this.apiURL, stickerCreationForm, {'Content-Type': 'multipart/form-data'})
-			.then(res => {
-				this.closeModal();
-				this.loadingScreenActive = false;
-				this.$emit('reload');
-			}).catch(err => {
-				this.loadingScreenActive = false;
-				if(err.response.status === 401) window.location.href = '/login';
-				console.error(err.response.data);
-			});
+			this.closeModal();
+			this.$emit('addSticker', stickerCreationFormData);
 		},
 
 		initModal: liteModal.init.bind(liteModal),
@@ -49,7 +39,7 @@ module.exports = {
 			reader.readAsDataURL(file);
 			reader.addEventListener('load', () => {
 				this.stickerUploadPreview = reader.result;
-				document.querySelector('input[name="name"]').focus();
+				document.querySelector('.sticker-creation-modal input[name="name"]').focus();
 			});
 		},
 
@@ -74,30 +64,22 @@ module.exports = {
 </script>
 
 <template>
-<div>
+<form class="sticker-creation-modal lite-modal" @submit.prevent="emitAddSticker">
 
-	<!-- Sticker Creation Modal -->
-	<form class="sticker-creation-modal lite-modal" @submit.prevent="addSticker">
-		<i class="material-icons close-x" @click="closeModal">clear</i>
-		<h1>Add a sticker</h1>
+	<i class="material-icons close-x" @click="closeModal">clear</i>
+	<h1>Add a sticker</h1>
 
-		<img v-show="stickerUploadPreview" :src="stickerUploadPreview">
+	<img v-show="stickerUploadPreview" :src="stickerUploadPreview">
 
-		<div v-show="!stickerUploadPreview" class="upload-area">
-			<p>Drag image or click to upload</p>
-			<input name="sticker" type="file" placeholder="Image" accept="image/png, image/jpeg" @change="showStickerPreview($event)" required>	
-		</div>	
-		<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" autocomplete="off" spellcheck="false" title="Lowercase letters and numbers only" required>
-		<p v-if="stickerUploadError.length > 0" class="sticker-upload-error">{{stickerUploadError}}</p>
-		<button class="btn">Add</button>
-	</form>
-
-	<!-- Loading Overlay -->
-	<div v-if="loadingScreenActive" class="loading-overlay">
-		<img src="/images/loading-spin.svg" alt="">
+	<div v-show="!stickerUploadPreview" class="upload-area">
+		<p>Drag image or click to upload</p>
+		<input name="sticker" type="file" placeholder="Image" accept="image/png, image/jpeg" @change="showStickerPreview($event)" required>	
 	</div>	
+	<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" autocomplete="off" spellcheck="false" title="Lowercase letters and numbers only" required>
+	<p v-if="stickerUploadError.length > 0" class="sticker-upload-error">{{stickerUploadError}}</p>
+	<button class="btn">Add</button>
 
-</div>
+</form>
 </template>
 
 <style lang="sass">
@@ -114,7 +96,8 @@ module.exports = {
 		max-width: 640px
 		box-sizing: border-box
 		img
-			max-height: 160px
+			max-height: 200px
+			max-width: 200px
 		.close-x
 			position: absolute
 			padding: 15px
@@ -160,17 +143,5 @@ module.exports = {
 			color: white
 			padding: 10px 0
 			width: 115px
-	
-	.loading-overlay
-		position: fixed
-		top: 0
-		left: 0
-		width: 100vw
-		height: 100vh
-		background-color: rgba(255,255,255,0.7)
-		display: flex
-		justify-content: center
-		align-items: center
-		z-index: 200
 
 </style>

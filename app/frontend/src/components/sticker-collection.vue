@@ -11,10 +11,26 @@ module.exports = {
 	props: ['name', 'isEditable', 'stickers', 'pageType'],
 	data: function(){
 		return {	
-			stickerSearchString: ''
+			stickerSearchString: '',
+			//displayStickers: this.stickers,
+			//loadingNewSticker: false
 		}
 	},
 	methods: {
+		addSticker(formData){
+			//this.loadingNewSticker = true;
+			this.stickers.push({name: formData.get('name'), url: '/images/loading-spin.svg'});
+
+			axios.post(`/api/${this.pageType}/${this.$route.params.id}/stickers`, formData, {'Content-Type': 'multipart/form-data'})
+			.then(res => {
+				this.loadingNewSticker = false;
+				this.$emit('reload');
+			}).catch(err => {
+				this.loadingNewSticker = false;
+				if(err.response.status === 401) window.location.href = '/login';
+				console.error(err.response.data);
+			});
+		},
 
 		deleteSticker(stickerName){
 			axios.delete(`/api/${this.pageType}/${this.$route.params.id}/stickers/${stickerName}`)
@@ -30,6 +46,10 @@ module.exports = {
 			callback();
 		}
 
+	},
+	mounted: function(){
+		//this.displayStickers.forEach(sticker => console.log);
+		//this.displayStickers.push({name: 'test', url: '/images/loading-spin.svg'});
 	}
 }
 </script>
@@ -49,10 +69,13 @@ module.exports = {
 		</div>
 	</header>	
 	<div class="sticker-area">
+		<!--<div v-if="loadingNewSticker" class="loading-sticker sticker">
+			<img src="/images/loading-spin.svg" alt="">
+		</div>-->
 		<sticker
-			v-for="sticker in stickers"
+			v-for="sticker in displayStickers"
 			v-on:deleteSticker="showConfirmDialog('Are you sure you want to delete -'+sticker.name+'?', function(){deleteSticker(sticker.name)})"
-			v-show="sticker.name.indexOf(stickerSearchString) > -1"
+			v-show="sticker.name.indexOf(stickerSearchString.replace(/(:|-)/g, '')) > -1"
 			:link="sticker.url"
 			:name="'-'+sticker.name"
 			:prefix="null"
@@ -60,21 +83,23 @@ module.exports = {
 		</sticker>
 	</div>
 
-	<stickerCreationModal
-		v-if="isEditable"
-		v-on:reload="$emit('reload')"
-		:apiURL="`/api/${this.pageType}/${this.$route.params.id}/stickers`"
-		:stickers="stickers">
-	</stickerCreationModal>
+	<!-- Sticker Creation Modal -->
+	<stickerCreationModal	v-if="isEditable"	v-on:addSticker="addSticker($event)" :stickers="stickers"></stickerCreationModal>
 
 </section>
 </template>
 
 <style lang="sass">
 
+	$discord-gray: #36393E
+
 	.sticker-collection
 		.sticker-area
 			font-size: 0
+		//.loading-sticker
+		//	vertical-align: bottom
+		//	height: 278px
+		//	justify-content: center
 		h2
 			font-size: 30px
 			font-weight: 300
