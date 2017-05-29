@@ -1,6 +1,7 @@
 <script>
 import Vue from 'vue';
 import axios from 'axios';
+import emojis from '../data/emojis.json';
 import sticker from '../components/sticker.vue';
 import liteModal from '../scripts/lite-modal.js';
 
@@ -13,13 +14,22 @@ module.exports = {
 			loadingScreenActive: false,
 			stickerSearchString: '',
 			stickerUploadPreview: '',
+			stickerUploadError: '',
 			newStickerName: ''
 		}
 	},
 	methods: {
 
 		addSticker(){
+			//Error checking
+			if(this.stickers.map(s => s.name).indexOf(this.newStickerName) > -1){
+				this.stickerUploadError = "Name already in use by another sticker.";
+				return false;
+			}
+
+			//Send data
 			let stickerCreationForm = new FormData(document.querySelector('#sticker-creation-modal'));
+			this.stickerUploadError = '';
 			this.loadingScreenActive = true;
 			axios.post(`/api/${this.pageType}/${this.$route.params.id}/stickers`, stickerCreationForm, {'Content-Type': 'multipart/form-data'})
 			.then(res => {
@@ -70,6 +80,7 @@ module.exports = {
 			document.querySelector('#sticker-creation-modal input[type="file"]').value = '';
 			this.stickerUploadPreview = '';
 			this.newStickerName = '';
+			this.stickerUploadError = '';
 		});
 		//Then we change the closeModal method on the vue instance to include callback
 		this.closeModal = liteModal.closeWithCB.bind(liteModal);
@@ -115,6 +126,7 @@ module.exports = {
 			<input name="sticker" type="file" placeholder="Image" accept="image/png, image/jpeg" @change="showStickerPreview($event)" required>	
 		</div>	
 		<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" autocomplete="off" spellcheck="false" title="Lowercase letters and numbers only" required>
+		<p v-if="stickerUploadError.length > 0" class="sticker-upload-error">{{stickerUploadError}}</p>
 		<button class="btn">Add</button>
 	</form>
 
@@ -216,6 +228,8 @@ module.exports = {
 				height: 140px
 				max-width: none
 				cursor: pointer
+		.sticker-upload-error
+			padding: 10px
 		.btn
 			color: white
 			padding: 10px 0
