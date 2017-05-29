@@ -1,47 +1,20 @@
 <script>
 import Vue from 'vue';
 import axios from 'axios';
-import emojis from '../data/emojis.json';
 import sticker from '../components/sticker.vue';
-import liteModal from '../scripts/lite-modal.js';
+import stickerCreationModal from '../components/sticker-creation-modal.vue';
 
 Vue.component('sticker', sticker);
+Vue.component('stickerCreationModal', stickerCreationModal);
 
 module.exports = {
 	props: ['name', 'isEditable', 'stickers', 'pageType'],
 	data: function(){
-		return {
-			loadingScreenActive: false,
-			stickerSearchString: '',
-			stickerUploadPreview: '',
-			stickerUploadError: '',
-			newStickerName: ''
+		return {	
+			stickerSearchString: ''
 		}
 	},
 	methods: {
-
-		addSticker(){
-			//Error checking
-			if(this.stickers.map(s => s.name).indexOf(this.newStickerName) > -1){
-				this.stickerUploadError = "Name already in use by another sticker.";
-				return false;
-			}
-
-			//Send data
-			let stickerCreationForm = new FormData(document.querySelector('#sticker-creation-modal'));
-			this.stickerUploadError = '';
-			this.loadingScreenActive = true;
-			axios.post(`/api/${this.pageType}/${this.$route.params.id}/stickers`, stickerCreationForm, {'Content-Type': 'multipart/form-data'})
-			.then(res => {
-				this.closeModal();
-				this.loadingScreenActive = false;
-				this.$emit('reload');
-			}).catch(err => {
-				this.loadingScreenActive = false;
-				if(err.response.status === 401) window.location.href = '/login';
-				console.error(err.response.data);
-			});
-		},
 
 		deleteSticker(stickerName){
 			axios.delete(`/api/${this.pageType}/${this.$route.params.id}/stickers/${stickerName}`)
@@ -52,38 +25,11 @@ module.exports = {
 			});
 		},
 
-		initModal: liteModal.init.bind(liteModal),
-		openModal: liteModal.open.bind(liteModal),
-		closeModal: liteModal.close.bind(liteModal),
-
-		showStickerPreview(e){
-			let file = e.target.files[0];
-			if(!file) return false;
-			let reader = new FileReader();
-			reader.readAsDataURL(file);
-			reader.addEventListener('load', () => {
-				this.stickerUploadPreview = reader.result;
-				document.querySelector('input[name="name"]').focus();
-			});
-		},
-
 		showConfirmDialog(text, callback){
 			if(!confirm(text)) return false;
 			callback();
 		}
 
-	},
-	mounted: function(){
-		//While initializing lite-modal, we'll pass in a
-		//callback to be executed when modal is closed
-		this.initModal(() => {
-			document.querySelector('#sticker-creation-modal input[type="file"]').value = '';
-			this.stickerUploadPreview = '';
-			this.newStickerName = '';
-			this.stickerUploadError = '';
-		});
-		//Then we change the closeModal method on the vue instance to include callback
-		this.closeModal = liteModal.closeWithCB.bind(liteModal);
 	}
 }
 </script>
@@ -99,7 +45,7 @@ module.exports = {
 				<i class="material-icons">search</i>
 				<input type="text" placeholder="Search" v-model="stickerSearchString">	
 			</span>	
-			<button v-if="isEditable" class="btn" @click="openModal('#sticker-creation-modal')">Add a Sticker</button>	
+			<button v-if="isEditable" class="btn" @click="$emit('openStickerCreationModal')">Add a Sticker</button>	
 		</div>
 	</header>	
 	<div class="sticker-area">
@@ -114,26 +60,12 @@ module.exports = {
 		</sticker>
 	</div>
 
-	<!-- Sticker Creation Modal -->
-	<form v-if="isEditable" id="sticker-creation-modal" class="lite-modal" @submit.prevent="addSticker">
-		<i class="material-icons close-x" @click="closeModal">clear</i>
-		<h1>Add a sticker</h1>
-
-		<img v-show="stickerUploadPreview" :src="stickerUploadPreview">
-
-		<div v-show="!stickerUploadPreview" class="upload-area">
-			<p>Drag image or click to upload</p>
-			<input name="sticker" type="file" placeholder="Image" accept="image/png, image/jpeg" @change="showStickerPreview($event)" required>	
-		</div>	
-		<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" autocomplete="off" spellcheck="false" title="Lowercase letters and numbers only" required>
-		<p v-if="stickerUploadError.length > 0" class="sticker-upload-error">{{stickerUploadError}}</p>
-		<button class="btn">Add</button>
-	</form>
-
-	<!-- Loading Overlay -->
-	<div v-if="loadingScreenActive" class="loading-overlay">
-		<img src="/images/loading-spin.svg" alt="">
-	</div>
+	<stickerCreationModal
+		v-if="isEditable"
+		v-on:reload="$emit('reload')"
+		:apiURL="`/api/${this.pageType}/${this.$route.params.id}/stickers`"
+		:stickers="stickers">
+	</stickerCreationModal>
 
 </section>
 </template>
@@ -141,6 +73,8 @@ module.exports = {
 <style lang="sass">
 
 	.sticker-collection
+		.sticker-area
+			font-size: 0
 		h2
 			font-size: 30px
 			font-weight: 300
@@ -175,79 +109,5 @@ module.exports = {
 						background-color: transparent
 						border: none
 						outline: 0
-
-	#sticker-creation-modal	
-		position: relative
-		background-color: #36393E
-		padding: 30px
-		box-shadow: 0 0 10px black
-		border: 1px solid rgba(255, 255, 255, 0.15)
-		border-radius: 4px
-		text-align: center
-		width: 80vw
-		max-width: 640px
-		box-sizing: border-box
-		img
-			max-height: 160px
-		.close-x
-			position: absolute
-			padding: 15px
-			top: 0px
-			right: 3px
-			color: rgba(255, 255, 255, 0.3)
-			cursor: default
-			font-size: 30px
-			&:hover
-				color: rgba(255,255,255,0.5)
-		h1
-			font-weight: 400
-			font-size: 40px
-			margin: 20px	
-		input, button
-			margin: 10px auto
-			max-width: 60%
-			display: block
-		button
-			margin-top: 20px
-		.upload-area
-			border: 2px dashed white
-			cursor: pointer
-			display: inline-flex
-			margin: 15px
-			margin-bottom: 5px
-			max-width: 65%
-			justify-content: center
-			align-items: center
-			text-align: center
-			p
-				position: absolute
-				color: rgba(255,255,255,0.5)
-			input
-				opacity: 0
-				margin: 0
-				height: 140px
-				max-width: none
-				cursor: pointer
-		.sticker-upload-error
-			padding: 10px
-		.btn
-			color: white
-			padding: 10px 0
-			width: 115px
-	
-	.loading-overlay
-		position: fixed
-		top: 0
-		left: 0
-		width: 100vw
-		height: 100vh
-		background-color: rgba(255,255,255,0.7)
-		display: flex
-		justify-content: center
-		align-items: center
-		z-index: 200
-
-	.sticker-area
-		font-size: 0
 
 </style>
