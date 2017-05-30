@@ -31,7 +31,7 @@ module.exports = {
 		loadPageData(){	
 			this.pageLoaded = false;
 				
-			axios.get(`/api/${this.pageType}/${this.$route.params.id}`)
+			axios.get(`/api/${this.pageType}/${this.$route.params.id}?nocache=${(new Date()).getTime()}`)
 			.then(res => {
 				this.customStickers = res.data.customStickers;
 				this.username = res.data.username;
@@ -63,7 +63,7 @@ module.exports = {
 <main>
 
 	<header-bar :userId="userId"></header-bar>
-	<!-- <button @click="loadPageData">reload</button> -->
+	
 	<div class="container user-page" :class="{transparent: !pageLoaded}">
 		
 		<header>
@@ -90,9 +90,9 @@ module.exports = {
 			margin-bottom: 40px
 			display: flex
 			align-items: center
-		img
-			border-radius: 100%
-			height: 100px
+			> img
+				border-radius: 100%
+				height: 100px
 		h1
 			font-weight: 100
 			font-size: 90px

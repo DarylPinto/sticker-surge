@@ -7,10 +7,10 @@ const guildSchema = Schema({
 	prefix: {type: String, default: '$'},
 	recentStickers: [String],
 	customStickers: [{
-		name: String,
-		url: String,
-		uses: Number,
-		createdAt: Date
+		name: {type: String, required: true, maxlength: 20},
+		url: {type: String, required: true},
+		uses: {type: Number, default: 0},
+		createdAt: {type: Date, default: Date.now}
 	}],
 	stickerPacks: [String]
 });

@@ -7,7 +7,7 @@ const userSchema = Schema({
 	avatar: {type: String, required: true},
 	refresh_token: {type: String, default: ''},
 	customStickers: [{
-		name: {type: String, required: true},
+		name: {type: String, required: true, maxlength: 20},
 		url: {type: String, required: true},
 		uses: {type: Number, default: 0},
 		createdAt: {type: Date, default: Date.now}

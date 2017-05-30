@@ -4,7 +4,7 @@ import emojis from '../data/emojis.json';
 import liteModal from '../scripts/lite-modal.js';
 
 module.exports = {
-	props: ['stickers'],
+	props: ['stickers', 'emojiNamesAllowed'],
 	data: function(){
 		return {
 			stickerUploadPreview: '',
@@ -18,6 +18,10 @@ module.exports = {
 			//Error checking
 			if(this.stickers.map(s => s.name).indexOf(this.newStickerName) > -1){
 				this.stickerUploadError = "Name already in use by another sticker.";
+				return false;
+			}
+			if(!this.emojiNamesAllowed && emojis.indexOf(this.newStickerName) > -1){
+				this.stickerUploadError = "Name already in use by an emoji.";
 				return false;
 			}
 
@@ -75,7 +79,7 @@ module.exports = {
 		<p>Drag image or click to upload</p>
 		<input name="sticker" type="file" placeholder="Image" accept="image/png, image/jpeg" @change="showStickerPreview($event)" required>	
 	</div>	
-	<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" autocomplete="off" spellcheck="false" title="Lowercase letters and numbers only" required>
+	<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" maxlength="20" autocomplete="off" spellcheck="false" title="Lowercase letters and numbers only" required>
 	<p v-if="stickerUploadError.length > 0" class="sticker-upload-error">{{stickerUploadError}}</p>
 	<button class="btn">Add</button>
 
@@ -131,6 +135,7 @@ module.exports = {
 			p
 				position: absolute
 				color: rgba(255,255,255,0.5)
+				width: 59%
 			input
 				opacity: 0
 				margin: 0
