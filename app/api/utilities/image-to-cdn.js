@@ -29,8 +29,6 @@ module.exports = function(image, imageIsLocal){
 				if(imageIsLocal) fs.unlink(image);
 			}
 		}, uploadSettings);
-	});
-
-	//TODO: delete image from temp folder
+	});	
 
 }

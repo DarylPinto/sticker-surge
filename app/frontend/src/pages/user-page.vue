@@ -28,15 +28,15 @@ module.exports = {
 	},
 
 	methods: {
-
 		loadPageData(){	
+			this.pageLoaded = false;
+				
 			axios.get(`/api/${this.pageType}/${this.$route.params.id}`)
 			.then(res => {
 				this.customStickers = res.data.customStickers;
 				this.username = res.data.username;
 				this.avatarURL = res.data.avatar ? `https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png` : null;
-				document.title = `${res.data.username} - Stickers for Discord`;
-				this.$el.querySelector('.sticker-collection').classList.remove('faded-out');
+				document.title = `${res.data.username} - Stickers for Discord`;	
 				this.pageLoaded = true;
 			}).catch(err => {
 				if(err.response.status === 404) window.location.replace('/');
@@ -46,8 +46,7 @@ module.exports = {
 	},
 
 	watch: {
-		'$route': function(){
-			this.$el.querySelector('.sticker-collection').classList.add('faded-out');
+		'$route': function(){	
 			this.loadPageData();
 		}
 	},
@@ -64,6 +63,7 @@ module.exports = {
 <main>
 
 	<header-bar :userId="userId"></header-bar>
+	<!-- <button @click="loadPageData">reload</button> -->
 	<div class="container user-page" :class="{transparent: !pageLoaded}">
 		
 		<header>

@@ -7,19 +7,20 @@ import stickerCreationModal from '../components/sticker-creation-modal.vue';
 Vue.component('sticker', sticker);
 Vue.component('stickerCreationModal', stickerCreationModal);
 
+const normalizeObj = obj => JSON.parse(JSON.stringify(obj));
+
 module.exports = {
 	props: ['name', 'isEditable', 'stickers', 'pageType'],
-	data: function(){
+	data: function(){	
 		return {	
-			stickerSearchString: '',
-			//displayStickers: this.stickers,
-			//loadingNewSticker: false
+			stickerSearchString: '',	
+			loadingNewSticker: false
 		}
 	},
 	methods: {
+		
 		addSticker(formData){
-			//this.loadingNewSticker = true;
-			this.stickers.push({name: formData.get('name'), url: '/images/loading-spin.svg'});
+			this.loadingNewSticker = true;	
 
 			axios.post(`/api/${this.pageType}/${this.$route.params.id}/stickers`, formData, {'Content-Type': 'multipart/form-data'})
 			.then(res => {
@@ -33,23 +34,16 @@ module.exports = {
 		},
 
 		deleteSticker(stickerName){
+			if(!confirm('Are you sure you want to delete -'+stickerName+'?')) return false;
+
 			axios.delete(`/api/${this.pageType}/${this.$route.params.id}/stickers/${stickerName}`)
 			.then(res => {
 				this.$emit('reload');
 			}).catch(err => {
 				if(err.response.status === 401) window.location.href = '/login';
 			});
-		},
-
-		showConfirmDialog(text, callback){
-			if(!confirm(text)) return false;
-			callback();
 		}
 
-	},
-	mounted: function(){
-		//this.displayStickers.forEach(sticker => console.log);
-		//this.displayStickers.push({name: 'test', url: '/images/loading-spin.svg'});
 	}
 }
 </script>
@@ -69,12 +63,12 @@ module.exports = {
 		</div>
 	</header>	
 	<div class="sticker-area">
-		<!--<div v-if="loadingNewSticker" class="loading-sticker sticker">
+		<div v-if="loadingNewSticker" class="loading-sticker sticker">
 			<img src="/images/loading-spin.svg" alt="">
-		</div>-->
+		</div>
 		<sticker
-			v-for="sticker in displayStickers"
-			v-on:deleteSticker="showConfirmDialog('Are you sure you want to delete -'+sticker.name+'?', function(){deleteSticker(sticker.name)})"
+			v-for="sticker in stickers"
+			v-on:deleteSticker="deleteSticker(sticker.name)"
 			v-show="sticker.name.indexOf(stickerSearchString.replace(/(:|-)/g, '')) > -1"
 			:link="sticker.url"
 			:name="'-'+sticker.name"
@@ -96,10 +90,10 @@ module.exports = {
 	.sticker-collection
 		.sticker-area
 			font-size: 0
-		//.loading-sticker
-		//	vertical-align: bottom
-		//	height: 278px
-		//	justify-content: center
+		.loading-sticker
+			vertical-align: bottom
+			height: 278px
+			justify-content: center
 		h2
 			font-size: 30px
 			font-weight: 300
