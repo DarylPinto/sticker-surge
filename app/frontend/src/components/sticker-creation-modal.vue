@@ -16,8 +16,14 @@ module.exports = {
 
 		emitAddSticker(){
 			//Error checking
+			let file = document.querySelector('.sticker-creation-modal input[type="file"]').files[0];
+
 			if(this.stickers.map(s => s.name).indexOf(this.newStickerName) > -1){
 				this.stickerUploadError = "Name already in use by another sticker.";
+				return false;
+			}
+			if(file && file.size > 5 * 1024 * 1024){
+				this.stickerUploadError = "File size is too large (5MB Max).";
 				return false;
 			}
 			if(!this.emojiNamesAllowed && emojis.indexOf(this.newStickerName) > -1){
