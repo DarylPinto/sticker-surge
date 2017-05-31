@@ -1,6 +1,6 @@
 <script>
 module.exports = {
-	props: ['link', 'name', 'isEditable'],
+	props: ['link', 'name', 'isEditable']
 }
 </script>
 

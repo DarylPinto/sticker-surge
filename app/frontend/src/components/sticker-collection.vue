@@ -97,8 +97,11 @@ module.exports = {
 			font-size: 0
 		.loading-sticker
 			vertical-align: bottom
-			height: 278px
+			height: 280px
 			justify-content: center
+			img
+				margin: 0
+				width: 100px
 		h2
 			font-size: 30px
 			font-weight: 300

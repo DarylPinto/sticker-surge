@@ -1,17 +1,13 @@
 {
-  "name": "stickers-for-discord-testing",
+  "name": "stickers-for-discord",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/darylpinto/stickers-for-discord-v2"
-  },
+  "description": "Custom stickers and sticker packs for discord servers!",
   "author": "Daryl Pinto",
   "license": "MPLv2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darylpinto/stickers-for-discord"
+  },
   "dependencies": {
     "body-parser": "^1.17.1",
     "client-sessions": "^0.8.0",

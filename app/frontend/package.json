@@ -1,9 +1,13 @@
 {
   "name": "stickers-for-discord-frontend",
   "version": "1.0.0",
-  "description": "",
+  "description": "Custom stickers and sticker packs for discord servers!",
   "author": "Daryl Pinto",
   "license": "MPLv2",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darylpinto/stickers-for-discord"
+  },
   "dependencies": {
     "axios": "^0.16.1",
     "vue-cookie": "^1.1.4"
