@@ -18,7 +18,7 @@ module.exports = function(message){
 
 			let sticker = JSON.parse(res).find(s => s.name === sticker_name);	
 			if(sticker){
-				message.channel.send(`**${author_name}**:`, {files: [sticker.url]});
+				message.channel.send(`**${author_name}:**`, {files: [sticker.url]});
 				message.delete();
 			}
 
@@ -36,7 +36,7 @@ module.exports = function(message){
 
 			let sticker = JSON.parse(res).find(s => s.name === sticker_name);
 			if(sticker){
-				message.channel.send(`**${author_name}**:`, {files: [sticker.url]});
+				message.channel.send(`**${author_name}:**`, {files: [sticker.url]});
 				message.delete();
 			}
 
@@ -74,7 +74,7 @@ module.exports = function(message){
 
 			let sticker = JSON.parse(res).stickers.find(s => s.name === sticker_name);
 			if(sticker){
-				message.channel.send(`**${author_name}**:`, {files: [sticker.url]});
+				message.channel.send(`**${author_name}:**`, {files: [sticker.url]});
 				message.delete();
 			}
 

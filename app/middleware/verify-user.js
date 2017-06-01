@@ -28,9 +28,11 @@ function getNewAccessToken(id){return new Promise((resolve, reject) => {
 
 module.exports = function(options = {ajax: false}){
 
-return function(req, res, next){
+return function(req, res, next){	
 
-	if(!options.ajax && (!req.session.token || !req.session.id))	return res.redirect('/login');
+	//TODO: Allow bot to pass
+
+	if(!options.ajax && (!req.session.token || !req.session.id)) return res.redirect('/login');
 	if(options.ajax && (!req.session.token || !req.session.id)) return res.status(401).send('Unauthorized');
 
 	rp({

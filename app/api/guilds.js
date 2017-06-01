@@ -2,7 +2,7 @@ const router = require('express').Router();
 const path = require('path');
 const rp = require('request-promise');
 const verifyUserAjax = require('../middleware/verify-user.js')({ajax: true});
-const User = require('./models/user-model.js');
+const Guild = require('./models/guild-model.js');
 const util = require('./utilities/utilities.js');
 const imageToCdn = require('./utilities/image-to-cdn.js');
 const emojis = require('./utilities/emojis.json');
@@ -19,8 +19,7 @@ let handleMulterError = function(err, req, res, next){
 
 const removedFields = {
 	'_id': false,
-	'__v': false,
-	'refresh_token': false,
+	'__v': false,	
 	'customStickers._id': false
 }
 
@@ -28,33 +27,33 @@ const removedFields = {
 //GET//
 ///////
 
-//GET user by id
+//GET guild by id
 router.get('/:id', (req, res) => {
-	User.findOne({id: req.params.id}, removedFields)
-	.then(user => {	
-		if(!user) return res.status(404).send('User not found');
-		res.json(user);	
+	Guild.findOne({id: req.params.id}, removedFields)
+	.then(guild => {	
+		if(!guild) return res.status(404).send('Guild not found');
+		res.json(guild);	
 	})
 	.catch(err => res.status(503).send('Database error'));
 });
 
-//GET user's stickers
+//GET guild's stickers
 router.get('/:id/stickers', (req, res) => {
-	User.findOne({id: req.params.id}, removedFields)
-	.then(user => {	
-		if(!user) return res.status(404).send('User not found');
-		res.json(user.customStickers);	
+	Guild.findOne({id: req.params.id}, removedFields)
+	.then(guild => {	
+		if(!guild) return res.status(404).send('Guild not found');
+		res.json(guild.customStickers);	
 	})
 	.catch(err => res.status(503).send('Database error'));
 });
 
 //GET a user's custom sticker
 router.get('/:id/stickers/:stickername', (req, res) => {
-	User.findOne({id: req.params.id}, removedFields)
-	.then(user => {
-		if(!user) return res.status(404).send('User does not have a custom sticker with that name');
-		let sticker = user._doc.customStickers.find(s => s.name === req.params.stickername);
-		return res.json(sticker);	
+	Guild.findOne({id: req.params.id}, removedFields)
+	.then(guild => {
+		if(!guild) return res.status(404).send('Guild does not have a custom sticker with that name');
+		let sticker = guild._doc.customStickers.find(s => s.name === req.params.stickername);
+		return res.json(sticker);
 	})
 	.catch(err => res.status(503).send('Database error'));
 });
@@ -63,16 +62,13 @@ router.get('/:id/stickers/:stickername', (req, res) => {
 //POST//
 ////////
 
-//POST new user
-
-/*TODO: Check for user/bot authentication*/
+//POST new guild
 router.post('/', (req, res) => {
-	console.log(req.headers);
-	if(!req.body.username || !req.body.id || !req.body.avatar) return res.status(400).send('Invalid body data');	
+	if(!req.body.guildName || !req.body.id || !req.body.icon) return res.status(400).send('Invalid body data');	
 
-	new User(req.body).save()
-	.then(() => User.findOne({id: req.body.id}, removedFields))
-	.then(user => res.status(201).json(user))
+	new Guild(req.body).save()
+	.then(() => Guild.findOne({id: req.body.id}, removedFields))
+	.then(guild => res.status(201).json(guild))
 	.catch(err => res.status(503).send('Database error'));
 });
 

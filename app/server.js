@@ -41,8 +41,8 @@ app.get('/your-stickers', verifyUser, (req, res) => {
 
 //API
 app.use('/api/users', require('./api/users.js'));
-/*
 app.use('/api/guilds', require('./api/guilds.js'));
+/*
 app.use('/api/sticker-packs', require('./api/sticker-packs.js'));
 */
 
