@@ -47,7 +47,7 @@ router.get('/:id/stickers', (req, res) => {
 	.catch(err => res.status(503).send('Database error'));
 });
 
-//GET a user's custom sticker
+//GET a guild's custom sticker
 router.get('/:id/stickers/:stickername', (req, res) => {
 	Guild.findOne({id: req.params.id}, removedFields)
 	.then(guild => {
@@ -63,8 +63,10 @@ router.get('/:id/stickers/:stickername', (req, res) => {
 ////////
 
 //POST new guild
+
+/*TODO: Check for user/bot authentication*/
 router.post('/', (req, res) => {
-	if(!req.body.guildName || !req.body.id || !req.body.icon) return res.status(400).send('Invalid body data');	
+	if(!req.body.guildName || !req.body.id) return res.status(400).send('Invalid body data');	
 
 	new Guild(req.body).save()
 	.then(() => Guild.findOne({id: req.body.id}, removedFields))
@@ -77,6 +79,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 
 	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
+	if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');
 	if(req.session.id != req.params.id) return res.status(401).send('Unauthorized');
 
 	let data = {

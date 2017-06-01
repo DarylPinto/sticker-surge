@@ -5,7 +5,6 @@ const verifyUserAjax = require('../middleware/verify-user.js')({ajax: true});
 const User = require('./models/user-model.js');
 const util = require('./utilities/utilities.js');
 const imageToCdn = require('./utilities/image-to-cdn.js');
-const emojis = require('./utilities/emojis.json');
 
 let multer = require('multer');
 let upload = multer({
@@ -68,7 +67,7 @@ router.get('/:id/stickers/:stickername', (req, res) => {
 /*TODO: Check for user/bot authentication*/
 router.post('/', (req, res) => {
 	console.log(req.headers);
-	if(!req.body.username || !req.body.id || !req.body.avatar) return res.status(400).send('Invalid body data');	
+	if(!req.body.username || !req.body.id) return res.status(400).send('Invalid body data');	
 
 	new User(req.body).save()
 	.then(() => User.findOne({id: req.body.id}, removedFields))

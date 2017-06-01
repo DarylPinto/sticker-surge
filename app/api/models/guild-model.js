@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const guildSchema = Schema({
 	id: {type: String, unique: true, required: true},
 	guildName: {type: String, required: true},
-	icon: {type: String, required: true},
+	icon: {type: String, default: null},
 	commandPrefix: {type: String, default: '$'},
 	customStickers: [{
 		name: {type: String, required: true, maxlength: 20},
