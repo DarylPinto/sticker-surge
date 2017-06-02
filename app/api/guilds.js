@@ -23,6 +23,8 @@ const removedFields = {
 	'customStickers._id': false
 }
 
+//TODO: Fix bug where users can edit any guild's stickers if managerRole is set to @everyone
+
 ///////
 //GET//
 ///////
@@ -64,7 +66,7 @@ router.get('/:id/stickers/:stickername', (req, res) => {
 
 //POST new guild
 
-/*TODO: Check for user/bot authentication*/
+/*TODO: Check for bot authentication*/
 router.post('/', (req, res) => {
 	if(!req.body.guildName || !req.body.id) return res.status(400).send('Invalid body data');	
 
@@ -79,7 +81,8 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 
 	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
-	if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');	
+	if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');
+	if(!req.session.id) return res.status(401).send('Unauthorized');	
 
 	let data = {
 		name: req.body.name.toLowerCase().replace(/(:|-)/g, ''),
@@ -127,6 +130,8 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 /////////
 
 //Update guild
+
+/*TODO: Check for bot authentication*/
 router.patch('/:id', (req, res) => {
 
 	if(!req.body.icon || !req.body.managerIds) return res.status(400).send('Invalid body data');
@@ -160,6 +165,8 @@ router.patch('/:id', (req, res) => {
 
 //DELETE existing user's custom sticker
 router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {	
+
+	if(!req.session.id) return res.status(401).send('Unauthorized');
 
 	Guild.findOne({id: req.params.id})
 	.then(guild => {

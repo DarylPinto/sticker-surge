@@ -26,7 +26,9 @@ module.exports = {
 	},
 
 	computed: {
-		userCanEdit: function(){return this.managerIds.includes(this.userId) || this.managerRole === '@everyone'}	
+		userCanEdit: function(){
+			return this.userId && (this.managerIds.includes(this.userId) || this.managerRole === '@everyone');
+		}	
 	},
 
 	methods: {
