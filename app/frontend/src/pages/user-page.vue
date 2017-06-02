@@ -71,7 +71,15 @@ module.exports = {
 			<h1>{{username}}</h1>	
 		</header>
 
-		<stickerCollection v-on:reload="loadPageData" name="Custom Stickers" :stickers="customStickers" pageType="users" :isEditable="isUsersPage"></stickerCollection>
+		<stickerCollection
+			v-on:reload="loadPageData"
+			name="Custom Stickers"
+			stickerPrefix="-"
+			:emojiNamesAllowed="true"
+			:stickers="customStickers"
+			:pageType="pageType"
+			:isEditable="isUsersPage">
+		</stickerCollection>
 
 	</div>
 

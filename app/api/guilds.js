@@ -74,13 +74,12 @@ router.post('/', (req, res) => {
 	.catch(err => res.status(503).send('Database error'));
 });
 
-//POST new custom sticker to existing user
+//POST new custom sticker to existing guild
 router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMulterError, (req, res) => {
 
 	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
-	if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');
-	if(req.session.id != req.params.id) return res.status(401).send('Unauthorized');
+	if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');	
 
 	let data = {
 		name: req.body.name.toLowerCase().replace(/(:|-)/g, ''),
@@ -89,26 +88,30 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 
 	let imageIsLocal = (req.file) ? true : false;
 
-	User.findOne({id: req.params.id})
-	.then(user => {
-		if(user.customStickers.map(s => s.name).includes(data.name)){
-			res.status(400).send('User already has a custom sticker with that name');
+	Guild.findOne({id: req.params.id})
+	.then(guild => {
+		if(!guild.managerIds.includes(req.session.id) && guild.managerRole != '@everyone'){
+			res.status(401).send('Unauthorized');
 			return null;
 		}
-		return Promise.all([user, imageToCdn(data.sticker_path, imageIsLocal)]);
+		if(guild.customStickers.map(s => s.name).includes(data.name)){
+			res.status(400).send('Guild already has a custom sticker with that name');
+			return null;
+		}
+		return Promise.all([guild, imageToCdn(data.sticker_path, imageIsLocal)]);
 	})
 	.then(arr => {
 		if(!arr) return false;
 
-		let user = arr[0];
+		let guild = arr[0];
 		let sticker = {name: data.name, url: arr[1]};
 
-		user.customStickers.unshift(sticker);
-		return user.save();
+		guild.customStickers.unshift(sticker);
+		return guild.save();
 	})
-	.then(user => {
-		if(!user) return false;
-		let sticker = user.customStickers.find(s => s.name === data.name);
+	.then(guild => {
+		if(!guild) return false;
+		let sticker = guild.customStickers.find(s => s.name === data.name);
 		return res.status(201).json(util.removeProps(sticker._doc, ['_id']));
 	})
 	.catch(err => {
@@ -119,36 +122,69 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 
 });
 
+/////////
+//PATCH//
+/////////
+
+//Update guild
+router.patch('/:id', (req, res) => {
+
+	if(!req.body.icon || !req.body.managerIds) return res.status(400).send('Invalid body data');
+
+	Guild.findOne({id: req.params.id})
+	.then(guild => {
+
+		if(!guild){
+			res.status(404).send('Guild not found');
+			return null;	
+		}
+
+		guild.managerIds = req.body.managerIds;
+		guild.icon = req.body.icon;
+
+		return guild.save();
+
+	})
+	.then(guild => {
+		if(guild) res.send('Successfully updated guild');
+	})
+	.catch(err => {	
+		res.status(503).send('Database error');
+	});
+
+});
+
 //////////
 //DELETE//
 //////////
 
 //DELETE existing user's custom sticker
-router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
+router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {	
 
-	if(req.session.id != req.params.id) return res.status(401).send('Unauthorized');
-
-	User.findOne({id: req.params.id})
-	.then(user => {
-		
-		if(!user){
-			res.status(404).send('User not found');
+	Guild.findOne({id: req.params.id})
+	.then(guild => {
+		if(!guild.managerIds.includes(req.session.id) && guild.managerRole != '@everyone'){
+			res.status(401).send('Unauthorized');
+			return null;
+		}
+		if(!guild){
+			res.status(404).send('Guild not found');
 			return null;
 		}
 
-		let sticker_names = user.customStickers.map(s => s.name);
+		let sticker_names = guild.customStickers.map(s => s.name);
 		let deletion_request_index = sticker_names.indexOf(req.params.stickername);
 		if(deletion_request_index === -1){
-			res.status(404).send('User does not have a custom sticker with that name');
+			res.status(404).send('Guild does not have a custom sticker with that name');
 			return null;
 		}
-		user.customStickers.splice(deletion_request_index, 1);
-		return user.save();
+		guild.customStickers.splice(deletion_request_index, 1);
+		return guild.save();
 
-	})	
-	.then(user => {
+	})
+	.then(guild => {
 
-		if(user) res.send('Successfully deleted custom sticker');
+		if(guild) res.send('Successfully deleted custom sticker');
 
 	})
 	.catch(err => {

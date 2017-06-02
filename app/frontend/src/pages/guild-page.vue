@@ -15,6 +15,8 @@ module.exports = {
 			guildName: '',
 			iconURL: '',
 			customStickers: [],
+			managerIds: [],
+			managerRole: '',
 			stickerName: '',
 			stickerURL: '',
 			stickerCreationError: '',
@@ -24,7 +26,7 @@ module.exports = {
 	},
 
 	computed: {
-		isUsersPage: function(){return this.userId === this.$route.params.id}
+		userCanEdit: function(){return this.managerIds.includes(this.userId) || this.managerRole === '@everyone'}	
 	},
 
 	methods: {
@@ -33,9 +35,11 @@ module.exports = {
 				
 			axios.get(`/api/${this.pageType}/${this.$route.params.id}?nocache=${(new Date()).getTime()}`)
 			.then(res => {
-				this.customStickers = res.data.customStickers;
 				this.guildName = res.data.guildName;
 				this.iconURL = res.data.icon ? `https://cdn.discordapp.com/icons/${res.data.id}/${res.data.icon}.png` : null;
+				this.customStickers = res.data.customStickers;	
+				this.managerIds = res.data.managerIds;
+				this.managerRole = res.data.managerRole;
 				document.title = `${res.data.guildName} - Stickers for Discord`;	
 				this.pageLoaded = true;
 			}).catch(err => {
@@ -71,7 +75,15 @@ module.exports = {
 			<h1>{{guildName}}</h1>	
 		</header>
 
-		<stickerCollection v-on:reload="loadPageData" name="Custom Stickers" :stickers="customStickers" pageType="users" :isEditable="isUsersPage"></stickerCollection>
+		<stickerCollection
+			v-on:reload="loadPageData"
+			name="Custom Stickers"
+			stickerPrefix=""
+			:emojiNamesAllowed="false"
+			:stickers="customStickers"
+			:pageType="pageType"
+			:isEditable="userCanEdit">
+		</stickerCollection>
 
 	</div>
 

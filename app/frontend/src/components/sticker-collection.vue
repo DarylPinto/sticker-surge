@@ -10,7 +10,7 @@ Vue.component('stickerCreationModal', stickerCreationModal);
 const normalizeObj = obj => JSON.parse(JSON.stringify(obj));
 
 module.exports = {
-	props: ['name', 'isEditable', 'stickers', 'pageType'],
+	props: ['name', 'stickerPrefix', 'emojiNamesAllowed', 'isEditable', 'stickers', 'pageType'],
 	data: function(){	
 		return {	
 			stickerSearchString: '',	
@@ -71,7 +71,7 @@ module.exports = {
 			v-on:deleteSticker="deleteSticker(sticker.name)"
 			v-show="sticker.name.indexOf(stickerSearchString.replace(/(:|-)/g, '')) > -1"
 			:link="sticker.url"
-			:name="'-'+sticker.name"
+			:name="stickerPrefix+sticker.name"
 			:prefix="null"
 			:isEditable="isEditable">
 		</sticker>
@@ -81,7 +81,7 @@ module.exports = {
 	<stickerCreationModal
 		v-if="isEditable"
 		v-on:addSticker="addSticker($event)"
-		:emojiNamesAllowed="true"
+		:emojiNamesAllowed="emojiNamesAllowed"
 		:stickers="stickers">
 	</stickerCreationModal>
 
