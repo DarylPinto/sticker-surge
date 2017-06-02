@@ -1,6 +1,7 @@
 const rp = require('request-promise');
 const Cryptr = require('cryptr');
 const User = require('../api/models/user-model.js');
+const util = require('../api/utilities/utilities.js');
 const covert = require('../../covert.js');
 
 const cryptr = new Cryptr(covert.refresh_token_key);
@@ -42,7 +43,10 @@ return function(req, res, next){
 			'Authorization': `Bearer ${req.session.token}`
 		}
 	})
-	.then(data => {
+	.then(() => {
+		return util.setGuildsCookie(req, res, access_token);
+	})
+	.then(() => {
 		next();
 	})
 	.catch(error => {

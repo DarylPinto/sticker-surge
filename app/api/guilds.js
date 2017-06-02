@@ -93,7 +93,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 
 	Guild.findOne({id: req.params.id})
 	.then(guild => {
-		if(!guild.managerIds.includes(req.session.id) && guild.managerRole != '@everyone'){
+		if(!guild.managerIds.includes(req.session.id) && !(req.session.guilds.includes(guild.id) && guild.managerRole === '@everyone')){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -170,7 +170,7 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 
 	Guild.findOne({id: req.params.id})
 	.then(guild => {
-		if(!guild.managerIds.includes(req.session.id) && guild.managerRole != '@everyone'){
+		if(!guild.managerIds.includes(req.session.id) && !(req.session.guilds.includes(guild.id) && guild.managerRole === '@everyone')){
 			res.status(401).send('Unauthorized');
 			return null;
 		}

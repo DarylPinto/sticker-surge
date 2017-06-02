@@ -35,7 +35,7 @@ app.use('/login', require('./routes/auth.js').login);
 app.use('/logout', require('./routes/auth.js').logout);
 app.use('/callback', require('./routes/auth.js').callback);
 
-app.get('/your-stickers', verifyUser, (req, res) => {
+app.get('/your-stickers', verifyUser, (req, res) => {	
 	res.redirect(`/user/${req.session.id}`);
 });
 

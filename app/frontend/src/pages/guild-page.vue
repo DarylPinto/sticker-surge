@@ -12,6 +12,7 @@ module.exports = {
 
 	data: function(){
 		return {
+			guildId: '',
 			guildName: '',
 			iconURL: '',
 			customStickers: [],
@@ -21,13 +22,14 @@ module.exports = {
 			stickerURL: '',
 			stickerCreationError: '',
 			pageLoaded: false,
-			userId: this.$cookie.get('id') || null
+			userId: this.$cookie.get('id') || null,
+			userGuilds: JSON.parse(decodeURIComponent(this.$cookie.get('guilds')))
 		}
 	},
 
 	computed: {
 		userCanEdit: function(){
-			return this.userId && (this.managerIds.includes(this.userId) || this.managerRole === '@everyone');
+			return this.userId && this.userGuilds.includes(this.guildId) && (this.managerIds.includes(this.userId) || this.managerRole === '@everyone');
 		}	
 	},
 
@@ -37,6 +39,7 @@ module.exports = {
 				
 			axios.get(`/api/${this.pageType}/${this.$route.params.id}?nocache=${(new Date()).getTime()}`)
 			.then(res => {
+				this.guildId = res.data.id;
 				this.guildName = res.data.guildName;
 				this.iconURL = res.data.icon ? `https://cdn.discordapp.com/icons/${res.data.id}/${res.data.icon}.png` : null;
 				this.customStickers = res.data.customStickers;	

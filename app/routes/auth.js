@@ -4,6 +4,7 @@ const simpleOauth = require('simple-oauth2');
 const sessions = require('client-sessions');
 const Cryptr = require('cryptr');
 const User = require('../api/models/user-model.js');
+const util = require('../api/utilities/utilities.js');
 const covert = require('../../covert.js');
 
 const cryptr = new Cryptr(covert.refresh_token_key);
@@ -28,9 +29,8 @@ module.exports = {
 login: express.Router().get('/', (req, res) => {
 
 	const authorizationUri = oauth2.authorizationCode.authorizeURL({
-		redirect_uri: 'http://localhost:3000/callback',
-		scope: 'identify'
-		//scope: 'identify guilds'
+		redirect_uri: 'http://localhost:3000/callback',	
+		scope: 'identify guilds'
 	});
 
 	res.redirect(authorizationUri);
@@ -40,6 +40,7 @@ login: express.Router().get('/', (req, res) => {
 logout: express.Router().get('/', (req, res) => {
 	req.session.reset();
 	res.clearCookie('id');
+	res.clearCookie('guilds');
 	res.redirect('/');
 }),
 
@@ -49,6 +50,7 @@ callback: express.Router().get('/', (req, res) => {
 	let access_token;
 	let refresh_token;
 	let user_id;
+	let user_guilds = [];
 
 	oauth2.authorizationCode.getToken({
 		code: req.query.code,
@@ -80,12 +82,21 @@ callback: express.Router().get('/', (req, res) => {
 		if(user.refresh_token === '')	user.refresh_token = cryptr.encrypt(refresh_token);
 		return user.save();
 	})
-	.then(user => {
+	.then(user => {	
+
+		return util.setGuildsCookie(req, res, access_token);
+
+	})
+	.then(() => {
+
+		//Cookies are set twice, once as tamper-proof httpOnly cookies for authentication,
 		req.session.token = access_token;
 		req.session.id = user_id;
-		//id is set twice, once as a tamper-proof httpOnly cookie for authentication,
-		//the other is a regular un-encrypted cookie for the view to use
+		
+		//And again as standard cookies for the view to use
 		res.cookie('id', user_id);
+
+		//Redirect to user's sticker page
 		res.redirect('/your-stickers');
 	})
 	.catch(err => {
