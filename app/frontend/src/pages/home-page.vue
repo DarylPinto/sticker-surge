@@ -8,12 +8,14 @@ module.exports = {
 
 	data: function(){
 		return {
+			pageLoaded: false,
 			userId: this.$cookie.get('id') || null
 		}
 	},
 
 	mounted: function(){
 		document.title = 'Stickers for Discord';
+		this.pageLoaded = true;
 	}
 
 }
@@ -24,7 +26,7 @@ module.exports = {
 <main>
 
 	<header-bar :userId="userId"></header-bar>
-	<div class="container home-page">
+	<div class="container home-page" :class="{transparent: !pageLoaded}">
 		<h1>Express yourself with<br>Stickers for Discord</h1>
 		<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=8192" class="btn" target="_blank">Add to Discord</a>	
 	</div>
@@ -36,6 +38,9 @@ module.exports = {
 
 	.home-page	
 		text-align: center
+		transition: .2s
+		&.transparent
+			opacity: 0
 		h1	
 			font-family: 'Righteous', sans-serif
 			font-size: 75px

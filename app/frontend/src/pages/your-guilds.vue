@@ -14,6 +14,7 @@ if(!Array.prototype.includes){
 module.exports = {
 	data: function(){
 		return {
+			pageLoaded: false,
 			userId: this.$cookie.get('id') || null,
 			userGuilds: JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || [],
 			userGuildData: []
@@ -46,9 +47,10 @@ module.exports = {
 				axios.get(`/api/guilds/${id}?nocache=${(new Date()).getTime()}`)
 				.then(res => {
 					this.userGuildData.push({id: id, name: res.data.guildName, icon: res.data.icon});
+					if(!this.pageLoaded) this.pageLoaded = true;
 				});
 			});
-			fakeGuilds.forEach(g => this.userGuildData.push(g)); //for test purposes
+			//fakeGuilds.forEach(g => this.userGuildData.push(g)); //for test purposes
 			
 		},
 
@@ -64,7 +66,8 @@ module.exports = {
 				this.userGuilds = JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || [];	//set user guilds once cookies are updated
 
 				//if new user guilds are different from when the page first loaded, reload the data
-				if(JSON.stringify(this.userGuilds) === initialUserGuilds) return false; 
+				if(JSON.stringify(this.userGuilds) === initialUserGuilds) return false;
+				this.pageLoaded = false;
 				this.userGuildData = [];
 				this.loadPageData();
 			});
@@ -91,9 +94,9 @@ module.exports = {
 
 	<header-bar :userId="userId"></header-bar>
 	
-	<div class="container your-guilds-page">
+	<div class="container your-guilds-page" :class="{transparent: !pageLoaded}">
 		
-		<div v-if="userGuildData.length === 0" class="no-guilds-alert">
+		<div v-if="userGuildData.length === 0 && pageLoaded" class="no-guilds-alert">
 			<p>You're not in any servers with Stickers for Discord<br>
 			Let's fix that, shall we?</p>
 			<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=8192" class="btn" target="_blank">Add to Discord</a>
@@ -115,6 +118,9 @@ module.exports = {
 
 	.your-guilds-page
 		margin-top: 30px
+		transition: .2s
+		&.transparent
+			opacity: 0
 		.guild
 			display: inline-block
 			width: 25%
