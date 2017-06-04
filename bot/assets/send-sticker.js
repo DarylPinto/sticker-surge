@@ -1,4 +1,5 @@
 const rp = require('request-promise');
+const covert = require('../../covert.js');
 
 module.exports = function(message){
 
@@ -13,7 +14,7 @@ module.exports = function(message){
 	if(command.startsWith('-')){
 		let sticker_name = command.replace('-', '');
 
-		rp(`http://localhost:3000/api/users/${user.id}/stickers`)
+		rp(`${covert.app_url}/api/users/${user.id}/stickers`)
 		.then(res => {
 
 			let sticker = JSON.parse(res).find(s => s.name === sticker_name);	
@@ -31,7 +32,7 @@ module.exports = function(message){
 		let guild = message.channel.guild;
 		let sticker_name = command;
 
-		rp(`http://localhost:3000/api/guilds/${guild.id}/stickers`)
+		rp(`${covert.app_url}/api/guilds/${guild.id}/stickers`)
 		.then(res => {
 
 			let sticker = JSON.parse(res).find(s => s.name === sticker_name);
@@ -49,12 +50,12 @@ module.exports = function(message){
 
 		let pack_key = command.split('-')[0];
 		let sticker_name = command.split('-')[1];
-		let requests = [rp(`http://localhost:3000/api/users/${user.id}`)];
+		let requests = [rp(`${covert.app_url}/api/users/${user.id}`)];
 
 		//If guild message
 		if(is_guild_message){
 			let guild = message.channel.guild;
-			requests.push(rp(`http://localhost:3000/api/guilds/${guild.id}`));
+			requests.push(rp(`${covert.app_url}/api/guilds/${guild.id}`));
 		}
 
 		Promise.all(requests)
@@ -66,7 +67,7 @@ module.exports = function(message){
 
 			if(!valid_packs.includes(pack_key)) return null;
 
-			return rp(`http://localhost:3000/api/packs/${pack_key}`);
+			return rp(`${covert.app_url}/api/packs/${pack_key}`);
 
 		})
 		.then(res => {

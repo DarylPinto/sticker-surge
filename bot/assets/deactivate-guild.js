@@ -1,9 +1,10 @@
 const rp = require('request-promise');
+const covert = require('../../covert.js');
 
 module.exports = function(guild){
 	rp({
 		method: 'PATCH',
-		uri: `http://localhost:3000/api/guilds/${guild.id}`,
+		uri: `${covert.app_url}api/guilds/${guild.id}`,
 		body: {isActive: false},
 		json: true
 	})

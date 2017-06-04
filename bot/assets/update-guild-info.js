@@ -1,4 +1,5 @@
 const rp = require('request-promise');
+const covert = require('../../covert.js');
 
 module.exports = function(guild){
 
@@ -6,7 +7,7 @@ module.exports = function(guild){
 	let manager_role;
 	let manager_ids;
 
-	rp(`http://localhost:3000/api/guilds/${guild.id}`)
+	rp(`${covert.app_url}/api/guilds/${guild.id}`)
 	.then(res => {
 		manager_role_name = JSON.parse(res).managerRole;
 		manager_role = guild.roles
@@ -18,7 +19,7 @@ module.exports = function(guild){
 
 		return rp({
 			method: 'PATCH',
-			uri: `http://localhost:3000/api/guilds/${guild.id}`,
+			uri: `${covert.app_url}/api/guilds/${guild.id}`,
 			body: {	
 				managerIds: manager_ids,	
 				icon: guild.icon || null

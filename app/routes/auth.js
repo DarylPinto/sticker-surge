@@ -29,7 +29,7 @@ module.exports = {
 login: express.Router().get('/', (req, res) => {
 
 	const authorizationUri = oauth2.authorizationCode.authorizeURL({
-		redirect_uri: 'http://localhost:3000/callback',	
+		redirect_uri: `${covert.app_url}/callback`,	
 		scope: 'identify guilds'
 	});
 
@@ -54,7 +54,7 @@ callback: express.Router().get('/', (req, res) => {
 
 	oauth2.authorizationCode.getToken({
 		code: req.query.code,
-		redirect_uri: 'http://localhost:3000/callback'	
+		redirect_uri: `${covert.app_url}/callback`	
 	})
 	.then(result => {
 
@@ -92,7 +92,7 @@ callback: express.Router().get('/', (req, res) => {
 		res.cookie('id', user_id);
 
 		//Redirect to user's sticker page
-		res.redirect('/your-stickers');
+		res.redirect('/stickers');
 	})
 	.catch(err => {
 		console.error(err);

@@ -101,6 +101,8 @@ module.exports = {
 	$discord-gray: #36393E
 
 	.sticker-collection
+		> .sticker-creation-modal
+			display: none
 		.sticker-area
 			font-size: 0
 		.loading-sticker
