@@ -36,7 +36,12 @@ module.exports = {
 	computed: {
 		userCanEdit: function(){
 			return this.userId && this.userGuilds.includes(this.guildId) && (this.managerIds.includes(this.userId) || this.managerRole === '@everyone');
-		}	
+		},
+		nameFontSize: function(){
+			let size = 90 - this.guildName.length;
+			if(size < 50)	size = 50;
+			return size.toString() + 'px';
+		}
 	},
 
 	methods: {
@@ -91,7 +96,7 @@ module.exports = {
 		
 		<header>
 			<img v-if="iconURL" :src="iconURL" :alt="guildName">
-			<h1>{{guildName}}</h1>	
+			<h1 :style="`font-size: ${nameFontSize}`">{{guildName}}</h1>	
 		</header>
 
 		<stickerCollection

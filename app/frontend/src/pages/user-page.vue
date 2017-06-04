@@ -24,7 +24,12 @@ module.exports = {
 	},
 
 	computed: {
-		isUsersPage: function(){return this.userId === this.$route.params.id}
+		isUsersPage: function(){return this.userId === this.$route.params.id},
+		nameFontSize: function(){
+			let size = 90 - this.username.length;
+			if(size < 50)	size = 50;
+			return size.toString() + 'px';
+		}
 	},
 
 	methods: {
@@ -68,7 +73,7 @@ module.exports = {
 		
 		<header>
 			<img v-if="avatarURL" :src="avatarURL" :alt="username">
-			<h1>{{username}}</h1>	
+			<h1 :style="`font-size: ${nameFontSize}`">{{username}}</h1>	
 		</header>
 
 		<stickerCollection

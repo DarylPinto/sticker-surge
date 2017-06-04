@@ -44,6 +44,11 @@ module.exports = {
 			});
 		}
 
+	},
+	computed: {
+		noStickersText(){
+			return (!this.isEditable) ? 'No stickers here just yet!' : 'No stickers here just yet. Add some!';
+		}
 	}
 }
 </script>
@@ -63,7 +68,10 @@ module.exports = {
 		</div>
 	</header>	
 	<div class="sticker-area">
-		<div v-if="loadingNewSticker" class="loading-sticker sticker">
+
+		<p v-if="stickers.length === 0 && !loadingNewSticker" class="no-stickers-text">{{noStickersText}}</p>
+
+		<div v-if="loadingNewSticker" class="loading-sticker">
 			<img src="/images/loading-spin.svg" alt="">
 		</div>
 		<sticker
@@ -97,8 +105,18 @@ module.exports = {
 			font-size: 0
 		.loading-sticker
 			vertical-align: bottom
+			background-color: $discord-gray
+			border-radius: 5px
+			overflow: hidden
+			width: calc(25% - 11.5px)
 			height: 280px
+			margin-right: 15px
+			margin-bottom: 15px
+			display: inline-flex
+			flex-direction: column
 			justify-content: center
+			align-items: center
+			position: relative
 			img
 				margin: 0
 				width: 100px
@@ -136,5 +154,12 @@ module.exports = {
 						background-color: transparent
 						border: none
 						outline: 0
+	
+	p.no-stickers-text
+		font-size: 40px
+		opacity: 0.4
+		text-align: center
+		margin-top: 100px
+		font-weight: 100
 
 </style>

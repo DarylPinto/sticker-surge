@@ -34,7 +34,6 @@ function setGuildsCookie(req, res, next){
 
 		if(err.response.body && JSON.parse(err.response.body).retry_after){
 			let retry_after = JSON.parse(err.response.body).retry_after;
-			console.log('retrying...');
 			setTimeout(() => setGuildsCookie(req, res, next), retry_after + 10);
 		}else{
 			console.error(err);
