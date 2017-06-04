@@ -1,7 +1,7 @@
 const rp = require('request-promise');
 
 module.exports = function(guild){
-	
+
 	let manager_role_name;
 	let manager_role;
 	let manager_ids;
@@ -24,7 +24,7 @@ module.exports = function(guild){
 				icon: guild.icon || null
 			},
 			json: true
-		})	
+		});
 
 	})
 	.catch(err => {

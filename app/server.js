@@ -27,6 +27,11 @@ app.use(sessions({
 	}
 }));
 
+app.get('/mess-tok', (req, res) => {
+	req.session.token = 'hehexd';
+	res.send('ok');
+});
+
 //Public dir 
 app.use('/', express.static('frontend/public'));
 

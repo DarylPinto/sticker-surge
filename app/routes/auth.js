@@ -81,12 +81,7 @@ callback: express.Router().get('/', (req, res) => {
 	.then(user => {
 		if(user.refresh_token === '')	user.refresh_token = cryptr.encrypt(refresh_token);
 		return user.save();
-	})
-	.then(user => {	
-
-		return util.setGuildsCookie(req, res, access_token);
-
-	})
+	})	
 	.then(() => {
 
 		//Cookies are set twice, once as tamper-proof httpOnly cookies for authentication,

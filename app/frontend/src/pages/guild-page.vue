@@ -7,6 +7,12 @@ import stickerCollection from '../components/sticker-collection.vue';
 Vue.component('header-bar', header);
 Vue.component('stickerCollection', stickerCollection);
 
+if(!Array.prototype.includes){
+	Array.prototype.includes = function(item){
+		return this.indexOf(item) > -1;
+	}
+}
+
 module.exports = {
 	props: ['pageType'],
 
@@ -23,7 +29,7 @@ module.exports = {
 			stickerCreationError: '',
 			pageLoaded: false,
 			userId: this.$cookie.get('id') || null,
-			userGuilds: JSON.parse(decodeURIComponent(this.$cookie.get('guilds')))
+			userGuilds: JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || []
 		}
 	},
 

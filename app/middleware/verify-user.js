@@ -27,6 +27,22 @@ function getNewAccessToken(id){return new Promise((resolve, reject) => {
 
 })};
 
+function handleExpiredRefreshToken(){
+	//User refresh_token is expired, 
+	User.findOne({id: req.session.id}).then(user => {
+		user.refresh_token = '';
+		return user.save();
+	})
+	.then(() => {
+		//redirect to login or return 401 if ajax request
+		if(options.ajax) return res.status(401).send('Unauthorized');
+		if(!options.ajax) return res.redirect('/login');
+	})
+	.catch(err => {
+		console.log(err);
+	});
+}
+
 module.exports = function(options = {ajax: false}){
 
 return function(req, res, next){	
@@ -39,12 +55,7 @@ return function(req, res, next){
 	rp({
 		method: 'GET',
 		uri: 'https://discordapp.com/api/users/@me',
-		headers: {
-			'Authorization': `Bearer ${req.session.token}`
-		}
-	})
-	.then(() => {
-		return util.setGuildsCookie(req, res, access_token);
+		headers: {'Authorization': `Bearer ${req.session.token}`}
 	})
 	.then(() => {
 		next();
@@ -57,22 +68,7 @@ return function(req, res, next){
 			req.session.token = token;
 			next();
 		})
-		.catch(err => {
-			//User refresh_token is expired, 
-			//redirect to login or return 401 if ajax request
-			User.findOne({id: req.session.id}).then(user => {
-				user.refresh_token = '';
-				return user.save();
-			})
-			.then(() => {
-				if(options.ajax) return res.status(401).send('Unauthorized');
-				if(!options.ajax) return res.redirect('/login');
-			})
-			.catch(err => {
-				console.log(err);
-			});
-			
-		});
+		.catch(err => handleExpiredRefreshToken);
 
 	});
 

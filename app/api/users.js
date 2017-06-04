@@ -51,8 +51,10 @@ router.get('/:id/stickers', (req, res) => {
 router.get('/:id/stickers/:stickername', (req, res) => {
 	User.findOne({id: req.params.id}, removedFields)
 	.then(user => {
-		if(!user) return res.status(404).send('User does not have a custom sticker with that name');
+		if(!user) return res.status(404).send('User not found');
 		let sticker = user._doc.customStickers.find(s => s.name === req.params.stickername);
+
+		if(!sticker) return res.status(404).send('User does not have a custom sticker with that name');
 		return res.json(sticker);	
 	})
 	.catch(err => res.status(503).send('Database error'));
@@ -91,6 +93,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 
 	User.findOne({id: req.params.id})
 	.then(user => {
+		if(!user) return res.status(404).send('User not found');
 		if(user.customStickers.map(s => s.name).includes(data.name)){
 			res.status(400).send('User already has a custom sticker with that name');
 			return null;

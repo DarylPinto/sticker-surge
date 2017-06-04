@@ -11,10 +11,23 @@ module.exports = function(guild){
 		},
 		json: true
 	})
-	.then(res => {
-		console.log(res);
+	.then(() => {
+		console.log(`Guild ${guild.id} added!`);
 	})
 	.catch(err => {
-		console.error(err.message);
+		
+		rp({
+			method: 'PATCH',
+			uri: `http://localhost:3000/api/guilds/${guild.id}`,
+			body: {isActive: true},
+			json: true
+		})
+		.then(res => {
+			console.log(`Guild ${guild.id} activated!`);
+		})
+		.catch(err => {
+			console.error(err.message);
+		});
+
 	});
 }

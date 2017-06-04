@@ -15,7 +15,8 @@ const guildSchema = Schema({
 	recentStickers: [String],
 	stickerPacks: [String],
 	managerRole: {type: String, default: '@everyone'},
-	managerIds: [String]
+	managerIds: [String],
+	isActive: {type: Boolean, default: true}
 });
 
 let Guild = mongoose.model('Guild', guildSchema);
