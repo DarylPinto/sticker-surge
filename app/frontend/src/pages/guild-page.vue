@@ -61,13 +61,21 @@ module.exports = {
 	},
 
 	watch: {
-		'$route': function(){	
+		'$route': function(){
 			this.loadPageData();
+			axios.get(`/api/set-guilds`)
+			.then(() => {
+				this.userGuilds = JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || []
+			});
 		}
 	},
 
 	mounted: function(){
 		this.loadPageData();
+		axios.get(`/api/set-guilds`)
+		.then(() => {
+			this.userGuilds = JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || []
+		});
 	}
 
 }

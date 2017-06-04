@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const sessions = require('client-sessions');
 const path = require('path');
 const verifyUser = require('./middleware/verify-user.js')({ajax: false});
+const setGuildsCookie = require('./middleware/set-guilds-cookie.js');
 const covert = require('../covert.js');
 
 const app = express();
@@ -50,6 +51,9 @@ app.use('/api/guilds', require('./api/guilds.js'));
 /*
 app.use('/api/sticker-packs', require('./api/sticker-packs.js'));
 */
+app.get('/api/set-guilds', verifyUser, setGuildsCookie, (req, res) => {
+	res.send('Guilds cookie updated');
+});
 
 //Redirect all other traffic to app root
 app.get('*', (req, res) => {

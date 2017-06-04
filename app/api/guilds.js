@@ -31,7 +31,7 @@ const removedFields = {
 ///////
 
 //GET guild by id
-router.get('/:id', setGuildsCookie, (req, res) => {
+router.get('/:id', (req, res) => {
 	Guild.findOne({id: req.params.id}, removedFields)
 	.then(guild => {	
 		if(!guild || !guild.isActive) return res.status(404).send('Guild not found');
