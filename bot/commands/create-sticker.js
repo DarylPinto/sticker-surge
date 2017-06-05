@@ -1,22 +1,21 @@
 const rp = require('request-promise');
 const covert = require('../../covert.js');
 
-module.exports = function(message){
+module.exports = function(message, bot_auth){
 
-	let bot_auth = `Basic ${new Buffer(covert.bot_token_hash).toString('base64')}`;
-	let messageWords = message.content.trim().split(/\s+/);
+	let message_words = message.content.trim().split(/\s+/);
 	let uri = `${covert.app_url}/api/guilds/${message.channel.guild.id}/stickers`;
 
 	if(message.channel.type === 'dm'){
 		uri = `${covert.app_url}/api/users/${message.author.id}/stickers`;	
 	}
 
-	if(messageWords.length < 3){
+	if(messageWords.length < 2){
 		message.channel.send('Invalid Syntax.')
 	}
 
-	let sticker_name = messageWords[1];
-	let sticker_url = messageWords[2];
+	let sticker_name = message_words[1];
+	let sticker_url = message_words[2];
 
 	return rp({
 		method: 'POST',

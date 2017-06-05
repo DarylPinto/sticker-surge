@@ -37,10 +37,10 @@ router.get('/', (req, res) => {
 		uri: 'https://discordapp.com/api/users/@me',
 		headers: {
 			'Authorization': `Bearer ${req.session.token}`
-		}
+		},
+		json: true
 	})
-	.then(data => {
-		data = JSON.parse(data);
+	.then(data => {	
 		res.redirect(`/user/${data.id}`);
 	})
 	.catch(err => {
@@ -49,7 +49,7 @@ router.get('/', (req, res) => {
 			getNewAccessToken(req.session.id)
 			.then(token => {
 				req.session.token = token;
-				res.redirect('/your-stickers');
+				res.redirect('/stickers');
 			});
 		}
 	});

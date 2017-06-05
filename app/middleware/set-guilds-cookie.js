@@ -10,7 +10,8 @@ function setGuildsCookie(req, res, next){
 	let user_guilds_request = rp({
 		method: 'GET',
 		uri: 'https://discordapp.com/api/users/@me/guilds',
-		headers: {'Authorization': `Bearer ${req.session.token}`}
+		headers: {'Authorization': `Bearer ${req.session.token}`},
+		json: true
 	});
 
 	let all_sticker_guilds = Guild.find({isActive: true});
@@ -18,7 +19,7 @@ function setGuildsCookie(req, res, next){
 	Promise.all([user_guilds_request, all_sticker_guilds])
 	.then(data => {	
 
-		let user_guild_ids = JSON.parse(data[0]).map(g => g.id);
+		let user_guild_ids = data[0].map(g => g.id);
 		let all_sticker_guild_ids = data[1].map(g => g.id);
 
 		let guilds_cookie = all_sticker_guild_ids.filter(id => user_guild_ids.includes(id));
@@ -32,8 +33,8 @@ function setGuildsCookie(req, res, next){
 	})
 	.catch(err => {
 
-		if(err.response.body && JSON.parse(err.response.body).retry_after){
-			let retry_after = JSON.parse(err.response.body).retry_after;
+		if(err.response.body && err.response.body.retry_after){
+			let retry_after = err.response.body.retry_after;
 			setTimeout(() => setGuildsCookie(req, res, next), retry_after + 10);
 		}else{
 			console.error(err);
