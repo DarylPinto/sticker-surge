@@ -6,6 +6,12 @@ const covert = require('../../covert.js');
 
 const cryptr = new Cryptr(covert.refresh_token_key);
 
+/**
+* Requests a new user access token from Discord's API
+*
+* @param {String} id - Discord user ID
+* @returns {Promise} - New access token
+*/
 function getNewAccessToken(id){return new Promise((resolve, reject) => {
 
 	User.findOne({id: id})
@@ -27,14 +33,16 @@ function getNewAccessToken(id){return new Promise((resolve, reject) => {
 
 })};
 
+/**
+* Delete stored refresh token from database
+* If request is ajax, respond with 401, otherwise redirect to /login
+*/
 function handleExpiredRefreshToken(){
-	//User refresh_token is expired, 
 	User.findOne({id: req.session.id}).then(user => {
 		user.refresh_token = '';
 		return user.save();
 	})
 	.then(() => {
-		//redirect to login or return 401 if ajax request
 		if(options.ajax) return res.status(401).send('Unauthorized');
 		if(!options.ajax) return res.redirect('/login');
 	})
@@ -43,6 +51,12 @@ function handleExpiredRefreshToken(){
 	});
 }
 
+/**
+* Verify that request is coming from the correct user, or from official Stickers for Discord bot
+*
+* options {Object}
+* - ajax {Boolean} - True request is ajax
+*/
 module.exports = function(options = {ajax: false}){
 
 return function(req, res, next){	

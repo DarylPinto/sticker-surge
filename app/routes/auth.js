@@ -49,8 +49,7 @@ callback: express.Router().get('/', (req, res) => {
 
 	let access_token;
 	let refresh_token;
-	let user_id;
-	let user_guilds = [];
+	let user_id;	
 
 	oauth2.authorizationCode.getToken({
 		code: req.query.code,

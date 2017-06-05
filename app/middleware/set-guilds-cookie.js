@@ -1,8 +1,11 @@
 const rp = require('request-promise');
 const Guild = require('../api/models/guild-model.js');
 
-//Set cookie "guilds" as an array of guild id's that the user is a member of AND are in the guild db collection
-//The cookie is added to the session as a tamper proof httpOnly cookie and as a standard cookie for the view to use
+/**
+* Set `guilds` cookie as an array of guild IDs that the user is a member of AND are registered in Stickers for Discord.
+* The cookie is added to the session as a tamper proof httpOnly cookie and as a standard easily readable cookie for
+* the view layer to use
+*/
 function setGuildsCookie(req, res, next){
 
 	if(!req.session.token) return next();

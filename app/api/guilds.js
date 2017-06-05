@@ -15,7 +15,7 @@ let upload = multer({
 	limits: {fileSize: 5 * 1024 * 1024} //5MB max image upload
 });
 let handleMulterError = function(err, req, res, next){
-	if(err)	res.status(400).send(err.message);
+	if(err)	res.status(400).send(err.message)
 	else next();
 }
 
@@ -24,8 +24,6 @@ const removedFields = {
 	'__v': false,
 	'customStickers._id': false
 }
-
-//TODO: Fix bug where users can edit any guild's stickers if managerRole is set to @everyone
 
 ///////
 //GET//

@@ -22,7 +22,6 @@
 
 		<nav class="main-nav">
 
-			<!-- <a href="/your-stickers" v-if="!loggedIn">Your Stickers</a> -->
 			<router-link :to="`/user/${userId}`" v-if="loggedIn">Your Stickers</router-link>
 
 			<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>

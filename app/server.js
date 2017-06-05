@@ -48,9 +48,7 @@ app.get('/stickers', verifyUser, (req, res) => {
 //API
 app.use('/api/users', require('./api/users.js'));
 app.use('/api/guilds', require('./api/guilds.js'));
-/*
-app.use('/api/sticker-packs', require('./api/sticker-packs.js'));
-*/
+//app.use('/api/sticker-packs', require('./api/sticker-packs.js'));
 app.get('/api/set-guilds', verifyUser, setGuildsCookie, (req, res) => {
 	res.send('Guilds cookie updated');
 });

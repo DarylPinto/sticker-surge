@@ -5,8 +5,14 @@ const covert = require('../../../covert.js');
 const cloudinary = require('cloudinary');
 cloudinary.config(covert.cloudinary);
 
-//Take image (url string or file) and upload to cloudinary
-//return Promise with cloudinary URL
+/**
+* Uploads an image to cloudinary CDN
+*
+* @param {String} image - Path to image file on server, or direct URL to online image
+* @param {Boolean} imageIsLocal - True if `image` is a path on the server, false if `image` is a URL to an online image
+*
+* @returns {Promise} - URL of image on cloudinary CDN
+*/
 module.exports = function(image, imageIsLocal){return new Promise((resolve, reject) => {
 
 	let sizeOf = imageIsLocal ? imageSize : requestImageSize;
