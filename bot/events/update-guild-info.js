@@ -3,6 +3,7 @@ const covert = require('../../covert.js');
 
 module.exports = function(guild){
 
+	let bot_auth = `Basic ${new Buffer(covert.bot_token_hash).toString('base64')}`;
 	let manager_role_name;
 	let manager_role;
 	let manager_ids;
@@ -24,6 +25,7 @@ module.exports = function(guild){
 				managerIds: manager_ids,	
 				icon: guild.icon || null
 			},
+			headers: {Authorization: bot_auth},
 			json: true
 		});
 

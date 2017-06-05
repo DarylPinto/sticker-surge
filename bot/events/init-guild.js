@@ -2,6 +2,9 @@ const rp = require('request-promise');
 const covert = require('../../covert.js');
 
 module.exports = function(guild){
+
+	let bot_auth = `Basic ${new Buffer(covert.bot_token_hash).toString('base64')}`;
+
 	rp({
 		method: 'POST',
 		uri: `${covert.app_url}/api/guilds/`,
@@ -10,6 +13,7 @@ module.exports = function(guild){
 			guildName: guild.name,	
 			icon: guild.icon || null
 		},
+		headers: {Authorization: bot_auth},
 		json: true
 	})
 	.then(() => {
@@ -21,6 +25,7 @@ module.exports = function(guild){
 			method: 'PATCH',
 			uri: `${covert.app_url}/api/guilds/${guild.id}`,
 			body: {isActive: true},
+			headers: {Authorization: bot_auth},
 			json: true
 		})
 		.then(res => {

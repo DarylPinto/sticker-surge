@@ -47,7 +47,13 @@ module.exports = function(options = {ajax: false}){
 
 return function(req, res, next){	
 
-	//TODO: Allow bot to pass
+	//Verify discord bot
+	let bot_auth = `Basic ${new Buffer(covert.bot_token_hash).toString('base64')}`;
+
+	if(req.headers.authorization && req.headers.authorization === bot_auth){
+		next();
+		return;
+	}
 
 	if(!options.ajax && (!req.session.token || !req.session.id)) return res.redirect('/login');
 	if(options.ajax && (!req.session.token || !req.session.id)) return res.status(401).send('Unauthorized');

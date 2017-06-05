@@ -2,6 +2,7 @@ const router = require('express').Router();
 const path = require('path');
 const rp = require('request-promise');
 const verifyUserAjax = require('../middleware/verify-user.js')({ajax: true});
+const verifyBot = require('../middleware/verify-bot.js');
 const setGuildsCookie = require('../middleware/set-guilds-cookie.js');
 const Guild = require('./models/guild-model.js');
 const util = require('./utilities/utilities.js');
@@ -70,7 +71,7 @@ router.get('/:id/stickers/:stickername', (req, res) => {
 //POST new guild
 
 /*TODO: Check for bot authentication*/
-router.post('/', (req, res) => {
+router.post('/', verifyBot, (req, res) => {
 	if(!req.body.guildName || !req.body.id) return res.status(400).send('Invalid body data');
 
 	new Guild(req.body).save()
@@ -136,7 +137,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 //Update guild
 
 /*TODO: Check for bot authentication*/
-router.patch('/:id', (req, res) => {
+router.patch('/:id', verifyBot, (req, res) => {
 
 	Guild.findOne({id: req.params.id})
 	.then(guild => {

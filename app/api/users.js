@@ -2,6 +2,7 @@ const router = require('express').Router();
 const path = require('path');
 const rp = require('request-promise');
 const verifyUserAjax = require('../middleware/verify-user.js')({ajax: true});
+const verifyBot = require('../middleware/verify-bot.js');
 const User = require('./models/user-model.js');
 const util = require('./utilities/utilities.js');
 const imageToCdn = require('./utilities/image-to-cdn.js');
@@ -65,10 +66,8 @@ router.get('/:id/stickers/:stickername', (req, res) => {
 ////////
 
 //POST new user
-
-/*TODO: Check for user/bot authentication*/
-router.post('/', (req, res) => {
-	console.log(req.headers);
+router.post('/', verifyBot, (req, res) => {
+	
 	if(!req.body.username || !req.body.id) return res.status(400).send('Invalid body data');	
 
 	new User(req.body).save()

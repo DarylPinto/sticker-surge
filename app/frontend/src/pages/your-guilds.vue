@@ -23,7 +23,9 @@ module.exports = {
 
 	methods: {
 		loadPageData(){	
-			
+		
+			if(this.userGuilds.length === 0) this.pageLoaded = true;
+
 			let fakeGuilds = [ //for test purposes
 				{
 					id: '197751992687263744',
@@ -55,7 +57,7 @@ module.exports = {
 		},
 
 		initialPageLoad(){
-			if(!this.userId) window.location.replace('/'); //redirect if user not logged in
+			if(!this.userId) window.location.replace('/login'); //redirect if user not logged in
 			document.title = 'Your servers - Stickers for Discord'; //set title
 
 			this.loadPageData(); //load page data
@@ -96,6 +98,8 @@ module.exports = {
 	
 	<div class="container your-guilds-page" :class="{transparent: !pageLoaded}">
 		
+		<h1>Your Servers</h1>
+
 		<div v-if="userGuildData.length === 0 && pageLoaded" class="no-guilds-alert">
 			<p>You're not in any servers with Stickers for Discord<br>
 			Let's fix that, shall we?</p>
@@ -117,10 +121,17 @@ module.exports = {
 <style lang="sass">
 
 	.your-guilds-page
-		margin-top: 30px
+		margin-top: 40px
 		transition: .2s
 		&.transparent
 			opacity: 0
+		h1
+			font-weight: 100
+			font-size: 90px
+			padding-bottom: 45px
+			text-align: center
+			margin-bottom: 10px
+			border-bottom: 2px solid rgba(255, 255, 255, 0.45)
 		.guild
 			display: inline-block
 			width: 25%
