@@ -87,7 +87,7 @@ module.exports = {
 
 	<!-- Sticker Creation Modal -->
 	<stickerCreationModal
-		v-if="isEditable"
+		v-show="isEditable"
 		v-on:addSticker="addSticker($event)"
 		:emojiNamesAllowed="emojiNamesAllowed"
 		:stickers="stickers">
