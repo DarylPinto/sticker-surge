@@ -44,7 +44,7 @@ module.exports = function(image, imageIsLocal){return new Promise((resolve, reje
 			}
 
 			resolve(res.secure_url);
-			if(imageIsLocal) fs.unlink(image);
+			if(imageIsLocal) fs.unlink(image, () => {});
 
 		}, uploadSettings);
 
