@@ -82,6 +82,7 @@ module.exports = {
 			v-for="sticker in stickers"
 			v-on:deleteSticker="deleteSticker(sticker.name)"
 			v-show="sticker.name.indexOf(sanitizedStickerSearchString) > -1"
+			:key="sticker.name"
 			:link="sticker.url"
 			:name="stickerPrefix+sticker.name"
 			:prefix="null"

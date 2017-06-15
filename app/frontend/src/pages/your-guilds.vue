@@ -116,7 +116,7 @@ module.exports = {
 			<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=8192" class="btn" target="_blank">Add to Discord</a>
 		</div>
 
-		<div v-for="guild in sortedUserGuildData" class="guild">
+		<div v-for="guild in sortedUserGuildData" :key="guild.id" class="guild">
 			<a :href="`/server/${guild.id}`">
 				<img :src="`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`" :alt="guild.name">
 				<h2>{{guild.name}}</h2>

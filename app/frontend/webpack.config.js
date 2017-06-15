@@ -1,6 +1,23 @@
 const path = require('path');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const webpack = require('webpack');
+//const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+
+const imageWebpackLoaderOptions = {
+	query: {	
+		mozjpeg: {
+			quality: 85,
+			optimizationLevel: 7,
+			interlaced: true
+		},
+		pngquant: {
+			quality: '80-90',
+			speed: 4,
+			optimizationLevel: 7,
+			interlaced: true
+		}
+	}	
+}
 
 module.exports = {
 
@@ -34,7 +51,27 @@ module.exports = {
 			//sass
 			{
 				test: /\.(sass|scss)$/,
-				loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader!sass-loader'})
+				use: [
+					{loader: 'style-loader'},
+					{loader: 'css-loader'},
+					{loader: 'sass-loader'}
+				]
+				//loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader!sass-loader'})
+			},
+
+			//images
+			{
+				test: /.*\.(gif|png|jpe?g|svg)$/i,
+				exclude: /(node_modules)/,
+				use: [
+					{
+						loader: 'file-loader?name=[name].[ext]&outputPath=images/'
+					},
+					{
+						loader: 'image-webpack-loader',
+						options: imageWebpackLoaderOptions
+					}
+				]
 			},
 
 			//.vue component files
@@ -42,25 +79,16 @@ module.exports = {
 				test: /\.vue$/,
 				exclude: /(node_modules)/,
 				loader: 'vue-loader'
-			},
-
-			//images
-			{
-				test: /.*\.(gif|png|jpe?g|svg)$/i,
-				exclude: /(node_modules)/,
-				loaders: [
-					'file-loader?hash=sha512&digest=hex&name=images/[name].[ext]',
-					'image-webpack-loader?{optimizationLevel: 7, interlaced: false, pngquant:{quality: "80-90", speed: 4}, mozjpeg: {quality: 85}}'
-				]
-			},
+			}
 
 		]
 	},
 
 	//plugins
 	plugins: [
-		new ExtractTextPlugin("bundle.css"),
-		new OptimizeCssAssetsPlugin()
+		//new ExtractTextPlugin("bundle.css"),
+		new OptimizeCssAssetsPlugin(),
+		new webpack.ProvidePlugin({Promise: 'es6-promise-promise'})
 	]
 
 };
