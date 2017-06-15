@@ -39,8 +39,6 @@ module.exports = {
 	.home-page	
 		text-align: center
 		transition: .2s
-		&.transparent
-			opacity: 0
 		h1	
 			font-family: 'Righteous', sans-serif
 			font-size: 75px

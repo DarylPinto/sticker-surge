@@ -94,10 +94,8 @@ module.exports = {
 <style lang="sass">
 
 	.user-page
-		margin-bottom: 120px
-		transition: .3s
-		&.transparent
-			opacity: 0
+		margin-bottom: 90px
+		transition: .2s
 		header
 			margin-top: 40px
 			margin-bottom: 40px

@@ -15,16 +15,25 @@ module.exports = {
 	data: function(){
 		return {
 			pageLoaded: false,
+			guildsLoaded: false,
 			userId: this.$cookie.get('id') || null,
 			userGuilds: JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || [],
 			userGuildData: []
 		}
 	},
 
+	computed: {
+
+		sortedUserGuildData: function(){
+			return this.userGuildData.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase());
+		}
+
+	},
+
 	methods: {
 		loadPageData(){	
-		
-			if(this.userGuilds.length === 0) this.pageLoaded = true;
+
+			this.pageLoaded = true;
 
 			let fakeGuilds = [ //for test purposes
 				{
@@ -34,7 +43,7 @@ module.exports = {
 				},
 				{
 					id: '106403490124816384',
-					name: 'Lucario Mains [ProjectM] (The coolest character)',
+					name: 'zucario Mains [ProjectM] (The coolest character)',
 					icon: 'f196c689f6e5332b8896d8122ec0de6c'
 				},
 				{
@@ -49,10 +58,10 @@ module.exports = {
 				axios.get(`/api/guilds/${id}?nocache=${(new Date()).getTime()}`)
 				.then(res => {
 					this.userGuildData.push({id: id, name: res.data.guildName, icon: res.data.icon});
-					if(!this.pageLoaded) this.pageLoaded = true;
+					if(!this.guildsLoaded) this.guildsLoaded = true;
 				});
 			});
-			fakeGuilds.forEach(g => this.userGuildData.push(g)); //for test purposes
+			//fakeGuilds.forEach(g => this.userGuildData.push(g)); //for test purposes
 			
 		},
 
@@ -66,10 +75,11 @@ module.exports = {
 			axios.get(`/api/set-guilds?nocache=${(new Date()).getTime()}`)
 			.then(() => {
 				this.userGuilds = JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || [];	//set user guilds once cookies are updated
+				this.guildsLoaded = true;
 
 				//if new user guilds are different from when the page first loaded, reload the data
 				if(JSON.stringify(this.userGuilds) === initialUserGuilds) return false;
-				this.pageLoaded = false;
+				this.guildsLoaded = false;
 				this.userGuildData = [];
 				this.loadPageData();
 			});
@@ -100,13 +110,13 @@ module.exports = {
 		
 		<h1>Your Servers</h1>
 
-		<div v-if="userGuildData.length === 0 && pageLoaded" class="no-guilds-alert">
+		<div v-if="userGuildData.length === 0 && guildsLoaded" class="no-guilds-alert">
 			<p>You're not in any servers with Stickers for Discord<br>
 			Let's fix that, shall we?</p>
 			<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=8192" class="btn" target="_blank">Add to Discord</a>
 		</div>
 
-		<div v-for="guild in userGuildData" class="guild">
+		<div v-for="guild in sortedUserGuildData" class="guild">
 			<a :href="`/server/${guild.id}`">
 				<img :src="`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`" :alt="guild.name">
 				<h2>{{guild.name}}</h2>
@@ -123,8 +133,6 @@ module.exports = {
 	.your-guilds-page
 		margin-top: 40px
 		transition: .2s
-		&.transparent
-			opacity: 0
 		h1
 			font-weight: 100
 			font-size: 85px

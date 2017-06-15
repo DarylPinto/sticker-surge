@@ -118,9 +118,7 @@ module.exports = {
 
 	.guild-page
 		margin-bottom: 120px
-		transition: .3s
-		&.transparent
-			opacity: 0
+		transition: .2s
 		header
 			margin-top: 40px
 			margin-bottom: 40px
