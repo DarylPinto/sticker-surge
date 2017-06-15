@@ -52,7 +52,7 @@ module.exports = {
 					if(!this.pageLoaded) this.pageLoaded = true;
 				});
 			});
-			//fakeGuilds.forEach(g => this.userGuildData.push(g)); //for test purposes
+			fakeGuilds.forEach(g => this.userGuildData.push(g)); //for test purposes
 			
 		},
 
@@ -127,26 +127,36 @@ module.exports = {
 			opacity: 0
 		h1
 			font-weight: 100
-			font-size: 90px
-			padding-bottom: 45px
-			text-align: center
-			margin-bottom: 10px
+			font-size: 85px
+			padding-bottom: 45px	
+			margin-bottom: 20px
 			border-bottom: 2px solid rgba(255, 255, 255, 0.45)
 		.guild
 			display: inline-block
-			width: 25%
+			width: calc(25% - 11.5px)
+			margin-right: 15px
 			vertical-align: top
+			border-radius: 5px
+			height: 280px
+			margin-bottom: 15px
+			background-color: rgba(255,255,255,0.05)
 			a
 				text-decoration: none
-				display: inline-block
+				display: inline-flex
+				flex-direction: column
+				justify-content: center
+				align-items: center
 				text-align: center
 				border-radius: 5px
+				height: inherit
 				padding: 20px
 				width: 100%
 				box-sizing: border-box
 				transition: .2s
 				&:hover
 					background-color: rgba(255,255,255,0.05)
+			&:nth-of-type(4n)
+				margin-right: 0
 			h2
 				font-size: 20px
 				margin-top: 10px
