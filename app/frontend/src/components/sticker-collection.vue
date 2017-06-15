@@ -17,6 +17,14 @@ module.exports = {
 			loadingNewSticker: false
 		}
 	},
+	computed: {
+		noStickersText(){
+			return (!this.isEditable) ? 'No stickers here just yet!' : 'No stickers here just yet. Add some!';
+		},
+		sanitizedStickerSearchString(){
+			return this.stickerSearchString.toLowerCase().replace(/(:|-)/g, '');
+		}
+	},
 	methods: {
 		
 		addSticker(formData){
@@ -44,12 +52,8 @@ module.exports = {
 			});
 		}
 
-	},
-	computed: {
-		noStickersText(){
-			return (!this.isEditable) ? 'No stickers here just yet!' : 'No stickers here just yet. Add some!';
-		}
 	}
+
 }
 </script>
 
@@ -77,7 +81,7 @@ module.exports = {
 		<sticker
 			v-for="sticker in stickers"
 			v-on:deleteSticker="deleteSticker(sticker.name)"
-			v-show="sticker.name.indexOf(stickerSearchString.replace(/(:|-)/g, '')) > -1"
+			v-show="sticker.name.indexOf(sanitizedStickerSearchString) > -1"
 			:link="sticker.url"
 			:name="stickerPrefix+sticker.name"
 			:prefix="null"

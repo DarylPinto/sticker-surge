@@ -24,7 +24,7 @@ module.exports = {
 
 	computed: {
 
-		sortedUserGuildData: function(){
+		sortedUserGuildData(){
 			return this.userGuildData.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase());
 		}
 
