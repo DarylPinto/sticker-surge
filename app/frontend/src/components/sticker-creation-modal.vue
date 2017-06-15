@@ -69,7 +69,7 @@ module.exports = {
 			});
 			//Then we change the closeModal method on the vue instance to include callback
 			this.closeModal = liteModal.closeWithCB.bind(liteModal);
-		}, 300);	
+		}, 500);	
 	}
 }
 </script>

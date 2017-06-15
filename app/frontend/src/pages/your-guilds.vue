@@ -142,10 +142,7 @@ module.exports = {
 			background-color: rgba(255,255,255,0.05)
 			a
 				text-decoration: none
-				display: inline-flex
-				flex-direction: column
-				justify-content: center
-				align-items: center
+				display: inline-block	
 				text-align: center
 				border-radius: 5px
 				height: inherit
@@ -166,6 +163,7 @@ module.exports = {
 			img
 				border-radius: 200px
 				border: 5px solid rgba(255, 255, 255, 0.1)
+				margin-top: 25px
 
 		.no-guilds-alert
 			text-align: center
