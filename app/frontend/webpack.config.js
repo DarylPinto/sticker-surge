@@ -1,7 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-//const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const imageWebpackLoaderOptions = {
 	query: {	
@@ -56,7 +54,6 @@ module.exports = {
 					{loader: 'css-loader'},
 					{loader: 'sass-loader'}
 				]
-				//loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader!sass-loader'})
 			},
 
 			//images
@@ -86,8 +83,6 @@ module.exports = {
 
 	//plugins
 	plugins: [
-		//new ExtractTextPlugin("bundle.css"),
-		new OptimizeCssAssetsPlugin(),
 		new webpack.ProvidePlugin({Promise: 'es6-promise-promise'})
 	]
 
