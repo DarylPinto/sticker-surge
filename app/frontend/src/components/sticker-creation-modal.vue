@@ -58,18 +58,21 @@ module.exports = {
 		this.$parent.$on('openStickerCreationModal', () => {
 			this.openModal('.sticker-creation-modal');
 		});
-		window.setTimeout(() => {
-			//While initializing lite-modal, we'll pass in a
-			//callback to be executed when modal is closed
-			this.initModal(() => {
-				document.querySelector('.sticker-creation-modal input[type="file"]').value = '';
-				this.stickerUploadPreview = '';
-				this.newStickerName = '';
-				this.stickerUploadError = '';
-			});
-			//Then we change the closeModal method on the vue instance to include callback
-			this.closeModal = liteModal.closeWithCB.bind(liteModal);
-		}, 500);	
+
+		//While initializing lite-modal, we'll pass in a
+		//callback to be executed when modal is closed
+		this.initModal(() => {
+			document.querySelector('.sticker-creation-modal input[type="file"]').value = '';
+			this.stickerUploadPreview = '';
+			this.newStickerName = '';
+			this.stickerUploadError = '';
+		});
+		//Then we change the closeModal method on the vue instance to include callback
+		this.closeModal = liteModal.closeWithCB.bind(liteModal);
+		this.$el.addEventListener('click', e => e.stopPropagation());
+
+		//Emit event to notify parent that modal has mounted
+		this.$emit('modalMounted');
 	}
 }
 </script>

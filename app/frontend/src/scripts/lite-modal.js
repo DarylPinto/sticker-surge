@@ -82,9 +82,9 @@ module.exports = {
 		d.body.appendChild(bg);
 
 		// Move modals into modal background
-		qsaEach('.lite-modal', function(el){
-			bg.appendChild(el);
-		});
+		//qsaEach('.lite-modal', function(el){
+		//	bg.appendChild(el);
+		//});
 
 		// Clicking modal background closes modal
 		bg.addEventListener('click', function(e){

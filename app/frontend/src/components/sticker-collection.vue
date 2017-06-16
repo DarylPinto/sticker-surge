@@ -1,8 +1,11 @@
 <script>
 import Vue from 'vue';
+import DomPortal from 'vue-dom-portal';
 import axios from 'axios';
 import sticker from '../components/sticker.vue';
 import stickerCreationModal from '../components/sticker-creation-modal.vue';
+
+Vue.use(DomPortal);
 
 Vue.component('sticker', sticker);
 Vue.component('stickerCreationModal', stickerCreationModal);
@@ -13,7 +16,8 @@ module.exports = {
 	props: ['name', 'stickerPrefix', 'emojiNamesAllowed', 'isEditable', 'stickers', 'pageType'],
 	data: function(){	
 		return {	
-			stickerSearchString: '',	
+			stickerSearchString: '',
+			modalParent: 'body',
 			loadingNewSticker: false
 		}
 	},
@@ -50,6 +54,16 @@ module.exports = {
 			}).catch(err => {
 				if(err.response.status === 401) window.location.href = '/login';
 			});
+		},
+
+		//When modal has mounted, append it to #modal-bg
+		moveModalComponent(){
+			//Remove previously appended modals from bg if there are any
+			let el = document.querySelector('#modal-bg .sticker-creation-modal')
+			if(el) el.remove();
+
+			//append current modal to bg
+			this.modalParent = '#modal-bg';
 		}
 
 	}
@@ -93,7 +107,9 @@ module.exports = {
 	<!-- Sticker Creation Modal -->
 	<stickerCreationModal
 		v-show="isEditable"
+		v-on:modalMounted="moveModalComponent"
 		v-on:addSticker="addSticker($event)"
+		v-dom-portal="modalParent"
 		:emojiNamesAllowed="emojiNamesAllowed"
 		:stickers="stickers">
 	</stickerCreationModal>
