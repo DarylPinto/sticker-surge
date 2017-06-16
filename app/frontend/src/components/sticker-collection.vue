@@ -17,7 +17,7 @@ module.exports = {
 	data: function(){	
 		return {	
 			stickerSearchString: '',
-			modalParent: 'body',
+			stickerCreationModalParent: 'body',
 			loadingNewSticker: false
 		}
 	},
@@ -56,16 +56,22 @@ module.exports = {
 			});
 		},
 
-		//When modal has mounted, append it to #modal-bg
-		moveModalComponent(){
-			//Remove previously appended modals from bg if there are any
-			let el = document.querySelector('#modal-bg .sticker-creation-modal')
+		destroyModal(selector){
+			let el = document.querySelector(`#modal-bg ${selector}`);
 			if(el) el.remove();
+		},
 
-			//append current modal to bg
-			this.modalParent = '#modal-bg';
+		//When sticker creation modal has mounted, append it to #modal-bg
+		appendStickerCreationModalToBg(){
+			this.stickerCreationModalParent = '#modal-bg';
 		}
 
+	},
+
+	//When this component unmounts, remove sticker-creation-modal
+	//(necessary to do manually since sticker-creation-modal's parent has been changed with vue-dom-portal)
+	destroyed: function(){
+		this.destroyModal('.sticker-creation-modal');
 	}
 
 }
@@ -107,9 +113,9 @@ module.exports = {
 	<!-- Sticker Creation Modal -->
 	<stickerCreationModal
 		v-show="isEditable"
-		v-on:modalMounted="moveModalComponent"
+		v-on:mounted="appendStickerCreationModalToBg"
 		v-on:addSticker="addSticker($event)"
-		v-dom-portal="modalParent"
+		v-dom-portal="stickerCreationModalParent"
 		:emojiNamesAllowed="emojiNamesAllowed"
 		:stickers="stickers">
 	</stickerCreationModal>

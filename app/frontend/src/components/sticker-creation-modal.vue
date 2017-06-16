@@ -69,10 +69,12 @@ module.exports = {
 		});
 		//Then we change the closeModal method on the vue instance to include callback
 		this.closeModal = liteModal.closeWithCB.bind(liteModal);
+
+		// Prevent event bubbling (clicking within modal shouldn't close it)
 		this.$el.addEventListener('click', e => e.stopPropagation());
 
 		//Emit event to notify parent that modal has mounted
-		this.$emit('modalMounted');
+		this.$emit('mounted');
 	}
 }
 </script>

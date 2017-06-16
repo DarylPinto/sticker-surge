@@ -55,36 +55,33 @@ var css = `
 		display:block
 	}`;
 
-// Modal open/close functions
+// Modal functions
 module.exports = {
 	hasInitialized: false,
 	init: function(closeCB){
 
-		//Prevent script from being initialized more than once
-		if(this.hasInitialized || qs('#modal-bg')) return false;
-		this.hasInitialized = true;
-
 		var _this = this;
-		style.textContent = css;
-		d.head.appendChild(style);
+		var modalFadeOutTime = 300;
 
 		this.closeWithCB = function(){
 			_this.close();
 			window.setTimeout(function(){
 				if(closeCB) closeCB();	
-			}, 350);	
+			}, modalFadeOutTime + 10);
 		}
+
+		//Prevent script from being initialized more than once
+		if(this.hasInitialized || qs('#modal-bg')) return false;
+		this.hasInitialized = true;
+
+		style.textContent = css;
+		d.head.appendChild(style);
 
 		// Create modal background
 		var bg = d.createElement('div');
 		bg.id = 'modal-bg';
 		bg.className = 'bg-fade';
 		d.body.appendChild(bg);
-
-		// Move modals into modal background
-		//qsaEach('.lite-modal', function(el){
-		//	bg.appendChild(el);
-		//});
 
 		// Clicking modal background closes modal
 		bg.addEventListener('click', function(e){
@@ -94,13 +91,6 @@ module.exports = {
 		// Escape key closes modal
 		d.addEventListener('keydown', function(e) {
 			if(e.keyCode == 27) _this.closeWithCB();
-		});
-
-		// Prevent event bubbling (clicking within modal shouldn't close it)
-		qsaEach('.lite-modal', function(el){
-			el.addEventListener('click', function(event){
-				event.stopPropagation();
-			});
 		});
 
 	},
