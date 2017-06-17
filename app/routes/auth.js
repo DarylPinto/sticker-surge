@@ -27,10 +27,12 @@ module.exports = {
 
 //Login route
 login: express.Router().get('/', (req, res) => {
+	let original_url = req.query.state || '/';
 
 	const authorizationUri = oauth2.authorizationCode.authorizeURL({
 		redirect_uri: `${covert.app_url}/callback`,	
-		scope: 'identify guilds'
+		scope: 'identify guilds',
+		state: original_url
 	});
 
 	res.redirect(authorizationUri);
@@ -38,18 +40,21 @@ login: express.Router().get('/', (req, res) => {
 
 //Logout route (heh it rhymes)
 logout: express.Router().get('/', (req, res) => {
+	let original_url = decodeURIComponent(req.query.state) || '/';
+
 	req.session.reset();
 	res.clearCookie('id');
 	res.clearCookie('guilds');
-	res.redirect('/');
+	res.redirect(original_url);
 }),
 
 //Callback route (Redirect URI)
 callback: express.Router().get('/', (req, res) => {
 
+	let original_url = decodeURIComponent(req.query.state) || '/stickers';
 	let access_token;
 	let refresh_token;
-	let user_id;	
+	let user_id;
 
 	oauth2.authorizationCode.getToken({
 		code: req.query.code,
@@ -90,8 +95,8 @@ callback: express.Router().get('/', (req, res) => {
 		//And again as standard cookies for the view to use
 		res.cookie('id', user_id);
 
-		//Redirect to user's sticker page
-		res.redirect('/stickers');
+		//Redirect to whichever page user was on when they clicked "Log in"
+		res.redirect(original_url);
 	})
 	.catch(err => {
 		console.error(err);

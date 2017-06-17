@@ -4,7 +4,13 @@
 		props: ['userId'],
 		data: function(){
 			return {
-				loggedIn: this.userId != null
+				loggedIn: this.userId != null,
+				encodedUrl: encodeURIComponent(location.href)
+			}
+		},
+		watch: {
+			$route: function(){
+				this.encodedUrl = encodeURIComponent(location.href);
 			}
 		}
 	}
@@ -27,8 +33,8 @@
 			<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
 			<router-link to="/sticker-packs">Sticker Packs</router-link>
 
-			<a href="/login" v-if="!loggedIn">Log In</a>
-			<a href="/logout" v-if="loggedIn">Log Out</a>
+			<a :href="`/login?state=${encodedUrl}`" v-if="!loggedIn">Log In</a>
+			<a :href="`/logout?state=${encodedUrl}`" v-if="loggedIn">Log Out</a>
 			
 		</nav>	
 
