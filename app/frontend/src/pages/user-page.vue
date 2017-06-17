@@ -104,6 +104,7 @@ module.exports = {
 			> img
 				border-radius: 100%
 				height: 100px
+				width: 100px
 				border: 5px solid rgba(255, 255, 255, 0.1)
 		h1
 			font-weight: 100

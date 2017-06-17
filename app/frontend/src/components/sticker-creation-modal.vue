@@ -1,4 +1,5 @@
 <script>
+import Vue from 'vue';
 import axios from 'axios';
 import emojis from '../data/emojis.json';
 import liteModal from '../scripts/lite-modal.js';
@@ -63,10 +64,6 @@ module.exports = {
 
 	},
 	mounted: function(){
-		this.$parent.$on('openStickerCreationModal', () => {
-			this.openModal('.sticker-creation-modal');
-		});
-
 		//While initializing lite-modal, we'll pass in a
 		//callback to be executed when modal is closed
 		this.initModal(() => {
@@ -78,11 +75,24 @@ module.exports = {
 		//Then we change the closeModal method on the vue instance to include callback
 		this.closeModal = liteModal.closeWithCB.bind(liteModal);
 
-		// Prevent event bubbling (clicking within modal shouldn't close it)
+		//Move to modal bg
+		document.querySelector('#modal-bg').appendChild(this.$el);
+
+		//Prevent event bubbling (clicking within modal shouldn't close it)
 		this.$el.addEventListener('click', e => e.stopPropagation());	
 
-		//Emit event to notify parent that modal has mounted
-		this.$emit('mounted');
+		//Listen for parent event to open modal
+		this.$parent.$on('openStickerCreationModal', () => {
+			this.openModal('.sticker-creation-modal');
+		});
+
+		//Remove this component when parent is destroyed
+		//Normally vue handles this, but since element
+		//has been moved around the dom, it must be done manually
+		this.$parent.$on('destroyed', () => {
+			let el = this.$el;
+			el.parentNode.removeChild(el);
+		});
 	}
 }
 </script>
@@ -146,12 +156,12 @@ module.exports = {
 			display: inline-flex
 			position: relative
 			border: 2px dashed white
-			cursor: pointer
 			margin: 15px
 			margin-bottom: 5px
 			max-width: 65%
 			justify-content: center
 			text-align: center
+			overflow: hidden
 			p
 				position: absolute
 				color: rgba(255,255,255,0.5)
@@ -161,11 +171,13 @@ module.exports = {
 				justify-content: center
 				align-items: center	
 			input
+				border-radius: 0
 				opacity: 0
 				margin: 0
 				height: 140px
 				max-width: none
-				cursor: pointer
+				padding: 0
+				font-size: 100px
 		.sticker-upload-error
 			padding: 10px
 		.btn

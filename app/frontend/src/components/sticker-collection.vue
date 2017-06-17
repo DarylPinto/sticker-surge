@@ -1,11 +1,8 @@
 <script>
 import Vue from 'vue';
-import DomPortal from 'vue-dom-portal';
 import axios from 'axios';
 import sticker from '../components/sticker.vue';
 import stickerCreationModal from '../components/sticker-creation-modal.vue';
-
-Vue.use(DomPortal);
 
 Vue.component('sticker', sticker);
 Vue.component('stickerCreationModal', stickerCreationModal);
@@ -54,24 +51,14 @@ module.exports = {
 			}).catch(err => {
 				if(err.response.status === 401) window.location.href = '/login';
 			});
-		},
-
-		destroyModal(selector){
-			let el = document.querySelector(`#modal-bg ${selector}`);
-			if(el) el.parentNode.removeChild(el);
-		},
-
-		//When sticker creation modal has mounted, append it to #modal-bg
-		appendStickerCreationModalToBg(){
-			this.stickerCreationModalParent = '#modal-bg';
 		}
 
 	},
 
-	//When this component unmounts, remove sticker-creation-modal
-	//(necessary to do manually since sticker-creation-modal's parent has been changed with vue-dom-portal)
+	//When this component unmounts, emit event to notify
+	//children who have been moved around the dom
 	destroyed: function(){
-		this.destroyModal('.sticker-creation-modal');
+		this.$emit('destroyed');
 	}
 
 }
@@ -113,9 +100,7 @@ module.exports = {
 	<!-- Sticker Creation Modal -->
 	<stickerCreationModal
 		v-show="isEditable"
-		v-on:mounted="appendStickerCreationModalToBg"
 		v-on:addSticker="addSticker($event)"
-		v-dom-portal="stickerCreationModalParent"
 		:emojiNamesAllowed="emojiNamesAllowed"
 		:stickers="stickers">
 	</stickerCreationModal>
