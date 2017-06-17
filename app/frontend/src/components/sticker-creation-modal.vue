@@ -16,7 +16,7 @@ module.exports = {
 
 		emitAddSticker(){
 			//Error checking
-			let file = document.querySelector('.sticker-creation-modal input[type="file"]').files[0];
+			let file = document.querySelector('.sticker-creation-modal input[type="file"]').files[0];	
 
 			if(this.stickers.map(s => s.name).indexOf(this.newStickerName) > -1){
 				this.stickerUploadError = "Name already in use by another sticker.";
@@ -71,7 +71,7 @@ module.exports = {
 		this.closeModal = liteModal.closeWithCB.bind(liteModal);
 
 		// Prevent event bubbling (clicking within modal shouldn't close it)
-		this.$el.addEventListener('click', e => e.stopPropagation());
+		this.$el.addEventListener('click', e => e.stopPropagation());	
 
 		//Emit event to notify parent that modal has mounted
 		this.$emit('mounted');
@@ -91,7 +91,7 @@ module.exports = {
 		<p>Drag image or click to upload</p>
 		<input name="sticker" type="file" placeholder="Image" accept="image/png, image/jpeg" @change="showStickerPreview($event)" required>	
 	</div>	
-	<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" maxlength="20" autocomplete="off" spellcheck="false" title="Lowercase letters and numbers only" required>
+	<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" maxlength="20" autocomplete="off" spellcheck="false" oninvalid="setCustomValidity('Lowercase letters and numbers only')" required>
 	<p v-if="stickerUploadError.length > 0" class="sticker-upload-error">{{stickerUploadError}}</p>
 	<button class="btn">Add</button>
 
@@ -135,9 +135,10 @@ module.exports = {
 		button
 			margin-top: 20px
 		.upload-area
+			display: inline-flex
+			position: relative
 			border: 2px dashed white
 			cursor: pointer
-			display: inline-flex
 			margin: 15px
 			margin-bottom: 5px
 			max-width: 65%
@@ -147,7 +148,11 @@ module.exports = {
 			p
 				position: absolute
 				color: rgba(255,255,255,0.5)
-				width: 59%
+				width: 100%
+				height: 100%
+				display: inline-flex
+				justify-content: center
+				align-items: center	
 			input
 				opacity: 0
 				margin: 0
