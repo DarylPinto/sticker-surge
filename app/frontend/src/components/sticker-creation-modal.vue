@@ -53,6 +53,14 @@ module.exports = {
 			});
 		},
 
+		//Show custom error message on invalid stickername (for Safari)
+		//stackoverflow.com/q/16867407/#42422152
+		checkStickerNameValidity(e){
+			e.target.setCustomValidity('');
+			e.target.checkValidity();
+			e.target.setCustomValidity(e.target.validity.valid ? '' : 'Lowercase letters and numbers only');
+		}
+
 	},
 	mounted: function(){
 		this.$parent.$on('openStickerCreationModal', () => {
@@ -91,7 +99,7 @@ module.exports = {
 		<p>Drag image or click to upload</p>
 		<input name="sticker" type="file" placeholder="Image" accept="image/png, image/jpeg" @change="showStickerPreview($event)" required>	
 	</div>	
-	<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" maxlength="20" autocomplete="off" spellcheck="false" oninvalid="setCustomValidity('Lowercase letters and numbers only')" required>
+	<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" maxlength="20" autocomplete="off" spellcheck="false" @input="checkStickerNameValidity($event)" required>
 	<p v-if="stickerUploadError.length > 0" class="sticker-upload-error">{{stickerUploadError}}</p>
 	<button class="btn">Add</button>
 
@@ -143,7 +151,6 @@ module.exports = {
 			margin-bottom: 5px
 			max-width: 65%
 			justify-content: center
-			align-items: center
 			text-align: center
 			p
 				position: absolute

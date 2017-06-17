@@ -58,7 +58,7 @@ module.exports = {
 
 		destroyModal(selector){
 			let el = document.querySelector(`#modal-bg ${selector}`);
-			if(el) el.remove();
+			if(el) el.parentNode.removeChild(el);
 		},
 
 		//When sticker creation modal has mounted, append it to #modal-bg

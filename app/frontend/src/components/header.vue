@@ -8,10 +8,14 @@
 				encodedUrl: encodeURIComponent(location.href)
 			}
 		},
-		watch: {
-			$route: function(){
-				this.encodedUrl = encodeURIComponent(location.href);
-			}
+		mounted: function(){
+
+			//Redirect the user to homepage if they log out on a page that's
+			//only viewable by logged in users. This prevents them from being prompted 
+			//to login immediately after logging out
+			let loggedin_exclusive_paths = ['/servers'];
+			if(loggedin_exclusive_paths.includes(location.pathname)) this.encodedUrl = '/';
+
 		}
 	}
 
