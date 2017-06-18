@@ -35,24 +35,6 @@ module.exports = {
 
 			this.pageLoaded = true;
 
-			let fakeGuilds = [ //for test purposes
-				{
-					id: '197751992687263744',
-					name: 'Smash Netplay Ontario',
-					icon: '8a21a509fad8c2ead6c6ae5165f98a2e'	
-				},
-				{
-					id: '106403490124816384',
-					name: 'zucario Mains [ProjectM] (The coolest character)',
-					icon: 'f196c689f6e5332b8896d8122ec0de6c'
-				},
-				{
-					id: '80702129504780288',
-					name: '/r/smashbros',
-					icon: '963e72b381de6b738af432571fd0a493'
-				}
-			];
-
 			//Load data for each guild in `guilds` cookie
 			this.userGuilds.forEach(id => {
 				axios.get(`/api/guilds/${id}?nocache=${(new Date()).getTime()}`)
@@ -61,7 +43,6 @@ module.exports = {
 					if(!this.guildsLoaded) this.guildsLoaded = true;
 				});
 			});
-			//fakeGuilds.forEach(g => this.userGuildData.push(g)); //for test purposes
 			
 		},
 
@@ -182,7 +163,8 @@ module.exports = {
 				font-weight: 100
 				line-height: 1.6em
 			a
-				font-size: 18px
+				font-size: 24px
+				font-weight: 100
 				border-radius: 40px
 				padding: 13px 25px
 				margin-top: 30px

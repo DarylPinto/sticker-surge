@@ -47,6 +47,7 @@ module.exports = {
 			margin-bottom: 60px
 		a
 			font-size: 24px
+			font-weight: 100
 			border-radius: 40px
 			padding: 13px 25px
 			letter-spacing: -0.5px
