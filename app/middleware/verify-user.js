@@ -69,8 +69,8 @@ return function(req, res, next){
 		return;
 	}
 
-	if(!options.ajax && (!req.session.token || !req.session.id)) return res.redirect('/login');
 	if(options.ajax && (!req.session.token || !req.session.id)) return res.status(401).send('Unauthorized');
+	if(!options.ajax && (!req.session.token || !req.session.id)) return res.redirect('/login');
 
 	rp({
 		method: 'GET',

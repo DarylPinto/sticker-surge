@@ -39,14 +39,16 @@ module.exports = {
 	.home-page	
 		text-align: center
 		transition: .2s
-		h1	
-			font-family: 'Righteous', sans-serif
-			font-size: 75px
-			margin-top: 80px
-			margin-bottom: 80px
+		h1
+			transform: scale(1, 1.1)
+			font-weight: bold
+			font-size: 65px
+			margin-top: 60px
+			margin-bottom: 60px
 		a
-			font-size: 18px
+			font-size: 24px
 			border-radius: 40px
 			padding: 13px 25px
+			letter-spacing: -0.5px
 
 </style>

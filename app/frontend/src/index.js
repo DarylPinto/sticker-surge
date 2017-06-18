@@ -7,6 +7,7 @@ import homePage from './pages/home-page.vue';
 import userPage from './pages/user-page.vue';
 import guildPage from './pages/guild-page.vue';
 import yourGuilds from './pages/your-guilds.vue';
+import stickerPacks from './pages/sticker-pack-list-page.vue';
 
 require.context('./images', true, /.*\.(gif|png|jpe?g|svg)$/i);
 
@@ -19,6 +20,7 @@ const HomePage = Vue.component('home-page', homePage);
 const UserPage = Vue.component('user-page', userPage);
 const GuildPage = Vue.component('guild-page', guildPage);
 const YourGuilds = Vue.component('your-guilds', yourGuilds);
+const StickerPacks = Vue.component('sticker-packs', stickerPacks);
 
 const router = new VueRouter({
 	mode: 'history',
@@ -26,7 +28,8 @@ const router = new VueRouter({
 		{ path: '/', component: HomePage },
 		{ path: '/user/:id', component: UserPage, props: {pageType: 'users'} },
 		{ path: '/server/:id', component: GuildPage, props: {pageType: 'guilds'} },
-		{ path: '/servers', component: YourGuilds }
+		{ path: '/servers', component: YourGuilds },
+		{ path: '/sticker-packs', component: StickerPacks },
 	]
 });
 

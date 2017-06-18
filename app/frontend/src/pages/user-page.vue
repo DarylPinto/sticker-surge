@@ -96,7 +96,7 @@ module.exports = {
 	.user-page
 		margin-bottom: 90px
 		transition: .2s
-		header
+		> header
 			margin-top: 40px
 			margin-bottom: 40px
 			display: flex
@@ -107,7 +107,6 @@ module.exports = {
 				width: 100px
 				border: 5px solid rgba(255, 255, 255, 0.1)
 		h1
-			font-weight: 100
 			font-size: 90px
 			display: inline-block
 			margin-left: 15px

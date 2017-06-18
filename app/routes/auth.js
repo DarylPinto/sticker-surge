@@ -27,12 +27,10 @@ module.exports = {
 
 //Login route
 login: express.Router().get('/', (req, res) => {
-	let original_url = req.query.state || '/';
-
 	const authorizationUri = oauth2.authorizationCode.authorizeURL({
 		redirect_uri: `${covert.app_url}/callback`,	
 		scope: 'identify guilds',
-		state: original_url
+		state: encodeURIComponent(req.header('Referer'))
 	});
 
 	res.redirect(authorizationUri);
@@ -40,18 +38,14 @@ login: express.Router().get('/', (req, res) => {
 
 //Logout route (heh it rhymes)
 logout: express.Router().get('/', (req, res) => {
-	let original_url = decodeURIComponent(req.query.state) || '/';
-
 	req.session.reset();
 	res.clearCookie('id');
 	res.clearCookie('guilds');
-	res.redirect(original_url);
+	res.redirect(req.header('Referer'));
 }),
 
 //Callback route (Redirect URI)
 callback: express.Router().get('/', (req, res) => {
-
-	let original_url = decodeURIComponent(req.query.state) || '/stickers';
 	let access_token;
 	let refresh_token;
 	let user_id;
@@ -96,7 +90,7 @@ callback: express.Router().get('/', (req, res) => {
 		res.cookie('id', user_id);
 
 		//Redirect to whichever page user was on when they clicked "Log in"
-		res.redirect(original_url);
+		res.redirect(decodeURIComponent(req.query.state));
 	})
 	.catch(err => {
 		console.error(err);

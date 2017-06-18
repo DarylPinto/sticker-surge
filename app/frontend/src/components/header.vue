@@ -4,18 +4,8 @@
 		props: ['userId'],
 		data: function(){
 			return {
-				loggedIn: this.userId != null,
-				encodedUrl: encodeURIComponent(location.href)
+				loggedIn: this.userId != null
 			}
-		},
-		mounted: function(){
-
-			//Redirect the user to homepage if they log out on a page that's
-			//only viewable by logged in users. This prevents them from being prompted 
-			//to login immediately after logging out
-			let loggedin_exclusive_paths = ['/servers'];
-			if(loggedin_exclusive_paths.includes(location.pathname)) this.encodedUrl = '/';
-
 		}
 	}
 
@@ -37,8 +27,8 @@
 			<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
 			<router-link to="/sticker-packs">Sticker Packs</router-link>
 
-			<a :href="`/login?state=${encodedUrl}`" v-if="!loggedIn">Log In</a>
-			<a :href="`/logout?state=${encodedUrl}`" v-if="loggedIn">Log Out</a>
+			<a href="/login" v-if="!loggedIn">Log In</a>
+			<a href="/logout" v-if="loggedIn">Log Out</a>
 			
 		</nav>	
 

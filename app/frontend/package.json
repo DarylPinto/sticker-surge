@@ -16,7 +16,6 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "css-loader": "^0.28.1",
-    "es6-map": "^0.1.5",
     "es6-promise-promise": "^1.0.0",
     "file-loader": "^0.11.1",
     "image-webpack-loader": "^3.3.1",

@@ -66,7 +66,7 @@ module.exports = {
 		},
 
 		initialPageLoad(){
-			if(!this.userId) window.location.replace('/login'); //redirect if user not logged in
+			if(!this.userId) window.location.replace('/'); //redirect if user not logged in
 			document.title = 'Your servers - Stickers for Discord'; //set title
 
 			this.loadPageData(); //load page data
@@ -134,10 +134,9 @@ module.exports = {
 		margin-top: 40px
 		transition: .2s
 		h1
-			font-weight: 100
 			font-size: 85px
 			padding-bottom: 45px	
-			margin-bottom: 20px
+			margin-bottom: 30px
 			border-bottom: 2px solid rgba(255, 255, 255, 0.45)
 		.guild
 			display: inline-block

@@ -138,7 +138,7 @@ module.exports = {
 			font-size: 30px
 			font-weight: 300
 		> header
-			margin-bottom: 20px
+			margin-bottom: 30px
 			padding-bottom: 10px
 			border-bottom: 2px solid rgba(255, 255, 255, 0.45)
 			display: flex
