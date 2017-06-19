@@ -34,12 +34,12 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 //Bot commands//
 ////////////////
 const commands = {
-	//'stickers': require('./commands/stickers.js'),
+	'stickers': require('./commands/stickers.js'),
 	'createsticker': require('./commands/create-sticker.js'),
 	'deletesticker': require('./commands/delete-sticker.js'),
 	//'addstickerpack': require('./commands/add-stickerpack.js'),
 	//'removestickerpack': require('./commands/remove-stickerpack.js'),
-	//'setprefix': require('./commands/setp-refix.js'),
+	//'setprefix': require('./commands/set-prefix.js'),
 	//'setrole': require('./commands/set-role.js'),
 	//'help': require('./commands/help.js')
 }
@@ -75,7 +75,8 @@ client.on('message', message => {
 			let prefix = guild.commandPrefix;
 			let managerRole = guild.managerRole;
 
-			if(first_word === `${prefix}createsticker`) commands.createsticker(message, bot_auth, prefix, managerRole)
+			if(first_word === `${prefix}stickers`) commands.stickers(message)
+			else if(first_word === `${prefix}createsticker`) commands.createsticker(message, bot_auth, prefix, managerRole)
 			else if(first_word === `${prefix}deletesticker`) commands.deletesticker(message, bot_auth, prefix, managerRole)
 
 		});
