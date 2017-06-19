@@ -12,7 +12,7 @@ const initGuild = require('./events/init-guild.js');
 const deactivateGuild = require('./events/deactivate-guild.js');
 const updateGuildInfo = require('./events/update-guild-info.js');
 
-client.on('ready', () => console.log('Discord Stickers bot is online!'));
+client.on('ready', () => console.log('Stickers for Discord bot is online!'));
 
 //Add guild to db for the first time
 client.on('guildCreate', guild => initGuild(guild));
@@ -36,7 +36,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 const commands = {
 	//'stickers': require('./commands/stickers.js'),
 	'createsticker': require('./commands/create-sticker.js'),
-	//'deletesticker': require('./commands/delete-sticker.js'),
+	'deletesticker': require('./commands/delete-sticker.js'),
 	//'addstickerpack': require('./commands/add-stickerpack.js'),
 	//'removestickerpack': require('./commands/remove-stickerpack.js'),
 	//'setprefix': require('./commands/setp-refix.js'),
@@ -58,7 +58,7 @@ client.on('message', message => {
 	////////////
 	//Commands//
 	////////////
-	let message_words = message.content.toLowerCase().trim().split(' ');
+	let message_words = message.content.toLowerCase().trim().split(/\s+/);
 	let first_word = message_words[0];
 	let message_has_command = Object.keys(commands).some(command => {
 		return first_word.endsWith(command);
@@ -73,8 +73,10 @@ client.on('message', message => {
 		.then(guild => {
 
 			let prefix = guild.commandPrefix;
+			let managerRole = guild.managerRole;
 
-			if(first_word === `${prefix}createsticker`) commands.createsticker(message, bot_auth)
+			if(first_word === `${prefix}createsticker`) commands.createsticker(message, bot_auth, prefix, managerRole)
+			else if(first_word === `${prefix}deletesticker`) commands.deletesticker(message, bot_auth, prefix, managerRole)
 
 		});
 

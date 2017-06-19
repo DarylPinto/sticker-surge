@@ -59,12 +59,12 @@ function handleExpiredRefreshToken(){
 */
 module.exports = function(options = {ajax: false}){
 
-return function(req, res, next){	
-
-	//Verify discord bot
+return function(req, res, next){
+	
 	let bot_auth = `Basic ${new Buffer(covert.bot_token_hash).toString('base64')}`;
 
 	if(req.headers.authorization && req.headers.authorization === bot_auth){
+		res.locals.userId = req.headers['author-id']; //also add res.locals for user guilds
 		next();
 		return;
 	}
@@ -78,6 +78,7 @@ return function(req, res, next){
 		headers: {'Authorization': `Bearer ${req.session.token}`}
 	})
 	.then(() => {
+		res.locals.userId = req.session.id;
 		next();
 	})
 	.catch(error => {

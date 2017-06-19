@@ -25,6 +25,26 @@ const removedFields = {
 	'customStickers._id': false
 }
 
+/**
+* Check if user is authorized
+*
+* First, we check if guild's managerIds includes user's id
+* If managerRole is set to @everyone, then there's no managerIds,
+* in this case we have to make sure that either:
+* A) the command came from the bot, and therefore the user is guaranteed to be in the guild
+* B) the command came from the user, and the user's guilds includes the current guild id
+*/
+function userIsAuthorized(guild, req, res){
+	if(guild.managerIds.includes(res.locals.userId)) return true;
+
+	if(guild.managerRole === '@everyone'){
+		if(!req.session) return true;
+		if(req.session.guilds.includes(guild.id)) return true;
+	}
+
+	return false;
+}
+
 ///////
 //GET//
 ///////
@@ -84,7 +104,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
 	if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');
-	if(!req.session.id) return res.status(401).send('Unauthorized');	
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
 	let data = {
 		name: req.body.name.toLowerCase().replace(/(:|-)/g, ''),
@@ -96,7 +116,8 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 	Guild.findOne({id: req.params.id})
 	.then(guild => {
 		if(!guild) return res.status(404).send('Guild not found');
-		if(!guild.managerIds.includes(req.session.id) && !(req.session.guilds.includes(guild.id) && guild.managerRole === '@everyone')){
+
+		if(!userIsAuthorized(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -165,7 +186,7 @@ router.patch('/:id', verifyBot, (req, res) => {
 //DELETE existing user's custom sticker
 router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {	
 
-	if(!req.session.id) return res.status(401).send('Unauthorized');
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
 	Guild.findOne({id: req.params.id})
 	.then(guild => {
@@ -173,7 +194,8 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 			res.status(404).send('Guild not found');
 			return null;
 		}
-		if(!guild.managerIds.includes(req.session.id) && !(req.session.guilds.includes(guild.id) && guild.managerRole === '@everyone')){
+			
+		if(!userIsAuthorized(guild, req, res)){	
 			res.status(401).send('Unauthorized');
 			return null;
 		}
