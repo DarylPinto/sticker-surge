@@ -38,7 +38,7 @@ function userIsAuthorized(guild, req, res){
 	if(guild.managerIds.includes(res.locals.userId)) return true;
 
 	if(guild.managerRole === '@everyone'){
-		if(!req.session) return true;
+		if(!req.session.guilds) return true;
 		if(req.session.guilds.includes(guild.id)) return true;
 	}
 
@@ -143,7 +143,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 	})
 	.catch(err => {
 		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');
-		console.log(err.message);
+		console.error(err);
 		res.status(503).send('Database error');
 	});
 
