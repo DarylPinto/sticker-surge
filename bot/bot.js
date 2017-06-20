@@ -40,6 +40,7 @@ const commands = {
 	//'addstickerpack': require('./commands/add-stickerpack.js'),
 	//'removestickerpack': require('./commands/remove-stickerpack.js'),
 	'setprefix': require('./commands/set-prefix.js'),
+	'setcontentrole': require('./commands/set-content-role.js'),
 	'setmanagerrole': require('./commands/set-manager-role.js'),
 	'help': require('./commands/help.js')
 }
@@ -80,6 +81,7 @@ client.on('message', message => {
 			else if(first_word === `${prefix}createsticker`) commands.createsticker(message, bot_auth, prefix, contentRole)
 			else if(first_word === `${prefix}deletesticker`) commands.deletesticker(message, bot_auth, prefix, contentRole)
 			else if(first_word === `${prefix}setprefix`) commands.setprefix(message, bot_auth, prefix, managerRole)
+			else if(first_word === `${prefix}setcontentrole`) commands.setcontentrole(message, bot_auth, prefix, managerRole)
 			else if(first_word === `${prefix}setmanagerrole`) commands.setmanagerrole(message, bot_auth, prefix, managerRole)
 			else if(first_word === `${prefix}help`) commands.help(message, prefix, contentRole, managerRole)
 

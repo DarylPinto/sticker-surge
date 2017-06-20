@@ -3,8 +3,6 @@ const covert = require('../../covert.js');
 
 module.exports = function(guild, bot_auth){
 
-	let bot_auth = `Basic ${new Buffer(covert.bot_token_hash).toString('base64')}`;
-
 	let joinMessage = prefix => `
 Your server can now use stickers!
 Type \`${prefix}help\` to get started.
@@ -12,12 +10,18 @@ Type \`${prefix}help\` to get started.
 *Tip: Set the **Stickers for Discord** role color to \`#36393E\` and give me a short nickname for a seamless experience!*
 	`;
 
+	let rolePositions = guild.roles.array().map(r => r.calculatedPosition);
+	let highestRolePosition = Math.max(...rolePositions);
+	let highestRoleIndex = rolePositions.indexOf(highestRolePosition);
+	let highestRole = guild.roles.array()[highestRoleIndex];
+
 	rp({
 		method: 'POST',
 		uri: `${covert.app_url}/api/guilds/`,
 		body: {
 			id: guild.id,
-			guildName: guild.name,	
+			guildName: guild.name,
+			managerRole: highestRole.name,
 			icon: guild.icon || null
 		},
 		headers: {Authorization: bot_auth},
