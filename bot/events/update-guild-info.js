@@ -10,10 +10,10 @@ module.exports = function(guild){
 
 	rp(`${covert.app_url}/api/guilds/${guild.id}`)
 	.then(res => {
-		manager_role_name = JSON.parse(res).managerRole;
+		manager_role_name = JSON.parse(res).managerRole.toLowerCase();
 		manager_role = guild.roles
 			.array()
-			.find(r => r.name === manager_role_name) || null;
+			.find(r => r.name.toLowerCase() === manager_role_name.toLowerCase()) || null;
 		manager_ids = (manager_role && manager_role_name != '@everyone') ? manager_role.members.map(m => m.user.id) : [];
 	})
 	.then(() => {

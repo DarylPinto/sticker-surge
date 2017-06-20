@@ -70,6 +70,8 @@ module.exports = {
 			left: 0
 			right: 0
 			max-height: calc(100vh - 450px)
+			border-top-left-radius: 5px
+			border-top-right-radius: 5px
 		.headline
 			padding-top: 60px
 			margin-bottom: 60px

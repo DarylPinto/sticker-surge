@@ -5,7 +5,7 @@ const guildSchema = Schema({
 	id: {type: String, unique: true, required: true},
 	guildName: {type: String, required: true},
 	icon: {type: String, default: null},
-	commandPrefix: {type: String, default: '$'},
+	commandPrefix: {type: String, default: '$', maxlength: 3},
 	customStickers: [{
 		name: {type: String, required: true, maxlength: 20},
 		url: {type: String, required: true},
@@ -14,7 +14,7 @@ const guildSchema = Schema({
 	}],
 	recentStickers: [String],
 	stickerPacks: [String],
-	managerRole: {type: String, default: '@everyone'},
+	managerRole: {type: String, default: '@everyone', maxlength: 30},
 	managerIds: [String],
 	isActive: {type: Boolean, default: true}
 });

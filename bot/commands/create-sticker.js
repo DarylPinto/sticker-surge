@@ -15,7 +15,7 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 		(attachments.length === 0 && message_words.length < 3) ||
 		(attachments.length > 0 && message_words.length < 2)
 	){
-		message.channel.send(`Invalid Syntax. Use \`${prefix}createsticker [NAME] [URL]\` or \`${prefix}createsticker [NAME]\` with an image attached.`);
+		message.channel.send(`Invalid Syntax. Use \`${prefix}createsticker [NAME] [IMAGE URL]\` or \`${prefix}createsticker [NAME]\` with an image attached.`);
 		return;
 	}
 
@@ -48,7 +48,7 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 		}
 
 		else if(err.message.includes('Unauthorized')){
-			message.channel.send(`You must have the role \`${managerRole}\` to add stickers.`);
+			message.channel.send(`You must have the role \`${managerRole}\` to create stickers for everyone on this server.\nIf you want to add your own custom stickers, private message me.`);
 		}
 
 		else if(err.message.includes('Sticker name already in use by an emoji')){

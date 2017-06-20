@@ -39,9 +39,9 @@ const commands = {
 	'deletesticker': require('./commands/delete-sticker.js'),
 	//'addstickerpack': require('./commands/add-stickerpack.js'),
 	//'removestickerpack': require('./commands/remove-stickerpack.js'),
-	//'setprefix': require('./commands/set-prefix.js'),
-	//'setrole': require('./commands/set-role.js'),
-	//'help': require('./commands/help.js')
+	'setprefix': require('./commands/set-prefix.js'),
+	'setrole': require('./commands/set-role.js'),
+	'help': require('./commands/help.js')
 }
 
 //Listen for posting stickers or using commands
@@ -78,12 +78,13 @@ client.on('message', message => {
 			if(first_word === `${prefix}stickers`) commands.stickers(message)
 			else if(first_word === `${prefix}createsticker`) commands.createsticker(message, bot_auth, prefix, managerRole)
 			else if(first_word === `${prefix}deletesticker`) commands.deletesticker(message, bot_auth, prefix, managerRole)
+			else if(first_word === `${prefix}setprefix`) commands.setprefix(message, bot_auth, prefix, managerRole)
+			else if(first_word === `${prefix}setrole`) commands.setrole(message, bot_auth, prefix, managerRole)
+			else if(first_word === `${prefix}help`) commands.help(message, prefix)
 
 		});
 
 	}
-
-	//TODO: When manager role is updated with !setrole, call updateGuildInfo to re-check for managerIds
 
 });
 

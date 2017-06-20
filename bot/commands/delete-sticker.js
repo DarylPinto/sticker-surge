@@ -34,7 +34,7 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 		}
 
 		else if(err.message.includes('Unauthorized')){
-			message.channel.send(`You must have the role \`${managerRole}\` to delete stickers.`);
+			message.channel.send(`You must have the role \`${managerRole}\` to delete this server's stickers.\nIf you want to manage your own custom stickers, private message me.`);
 		}
 
 		else{
