@@ -9,7 +9,21 @@ module.exports = {
 	data: function(){
 		return {
 			pageLoaded: false,
-			userId: this.$cookie.get('id') || null
+			userId: this.$cookie.get('id') || null,
+			taglines: [
+				'Make your server expressive',
+				'Spice up your server',
+				'Meme it up in your server',
+				'Keep your server interesting',
+				'Add some fun to your server',
+				'Turn your server up a notch'
+			]
+		}
+	},
+
+	methods: {
+		randArrayItem(arr){
+			return arr[Math.floor(Math.random() * arr.length)];	
 		}
 	},
 
@@ -27,10 +41,14 @@ module.exports = {
 
 	<header-bar :userId="userId"></header-bar>
 	<div class="container home-page" :class="{transparent: !pageLoaded}">
-		<h1>Express yourself with<br>Stickers for Discord</h1>
-		<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=8192" class="btn" target="_blank">Add to Discord</a>	
-	</div>
+		<div class="headline">
+			<span>{{randArrayItem(taglines)}} with</span>
+			<h1>Stickers for Discord</h1>	
+		</div>	
+		<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=8192" class="btn" target="_blank">Add to Discord</a>
 
+		<video src="demo-video.mp4" autoplay loop muted></video>	
+	</div>
 </main>
 </template>
 
@@ -38,13 +56,33 @@ module.exports = {
 
 	.home-page	
 		text-align: center
+		height: calc(100vh - 100px)
+		position: relative
 		transition: .2s
-		h1
-			transform: scale(1, 1.1)
-			font-weight: bold
-			font-size: 65px
-			margin-top: 60px
+		video
+			display: block
+			position: absolute
+			margin: 0 auto
+			box-shadow: 0 0 25px rgba(0,0,0, 0.8)
+			margin-top: 80px
+			background-color: #36393e
+			bottom: 0
+			left: 0
+			right: 0
+			max-height: calc(100vh - 450px)
+		.headline
+			padding-top: 60px
 			margin-bottom: 60px
+			h1
+				transform: scale(1, 1.1)
+				font-weight: bold
+				font-size: 65px
+			span
+				display: block
+				margin-bottom: 15px
+				font-weight: 400
+				opacity: 0.8
+				font-size: 35px
 		a
 			font-size: 24px
 			font-weight: 100
