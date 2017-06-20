@@ -1,7 +1,7 @@
 const rp = require('request-promise');
 const covert = require('../../covert.js');
 
-module.exports = function(guild){
+module.exports = function(guild, bot_auth){
 
 	let bot_auth = `Basic ${new Buffer(covert.bot_token_hash).toString('base64')}`;
 

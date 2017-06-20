@@ -8,17 +8,24 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 	let message_words = message.content.trim().split(/\s+/);
 
 	if(message_words.length < 2){
-		message.channel.send(`Invalid Syntax. Use \`${prefix}setrole [NEW ROLE NAME]\`.`);
+		message.channel.send(`Invalid Syntax. Use \`${prefix}setManagerRole [NEW ROLE NAME]\`.`);
 		return;
 	}
 
-	if(message_words[1] === 'everyone') message_words[1] = '@everyone';
+	let new_manager_role = message_words[1];
+
+	if(!guild.roles.array().map(r => r.name.toLowerCase()).includes(new_manager_role)){
+		message.channel.send('That role does not exist.');
+		return;
+	}
+
+	if(new_manager_role === 'everyone') new_manager_role = '@everyone';
 
 	return rp({
 		method: 'PATCH',
-		uri: `${covert.app_url}/api/guilds/${guild.id}/role`,
+		uri: `${covert.app_url}/api/guilds/${guild.id}/manager-role`,
 		body: {
-			managerRole: message_words[1]
+			managerRole: new_manager_role
 		},
 		headers: {
 			Authorization: bot_auth,
@@ -27,16 +34,16 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 		json: true
 	})
 	.then(res => {
-		if(res.managerRole === '@everyone') message.channel.send(`Now everyone can modify stickers on this server!`)
-		else message.channel.send(`\`${res.managerRole}\` is now the role required to modify stickers on this server.`)
+		if(res.managerRole === '@everyone') message.channel.send(`Everyone can now manage this bot.`)
+		else message.channel.send(`\`${res.managerRole}\` is now the role required to manage this bot.`)
 
 		//When manager role is updated with setrole, call updateGuildInfo to re-check for managerIds
-		updateGuildInfo(message.channel.guild);
+		updateGuildInfo(guild, bot_auth);
 	})
 	.catch(err => {
 
-		if(err.message.includes('Role must be less than 30 characters.')){
-			message.channel.send(`Role must be less than 30 characters.`);
+		if(err.message.includes('Role name must be less than 30 characters')){
+			message.channel.send(`Role name must be less than 30 characters.`);
 		}
 
 		else if(err.message.includes('Unauthorized')){

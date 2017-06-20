@@ -34,7 +34,24 @@ const removedFields = {
 * A) the command came from the bot, and therefore the user is guaranteed to be in the guild
 * B) the command came from the user, and the user's guilds includes the current guild id
 */
-function userIsAuthorized(guild, req, res){
+function userIsAuthorized(guild, req, res, type){
+
+	if(type != 'manager' && type != 'content') return false;
+
+	let ids = (type === 'manager') ? guild.managerIds : guild.contentIds;
+	let role = (type === 'manager') ? guild.managerRole : guild.contentRole;
+
+	if(ids.includes(res.locals.userId)) return true;
+
+	if(role === '@everyone'){
+		if(!req.session.guilds) return true;
+		if(req.session.guilds.includes(guild.id)) return true;
+	}
+
+	return false;
+}
+
+function userIsContentCreator(guild, req, res){
 	if(guild.managerIds.includes(res.locals.userId)) return true;
 
 	if(guild.managerRole === '@everyone'){
@@ -44,6 +61,7 @@ function userIsAuthorized(guild, req, res){
 
 	return false;
 }
+
 
 ///////
 //GET//
@@ -115,7 +133,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 	.then(guild => {
 		if(!guild) return res.status(404).send('Guild not found');
 
-		if(!userIsAuthorized(guild, req, res)){
+		if(!userIsAuthorized(guild, req, res, 'content')){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -176,7 +194,7 @@ router.patch('/:id', verifyBot, (req, res) => {
 });
 
 //Update guild prefix specifically (bot or auth'd user)
-router.patch('/:id/prefix', verifyUserAjax, (req, res) => {
+router.patch('/:id/command-prefix', verifyUserAjax, (req, res) => {
 
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
@@ -188,13 +206,18 @@ router.patch('/:id/prefix', verifyUserAjax, (req, res) => {
 			return null;	
 		}
 
-		if(!userIsAuthorized(guild, req, res)){
+		if(!userIsAuthorized(guild, req, res, 'manager')){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
 
+		if(['@','#'].includes(req.body.commandPrefix)){
+			res.status(400).send('Illegal prefix');
+			return null;
+		}
+
 		if(req.body.commandPrefix.length > 3){
-			res.status(400).send('Prefix must be less than 3 characters.');
+			res.status(400).send('Prefix must be less than 4 characters');
 			return null;
 		}
 
@@ -212,7 +235,7 @@ router.patch('/:id/prefix', verifyUserAjax, (req, res) => {
 });
 
 //Update guild manager role specifically (bot or auth'd user)
-router.patch('/:id/role', verifyUserAjax, (req, res) => {
+router.patch('/:id/manager-role', verifyUserAjax, (req, res) => {
 
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
@@ -226,13 +249,13 @@ router.patch('/:id/role', verifyUserAjax, (req, res) => {
 			return null;	
 		}
 
-		if(!userIsAuthorized(guild, req, res)){
+		if(!userIsAuthorized(guild, req, res, 'manager')){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
 
 		if(req.body.managerRole.length > 30){
-			res.status(400).send('Role must be less than 30 characters.');
+			res.status(400).send('Role must be less than 30 characters');
 			return null;
 		}
 
@@ -265,7 +288,7 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 			return null;
 		}
 			
-		if(!userIsAuthorized(guild, req, res)){	
+		if(!userIsAuthorized(guild, req, res, 'content')){	
 			res.status(401).send('Unauthorized');
 			return null;
 		}

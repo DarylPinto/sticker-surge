@@ -11,11 +11,13 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 		return;
 	}
 
+	let new_prefix = message_words[1];
+
 	return rp({
 		method: 'PATCH',
-		uri: `${covert.app_url}/api/guilds/${guild.id}/prefix`,
+		uri: `${covert.app_url}/api/guilds/${guild.id}/command-prefix`,
 		body: {
-			commandPrefix: message_words[1]
+			commandPrefix: new_prefix
 		},
 		headers: {
 			Authorization: bot_auth,
@@ -28,8 +30,12 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 	})
 	.catch(err => {
 		
-		if(err.message.includes('Prefix must be less than 3 characters.')){
-			message.channel.send(`Prefix must be less than 3 characters.`);
+		if(err.message.includes('Prefix must be less than 4 characters')){
+			message.channel.send(`Prefix must be less than 4 characters.`);
+		}
+
+		else if(err.message.includes('Illegal prefix')){
+			message.channel.send(`Prefix cannot be set to \`@\` or \`#\`.`);
 		}
 
 		else if(err.message.includes('Unauthorized')){
