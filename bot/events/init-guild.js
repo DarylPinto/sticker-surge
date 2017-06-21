@@ -12,7 +12,7 @@ Type \`${prefix}help\` to get started.
 	`;
 
 	//Get role with highest position (Thanks gymno)
-	let highest_role = guild.roles.find(r => r.calculatedPosition === message.guild.roles.size - 1).name;
+	let highest_role = guild.roles.find(r => r.calculatedPosition === guild.roles.size - 1).name;
 
 	rp({
 		method: 'POST',

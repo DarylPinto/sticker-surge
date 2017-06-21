@@ -17,9 +17,10 @@ module.exports = function(message, prefix, contentRole, managerRole){
 		if(has_manager_role){
 			helpinfo  += prefix+'setPrefix      : Set the prefix used to trigger these commands.\n';
 			helpinfo  += prefix+'setContentRole : Set the role required to create/delete stickers on this server.\n';
-			helpinfo  += prefix+'setManagerRole : Set the role required to manage this bot.\n';
+			helpinfo  += prefix+'setManagerRole : Set the role required to manage everything to do with this bot.\n';
 		}
 
+		helpinfo    += prefix+'info           : View information about Stickers for Discord on this server.\n';
 		helpinfo    += prefix+'help           : List commands.';
 
 		message.channel.send(helpinfo, {reply: message.author.id, code: true});

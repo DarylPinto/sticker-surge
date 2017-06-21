@@ -45,6 +45,7 @@ const commands = {
 	'setprefix': require('./commands/set-prefix.js'),
 	'setcontentrole': require('./commands/set-content-role.js'),
 	'setmanagerrole': require('./commands/set-manager-role.js'),
+	'info': require('./commands/show-info.js'),
 	'help': require('./commands/help.js')
 }
 
@@ -86,6 +87,7 @@ client.on('message', message => {
 			else if(first_word === `${prefix}setprefix`) commands.setprefix(message, bot_auth, prefix, managerRole)
 			else if(first_word === `${prefix}setcontentrole`) commands.setcontentrole(message, bot_auth, prefix, managerRole)
 			else if(first_word === `${prefix}setmanagerrole`) commands.setmanagerrole(message, bot_auth, prefix, managerRole)
+			else if(first_word === `${prefix}info`) commands.info(message, prefix, contentRole, managerRole, guild)
 			else if(first_word === `${prefix}help`) commands.help(message, prefix, contentRole, managerRole)
 
 		});
@@ -102,7 +104,7 @@ client.on('message', message => {
 		.then(user => {
 
 			if(!message_has_command){
-				message.channel.send('Unrecognized command.');
+				message.channel.send('Unrecognized command. Here are a list of commands:');
 				commands.help(message);
 			}
 
@@ -110,6 +112,28 @@ client.on('message', message => {
 			else if(first_word.endsWith('createsticker')) commands.createsticker(message, bot_auth)
 			else if(first_word.endsWith('deletesticker')) commands.deletesticker(message, bot_auth)
 			else if(first_word.endsWith('help')) commands.help(message)
+
+		})
+		.catch(err => {
+
+			//If user doesn't exist, initialize user and welcome them
+			if(!err.message.includes('User not found')) return false;
+
+			rp({
+				method: 'POST',
+				uri: `${covert.app_url}/api/users`,
+				body: {	
+					id: message.author.id,	
+					username: message.author.username,
+					avatar: message.author.avatar
+				},
+				headers: {Authorization: bot_auth},
+				json: true
+			})
+			.then(() => {
+				message.channel.send('Hello! Here are a list of commands:');
+				commands.help(message);
+			});
 
 		});
 
