@@ -4,33 +4,36 @@ module.exports = function(message, prefix, contentRole, managerRole){
 
 	if(message.channel.type === 'text'){
 
-		let reply = \`${prefix}stickers\` - View this server's stickers.\n`;
+		let has_content_role = message.member.roles.array().map(r => r.name.toLowerCase()).includes(contentRole.toLowerCase());
+		let has_manager_role = message.member.roles.array().map(r => r.name.toLowerCase()).includes(managerRole.toLowerCase());
 
-		if(message.member.roles.array().map(r => r.name.toLowerCase()).includes(contentRole.toLowerCase())){
-			reply += `\`${prefix}createSticker\` - Create a custom sticker for anyone on this server to use.\n`;
-			reply += `\`${prefix}deleteSticker\` - Delete a custom sticker from this server.\n`;	
+		let helpinfo = prefix+'stickers       : View this server\'s stickers.\n';
+
+		if(has_content_role || has_manager_role){
+			helpinfo  += prefix+'createSticker  : Create a custom sticker for anyone on this server to use.\n';
+			helpinfo  += prefix+'deleteSticker  : Delete a custom sticker from this server.\n';	
 		}
 
-		if(message.member.roles.array().map(r => r.name.toLowerCase()).includes(managerRole.toLowerCase())){
-			reply += `\`${prefix}setPrefix\` - Set the prefix used to trigger these commands.\n`;
-			reply += `\`${prefix}setContentRole\` - Set the role required to create/delete stickers on this server.\n`;
-			reply += `\`${prefix}setManagerRole\` - Set the role required to manage this bot.\n`;
+		if(has_manager_role){
+			helpinfo  += prefix+'setPrefix      : Set the prefix used to trigger these commands.\n';
+			helpinfo  += prefix+'setContentRole : Set the role required to create/delete stickers on this server.\n';
+			helpinfo  += prefix+'setManagerRole : Set the role required to manage this bot.\n';
 		}
 
-		reply += `\`${prefix}help\` - List commands.`;
+		helpinfo    += prefix+'help           : List commands.';
 
-		message.channel.send(reply);
+		message.channel.send(helpinfo, {reply: message.author.id, code: true});
 
 	}else{
 		
-		message.channel.send(`
+		let helpinfo = `
+stickers      : View your personal stickers.
+createSticker : Create a custom sticker to use on any server with Stickers for Discord.
+deleteSticker : Delete one of your custom stickers.
+help          : List commands.
+`;
 
-\`stickers\`: View your personal stickers.
-\`createsticker\`: Create a custom sticker to use on any server that has Stickers for Discord.
-\`deletesticker\`: Delete one of your custom stickers.
-\`help\`: List commands.
-
-		`);
+		message.channel.send(helpinfo, {reply: message.author.id, code: true});
 
 	}
 	

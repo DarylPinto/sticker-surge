@@ -12,8 +12,9 @@ module.exports = function(message, bot_auth, prefix, contentRole){
 	let sticker_name = message_words[1].toLowerCase().replace(/(:|-)/g, '');
 
 	let uri = `${covert.app_url}/api/users/${message.author.id}/stickers/${sticker_name}`;
+
 	if(message.channel.type === 'text'){
-		uri = `${covert.app_url}/api/guilds/${message.channel.guild.id}/stickers/${sticker_name}`;	
+		uri = `${covert.app_url}/api/guilds/${message.channel.guild.id}/stickers/${sticker_name}`;
 	}
 
 	return rp({
@@ -26,10 +27,11 @@ module.exports = function(message, bot_auth, prefix, contentRole){
 		json: true
 	})
 	.then(res => {
-		message.channel.send(`\`:${sticker_name}:\` sticker deleted!`);
+		let sticker_display_name = (message.channel.type === 'dm') ? '-'+sticker_name : sticker_name;
+		message.channel.send(`\`:${sticker_display_name}:\` sticker deleted!`);
 	})
 	.catch(err => {
-		if(err.message.includes('Guild does not have a custom sticker with that name')){
+		if(err.message.includes('does not have a custom sticker with that name')){
 			message.channel.send('There\'s no sticker with that name.');
 		}
 

@@ -99,7 +99,8 @@ module.exports = {
 
 		<div v-for="guild in sortedUserGuildData" :key="guild.id" class="guild">
 			<router-link :to="`/server/${guild.id}`">
-				<img :src="`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`" :alt="guild.name">
+				<img v-if="guild.icon" :src="`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`" :alt="guild.name">
+				<img v-if="!guild.icon" src="/images/default-discord-icon.png" :alt="guild.name">
 				<h2>{{guild.name}}</h2>
 			</router-link>
 		</div>

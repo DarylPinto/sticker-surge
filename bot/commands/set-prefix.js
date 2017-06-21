@@ -26,7 +26,7 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 		json: true
 	})
 	.then(res => {
-		message.channel.send(`Stickers for Discord commands now begin with \`${res.commandPrefix}\``);
+		message.channel.send(`Stickers for Discord commands now begin with \`${res.commandPrefix}\`\nType \`${res.commandPrefix}help\` for a list of commands.`);
 	})
 	.catch(err => {
 		

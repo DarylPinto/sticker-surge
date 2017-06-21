@@ -81,7 +81,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 
 	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
-	if(req.session.id != req.params.id) return res.status(401).send('Unauthorized');
+	if(res.locals.userId != req.params.id) return res.status(401).send('Unauthorized');
 
 	let data = {
 		name: req.body.name.toLowerCase().replace(/(:|-)/g, ''),
@@ -128,7 +128,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 //DELETE existing user's custom sticker
 router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 
-	if(req.session.id != req.params.id) return res.status(401).send('Unauthorized');
+	if(res.locals.userId != req.params.id) return res.status(401).send('Unauthorized');
 
 	User.findOne({id: req.params.id})
 	.then(user => {

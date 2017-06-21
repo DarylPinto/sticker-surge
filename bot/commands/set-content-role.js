@@ -14,7 +14,7 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 
 	let new_content_role = message_words[1];
 
-	if(!guild.roles.array().map(r => r.name.toLowerCase()).includes(new_content_role)){
+	if(!guild.roles.array().map(r => r.name.toLowerCase()).includes(new_content_role.toLowerCase())){
 		message.channel.send('That role does not exist.');
 		return;
 	}
@@ -35,12 +35,14 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 	})
 	.then(res => {
 		if(res.managerRole === '@everyone') message.channel.send(`Everyone can now create/delete stickers on this server.`)
-		else message.channel.send(`\`${res.managerRole}\` is now the role required to create/delete stickers on this server.`)
+		else message.channel.send(`\`${res.contentRole}\` is now the role required to create/delete stickers on this server.`)
 
 		//When manager role is updated with setrole, call updateGuildInfo to re-check for contentIds
 		updateGuildInfo(guild, bot_auth);
 	})
 	.catch(err => {
+
+		console.log(err.message);
 
 		if(err.message.includes('Role name must be less than 30 characters')){
 			message.channel.send(`Role name must be less than 30 characters.`);

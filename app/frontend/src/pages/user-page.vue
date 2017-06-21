@@ -73,6 +73,7 @@ module.exports = {
 		
 		<header>
 			<img v-if="avatarURL" :src="avatarURL" :alt="username">
+			<img v-if="!avatarURL" src="/images/default-discord-icon.png" :alt="username">
 			<h1 :style="`font-size: ${nameFontSize}`">{{username}}</h1>	
 		</header>
 

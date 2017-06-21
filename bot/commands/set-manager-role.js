@@ -14,7 +14,7 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 
 	let new_manager_role = message_words[1];
 
-	if(!guild.roles.array().map(r => r.name.toLowerCase()).includes(new_manager_role)){
+	if(!guild.roles.array().map(r => r.name.toLowerCase()).includes(new_manager_role.toLowerCase())){
 		message.channel.send('That role does not exist.');
 		return;
 	}

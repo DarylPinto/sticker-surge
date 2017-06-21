@@ -24,6 +24,8 @@ module.exports = {
 			customStickers: [],
 			managerIds: [],
 			managerRole: '',
+			contentIds: [],
+			contentRole: '',
 			stickerName: '',
 			stickerURL: '',
 			stickerCreationError: '',
@@ -35,7 +37,11 @@ module.exports = {
 
 	computed: {
 		userCanEdit: function(){
-			return this.userId && this.userGuilds.includes(this.guildId) && (this.managerIds.includes(this.userId) || this.managerRole === '@everyone');
+			if(!this.userId) return false; //User must be logged in
+			if(!this.userGuilds.includes(this.guildId)) return false; //User must be part of guild
+			if(this.contentIds.includes(this.userId) || this.managerIds.includes(this.userId)) return true; //User must have content role or manager role
+			if(this.contentRole === '@everyone') return true //User can edit if content role is set to @everyone
+			return false;
 		},
 		nameFontSize: function(){
 			let size = 90 - this.guildName.length;
@@ -56,6 +62,8 @@ module.exports = {
 				this.customStickers = res.data.customStickers;	
 				this.managerIds = res.data.managerIds;
 				this.managerRole = res.data.managerRole;
+				this.contentIds = res.data.contentIds;
+				this.contentRole = res.data.contentRole;
 				document.title = `${res.data.guildName} - Stickers for Discord`;	
 				this.pageLoaded = true;
 			}).catch(err => {
@@ -96,6 +104,7 @@ module.exports = {
 		
 		<header>
 			<img v-if="iconURL" :src="iconURL" :alt="guildName">
+			<img v-if="!iconURL" src="/images/default-discord-icon.png" :alt="guildName">
 			<h1 :style="`font-size: ${nameFontSize}`">{{guildName}}</h1>	
 		</header>
 

@@ -5,25 +5,41 @@ module.exports = function(message, bot_auth, prefix, contentRole){
 
 	let message_words = message.content.trim().split(/\s+/);	
 	let attachments = message.attachments.array();
-	let uri = `${covert.app_url}/api/users/${message.author.id}/stickers`;
+	let invalid_syntax_message;
+	let uri;
 
-	if(message.channel.type === 'text'){
-		uri = `${covert.app_url}/api/guilds/${message.channel.guild.id}/stickers`;	
+	//change request uri and prefix if message is a private message
+	if(message.channel.type === 'dm'){
+		uri = `${covert.app_url}/api/users/${message.author.id}/stickers`;
+		prefix = '';
+	}else if(message.channel.type === 'text'){
+		uri = `${covert.app_url}/api/guilds/${message.channel.guild.id}/stickers`;
 	}
 
+	//Prepare invalid syntax message (with or without syntax depending on if it's a private message or not)
+	invalid_syntax_message = `Invalid Syntax. Use \`${prefix}createsticker [NAME] [IMAGE URL]\` or \`${prefix}createsticker [NAME]\` with an image attached.`;
+
+	//Regular syntax checking
 	if(
 		(attachments.length === 0 && message_words.length < 3) ||
 		(attachments.length > 0 && message_words.length < 2)
 	){
-		message.channel.send(`Invalid Syntax. Use \`${prefix}createsticker [NAME] [IMAGE URL]\` or \`${prefix}createsticker [NAME]\` with an image attached.`);
+		message.channel.send(invalid_syntax_message);
 		return;
 	}
 
 	let sticker_name = message_words[1].toLowerCase().replace(/(:|-)/g, '');
-	let sticker_url = message_words[2];
-	
+	let sticker_url = message_words[2];	
+
+	//Determine if attachment is an image, if so use the attachment URL for the sticker
 	if(attachments.length > 0 && (attachments[0].width)){
 		sticker_url = attachments[0].url;
+	}
+
+	//Client side check if sticker_url resembles an actual url
+	if(!sticker_url.startsWith('http')){
+		message.channel.send(invalid_syntax_message);	
+		return;
 	}
 
 	return rp({
@@ -40,10 +56,11 @@ module.exports = function(message, bot_auth, prefix, contentRole){
 		json: true
 	})
 	.then(res => {
-		message.channel.send(`\`:${sticker_name}:\` sticker created!`);
+		let sticker_display_name = (message.channel.type === 'dm') ? '-'+sticker_name : sticker_name;
+		message.channel.send(`\`:${sticker_display_name}:\` sticker created!`);
 	})
 	.catch(err => {
-		if(err.message.includes('Guild already has a custom sticker with that name')){
+		if(err.message.includes('already has a custom sticker with that name')){
 			message.channel.send('There\'s already a sticker with that name.');
 		}
 

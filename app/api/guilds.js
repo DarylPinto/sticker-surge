@@ -34,7 +34,7 @@ const removedFields = {
 * A) the command came from the bot, and therefore the user is guaranteed to be in the guild
 * B) the command came from the user, and the user's guilds includes the current guild id
 */
-function userIsAuthorized(guild, req, res, type){
+function userIsAuthorized(guild, req, res, type){	
 
 	if(type != 'manager' && type != 'content') return false;
 
@@ -50,18 +50,6 @@ function userIsAuthorized(guild, req, res, type){
 
 	return false;
 }
-
-function userIsContentCreator(guild, req, res){
-	if(guild.managerIds.includes(res.locals.userId)) return true;
-
-	if(guild.managerRole === '@everyone'){
-		if(!req.session.guilds) return true;
-		if(req.session.guilds.includes(guild.id)) return true;
-	}
-
-	return false;
-}
-
 
 ///////
 //GET//
@@ -133,7 +121,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 	.then(guild => {
 		if(!guild) return res.status(404).send('Guild not found');
 
-		if(!userIsAuthorized(guild, req, res, 'content')){
+		if(!userIsAuthorized(guild, req, res, 'manager') && !userIsAuthorized(guild, req, res, 'content')){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -242,8 +230,6 @@ router.patch('/:id/manager-role', verifyUserAjax, (req, res) => {
 	Guild.findOne({id: req.params.id})
 	.then(guild => {
 
-		//TODO: add length check
-
 		if(!guild){
 			res.status(404).send('Guild not found');
 			return null;	
@@ -272,6 +258,42 @@ router.patch('/:id/manager-role', verifyUserAjax, (req, res) => {
 
 });
 
+//Update guild content creator role specifically (bot or auth'd user)
+router.patch('/:id/content-role', verifyUserAjax, (req, res) => {
+
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');
+
+	Guild.findOne({id: req.params.id})
+	.then(guild => {
+
+		if(!guild){
+			res.status(404).send('Guild not found');
+			return null;	
+		}
+
+		if(!userIsAuthorized(guild, req, res, 'manager')){
+			res.status(401).send('Unauthorized');
+			return null;
+		}
+
+		if(req.body.contentRole.length > 30){
+			res.status(400).send('Role must be less than 30 characters');
+			return null;
+		}
+
+		guild.contentRole = req.body.contentRole;
+		return guild.save();
+
+	})
+	.then(guild => {
+		if(guild) res.json(guild);
+	})
+	.catch(err => {	
+		res.status(503).send('Database error');
+	});
+
+});
+
 //////////
 //DELETE//
 //////////
@@ -288,7 +310,7 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 			return null;
 		}
 			
-		if(!userIsAuthorized(guild, req, res, 'content')){	
+		if(!userIsAuthorized(guild, req, res, 'manager') && !userIsAuthorized(guild, req, res, 'content')){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
