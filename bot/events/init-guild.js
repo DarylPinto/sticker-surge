@@ -11,10 +11,8 @@ Type \`${prefix}help\` to get started.
 *Tip: Set the **Stickers for Discord** role color to \`#36393E\` and give me a short nickname for a seamless experience!*
 	`;
 
-	let rolePositions = guild.roles.array().map(r => r.calculatedPosition);
-	let highestRolePosition = Math.max(...rolePositions);
-	let highestRoleIndex = rolePositions.indexOf(highestRolePosition);
-	let highestRole = guild.roles.array()[highestRoleIndex];
+	//Get role with highest position (Thanks gymno)
+	let highest_role = guild.roles.find(r => r.calculatedPosition === message.guild.roles.size - 1).name;
 
 	rp({
 		method: 'POST',
@@ -22,7 +20,7 @@ Type \`${prefix}help\` to get started.
 		body: {
 			id: guild.id,
 			guildName: guild.name,
-			managerRole: highestRole.name,
+			managerRole: highest_role,
 			icon: guild.icon || null
 		},
 		headers: {Authorization: bot_auth},

@@ -12,7 +12,10 @@ const initGuild = require('./events/init-guild.js');
 const deactivateGuild = require('./events/deactivate-guild.js');
 const updateGuildInfo = require('./events/update-guild-info.js');
 
-client.on('ready', () => console.log('Stickers for Discord bot is online!'));
+client.on('ready', () => {
+	client.user.setGame('stickersfordiscord.com');
+	console.log('Stickers for Discord bot is online!');
+});
 
 //Add guild to db for the first time
 client.on('guildCreate', guild => initGuild(guild, bot_auth));
