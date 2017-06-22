@@ -14,10 +14,9 @@ const guildSchema = Schema({
 	}],
 	recentStickers: [String],
 	stickerPacks: [String],
-	managerRole: {type: String, default: '@everyone', maxlength: 30},
-	managerIds: [String],
-	contentRole: {type: String, default: '@everyone', maxlength: 30},
-	contentIds: [String],
+	guildManagerIds: [String],
+	stickerManagerRole: {type: String, default: '@everyone', maxlength: 30},
+	stickerManagerIds: [String],
 	isActive: {type: Boolean, default: true}
 });
 

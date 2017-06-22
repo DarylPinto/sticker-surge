@@ -1,7 +1,7 @@
 const rp = require('request-promise');
 const covert = require('../../covert.js');
 
-module.exports = function(message, bot_auth, prefix, contentRole){
+module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 
 	let message_words = message.content.trim().split(/\s+/);	
 	let attachments = message.attachments.array();
@@ -65,7 +65,7 @@ module.exports = function(message, bot_auth, prefix, contentRole){
 		}
 
 		else if(err.message.includes('Unauthorized')){
-			message.channel.send(`You must have the role \`${contentRole}\` to create stickers for everyone on this server.\nIf you want to add your own custom stickers, private message me.`);
+			message.channel.send(`You must have the role \`${sticker_manager_role}\` to create stickers for everyone on this server.\nIf you want to create stickers just for yourself, private message me.`);
 		}
 
 		else if(err.message.includes('Sticker name already in use by an emoji')){

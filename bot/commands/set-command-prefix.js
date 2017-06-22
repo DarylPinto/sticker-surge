@@ -1,7 +1,7 @@
 const rp = require('request-promise');
 const covert = require('../../covert.js');
 
-module.exports = function(message, bot_auth, prefix, managerRole){
+module.exports = function(message, bot_auth, prefix){
 
 	let guild = message.channel.guild;
 	let message_words = message.content.trim().split(/\s+/);
@@ -39,7 +39,7 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 		}
 
 		else if(err.message.includes('Unauthorized')){
-			message.channel.send(`You must have the role \`${managerRole}\` to use this command.`);
+			message.channel.send(`You must have permission to manage the server in order to use this command.`);
 		}
 
 		else{

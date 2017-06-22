@@ -26,29 +26,28 @@ const removedFields = {
 }
 
 /**
-* Check if user is authorized
+* Check if user is sticker manager
 *
-* First, we check if guild's managerIds includes user's id
-* If managerRole is set to @everyone, then there's no managerIds,
+* First, we check if guild's stickerManagerIds includes user's id
+* If stickerManagerRole is set to @everyone, then there's no stickerManagerIds,
 * in this case we have to make sure that either:
 * A) the command came from the bot, and therefore the user is guaranteed to be in the guild
 * B) the command came from the user, and the user's guilds includes the current guild id
 */
-function userIsAuthorized(guild, req, res, type){	
+function userIsStickerManager(guild, req, res){
 
-	if(type != 'manager' && type != 'content') return false;
+	if(guild.stickerManagerIds.includes(res.locals.userId)) return true;
 
-	let ids = (type === 'manager') ? guild.managerIds : guild.contentIds;
-	let role = (type === 'manager') ? guild.managerRole : guild.contentRole;
-
-	if(ids.includes(res.locals.userId)) return true;
-
-	if(role === '@everyone'){
+	if(guild.stickerManagerRole === '@everyone'){
 		if(!req.session.guilds) return true;
 		if(req.session.guilds.includes(guild.id)) return true;
 	}
 
 	return false;
+}
+
+function userIsGuildManager(guild, req, res){
+	return guild.guildManagerIds.includes(res.locals.userId);
 }
 
 ///////
@@ -121,7 +120,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 	.then(guild => {
 		if(!guild) return res.status(404).send('Guild not found');
 
-		if(!userIsAuthorized(guild, req, res, 'manager') && !userIsAuthorized(guild, req, res, 'content')){
+		if(!userIsGuildManager(guild, req, res) && !userIsStickerManager(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -194,7 +193,7 @@ router.patch('/:id/command-prefix', verifyUserAjax, (req, res) => {
 			return null;	
 		}
 
-		if(!userIsAuthorized(guild, req, res, 'manager')){
+		if(!userIsGuildManager(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -222,8 +221,8 @@ router.patch('/:id/command-prefix', verifyUserAjax, (req, res) => {
 
 });
 
-//Update guild manager role specifically (bot or auth'd user)
-router.patch('/:id/manager-role', verifyUserAjax, (req, res) => {
+//Update guild stickerManagerRole specifically (bot or auth'd user)
+router.patch('/:id/sticker-manager-role', verifyUserAjax, (req, res) => {
 
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
@@ -235,53 +234,17 @@ router.patch('/:id/manager-role', verifyUserAjax, (req, res) => {
 			return null;	
 		}
 
-		if(!userIsAuthorized(guild, req, res, 'manager')){
+		if(!userIsGuildManager(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
 
-		if(req.body.managerRole.length > 30){
+		if(req.body.stickerManagerRole.length > 30){
 			res.status(400).send('Role must be less than 30 characters');
 			return null;
 		}
 
-		guild.managerRole = req.body.managerRole;
-		return guild.save();
-
-	})
-	.then(guild => {
-		if(guild) res.json(guild);
-	})
-	.catch(err => {	
-		res.status(503).send('Database error');
-	});
-
-});
-
-//Update guild content creator role specifically (bot or auth'd user)
-router.patch('/:id/content-role', verifyUserAjax, (req, res) => {
-
-	if(!res.locals.userId) return res.status(401).send('Unauthorized');
-
-	Guild.findOne({id: req.params.id})
-	.then(guild => {
-
-		if(!guild){
-			res.status(404).send('Guild not found');
-			return null;	
-		}
-
-		if(!userIsAuthorized(guild, req, res, 'manager')){
-			res.status(401).send('Unauthorized');
-			return null;
-		}
-
-		if(req.body.contentRole.length > 30){
-			res.status(400).send('Role must be less than 30 characters');
-			return null;
-		}
-
-		guild.contentRole = req.body.contentRole;
+		guild.stickerManagerRole = req.body.stickerManagerRole;
 		return guild.save();
 
 	})
@@ -310,7 +273,7 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 			return null;
 		}
 			
-		if(!userIsAuthorized(guild, req, res, 'manager') && !userIsAuthorized(guild, req, res, 'content')){
+		if(!userIsGuildManager(guild, req, res) && !userIsStickerManager(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}

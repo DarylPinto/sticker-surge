@@ -2,30 +2,30 @@ const rp = require('request-promise');
 const covert = require('../../covert.js');
 const updateGuildInfo = require('../events/update-guild-info.js');
 
-module.exports = function(message, bot_auth, prefix, managerRole){
+module.exports = function(message, bot_auth, prefix){
 
 	let guild = message.channel.guild;
 	let message_words = message.content.trim().split(/\s+/);
 
 	if(message_words.length < 2){
-		message.channel.send(`Invalid Syntax. Use \`${prefix}setContentRole [NEW ROLE NAME]\`.`);
+		message.channel.send(`Invalid Syntax. Use \`${prefix}setRole [NEW ROLE NAME]\`.`);
 		return;
 	}
 
-	let new_content_role = message_words[1];
+	let new_sticker_manager_role = message_words[1];
 
-	if(!guild.roles.array().map(r => r.name.toLowerCase()).includes(new_content_role.toLowerCase())){
+	if(!guild.roles.array().map(r => r.name.toLowerCase()).includes(new_sticker_manager_role.toLowerCase())){
 		message.channel.send('That role does not exist.');
 		return;
 	}
 
-	if(new_content_role === 'everyone') new_content_role = '@everyone';
+	if(new_sticker_manager_role === 'everyone') new_sticker_manager_role = '@everyone';
 
 	return rp({
 		method: 'PATCH',
 		uri: `${covert.app_url}/api/guilds/${guild.id}/content-role`,
 		body: {
-			contentRole: new_content_role
+			stickerManagerRole: new_sticker_manager_role
 		},
 		headers: {
 			Authorization: bot_auth,
@@ -34,10 +34,10 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 		json: true
 	})
 	.then(res => {
-		if(res.managerRole === '@everyone') message.channel.send(`Everyone can now create/delete stickers on this server.`)
-		else message.channel.send(`\`${res.contentRole}\` is now the role required to create/delete stickers on this server.`)
+		if(res.stickerManagerRole === '@everyone') message.channel.send(`Everyone can now manage stickers on this server.`)
+		else message.channel.send(`\`${res.stickerManagerRole}\` is now the role required to manage stickers on this server.`)
 
-		//When manager role is updated with setrole, call updateGuildInfo to re-check for contentIds
+		//When sticker manager role is updated with setrole, call updateGuildInfo to update ids
 		updateGuildInfo(guild, bot_auth);
 	})
 	.catch(err => {
@@ -49,7 +49,7 @@ module.exports = function(message, bot_auth, prefix, managerRole){
 		}
 
 		else if(err.message.includes('Unauthorized')){
-			message.channel.send(`You must have the role \`${managerRole}\` to use this command.`);
+			message.channel.send(`You must have permission to manage the server in order to use this command.`);
 		}
 
 		else{

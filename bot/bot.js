@@ -28,6 +28,11 @@ client.on('guildMemberUpdate', (oldMember, newMember) => {
 	if(newMember.user.id != client.user.id) updateGuildInfo(newMember.guild, bot_auth);
 });
 
+//Update guild info (specifically managerIds) when a role is updated
+client.on('roleUpdate', (oldRole, newRole) => {
+	updateGuildInfo(newRole.guild, bot_auth);
+});
+
 //Allow user to post sticker by editing a message incase of a typo
 client.on('messageUpdate', (oldMessage, newMessage) => {
 	if(/^:[a-zA-Z0-9-]+:$/.test(newMessage.content.trim())) sendSticker(newMessage);
@@ -42,10 +47,8 @@ const commands = {
 	'deletesticker': require('./commands/delete-sticker.js'),
 	//'addstickerpack': require('./commands/add-stickerpack.js'),
 	//'removestickerpack': require('./commands/remove-stickerpack.js'),
-	'setprefix': require('./commands/set-prefix.js'),
-	'setcontentrole': require('./commands/set-content-role.js'),
-	'setmanagerrole': require('./commands/set-manager-role.js'),
-	'info': require('./commands/show-info.js'),
+	'setprefix': require('./commands/set-command-prefix.js'),
+	'setrole': require('./commands/set-sticker-manager-role.js'),
 	'help': require('./commands/help.js')
 }
 
@@ -78,17 +81,17 @@ client.on('message', message => {
 		.then(guild => {
 
 			let prefix = guild.commandPrefix;
-			let managerRole = guild.managerRole;
-			let contentRole = guild.contentRole;
+			let guild_manager_ids = guild.guildManagerIds;
+			let sticker_manager_role = guild.stickerManagerRole;
 
 			if(first_word === `${prefix}stickers`) commands.stickers(message)
-			else if(first_word === `${prefix}createsticker`) commands.createsticker(message, bot_auth, prefix, contentRole)
-			else if(first_word === `${prefix}deletesticker`) commands.deletesticker(message, bot_auth, prefix, contentRole)
-			else if(first_word === `${prefix}setprefix`) commands.setprefix(message, bot_auth, prefix, managerRole)
-			else if(first_word === `${prefix}setcontentrole`) commands.setcontentrole(message, bot_auth, prefix, managerRole)
-			else if(first_word === `${prefix}setmanagerrole`) commands.setmanagerrole(message, bot_auth, prefix, managerRole)
-			else if(first_word === `${prefix}info`) commands.info(message, prefix, contentRole, managerRole, guild)
-			else if(first_word === `${prefix}help`) commands.help(message, prefix, contentRole, managerRole)
+			else if(first_word === `${prefix}createsticker`) commands.createsticker(message, bot_auth, prefix, sticker_manager_role)
+			else if(first_word === `${prefix}deletesticker`) commands.deletesticker(message, bot_auth, prefix, sticker_manager_role)
+			else if(first_word === `${prefix}setprefix`) commands.setprefix(message, bot_auth, prefix)
+			else if(first_word === `${prefix}setrole`) commands.setrole(message, bot_auth, prefix)
+			//else if(first_word === `${prefix}setmanagerrole`) commands.setmanagerrole(message, bot_auth, prefix, managerRole)
+			//else if(first_word === `${prefix}info`) commands.info(message, prefix, contentRole, managerRole, guild)
+			else if(first_word === `${prefix}help`) commands.help(message, prefix, sticker_manager_role, guild_manager_ids)
 
 		});
 
