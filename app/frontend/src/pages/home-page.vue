@@ -69,6 +69,7 @@ module.exports = {
 			bottom: 0
 			left: 0
 			right: 0
+			max-width: 100%
 			max-height: calc(100vh - 450px)
 			border-top-left-radius: 5px
 			border-top-right-radius: 5px

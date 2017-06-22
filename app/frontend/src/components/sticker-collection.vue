@@ -13,8 +13,7 @@ module.exports = {
 	props: ['name', 'stickerPrefix', 'emojiNamesAllowed', 'isEditable', 'stickers', 'pageType'],
 	data: function(){	
 		return {	
-			stickerSearchString: '',
-			stickerCreationModalParent: 'body',
+			stickerSearchString: '',	
 			loadingNewSticker: false
 		}
 	},
