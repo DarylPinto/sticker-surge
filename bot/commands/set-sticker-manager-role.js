@@ -13,17 +13,17 @@ module.exports = function(message, bot_auth, prefix){
 	}
 
 	let new_sticker_manager_role = message_words[1];
+	if(new_sticker_manager_role === 'everyone') new_sticker_manager_role = '@everyone';
 
 	if(!guild.roles.array().map(r => r.name.toLowerCase()).includes(new_sticker_manager_role.toLowerCase())){
 		message.channel.send('That role does not exist.');
 		return;
 	}
 
-	if(new_sticker_manager_role === 'everyone') new_sticker_manager_role = '@everyone';
 
 	return rp({
 		method: 'PATCH',
-		uri: `${covert.app_url}/api/guilds/${guild.id}/content-role`,
+		uri: `${covert.app_url}/api/guilds/${guild.id}/sticker-manager-role`,
 		body: {
 			stickerManagerRole: new_sticker_manager_role
 		},
@@ -42,8 +42,6 @@ module.exports = function(message, bot_auth, prefix){
 	})
 	.catch(err => {
 
-		console.log(err.message);
-
 		if(err.message.includes('Role name must be less than 30 characters')){
 			message.channel.send(`Role name must be less than 30 characters.`);
 		}
@@ -53,6 +51,7 @@ module.exports = function(message, bot_auth, prefix){
 		}
 
 		else{
+			console.log(err.message);
 			message.channel.send('An unknown error occured.');
 		}
 

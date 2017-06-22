@@ -17,7 +17,7 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 	}
 
 	//Prepare invalid syntax message (with or without syntax depending on if it's a private message or not)
-	invalid_syntax_message = `Invalid Syntax. Use \`${prefix}createsticker [NAME] [IMAGE URL]\` or \`${prefix}createsticker [NAME]\` with an image attached.`;
+	invalid_syntax_message = `Invalid Syntax. Use \`${prefix}createSticker [STICKER NAME] [IMAGE URL]\` or \`${prefix}createSticker [STICKER NAME]\` with an image attached.`;
 
 	//Regular syntax checking
 	if(

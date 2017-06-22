@@ -7,7 +7,7 @@ module.exports = function(message, bot_auth, prefix){
 	let message_words = message.content.trim().split(/\s+/);
 
 	if(message_words.length < 2){
-		message.channel.send(`Invalid Syntax. Use \`${prefix}setprefix [NEW PREFIX]\`.`);
+		message.channel.send(`Invalid Syntax. Use \`${prefix}setPrefix [NEW PREFIX]\`.`);
 		return;
 	}
 

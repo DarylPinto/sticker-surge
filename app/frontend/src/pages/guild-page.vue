@@ -22,10 +22,9 @@ module.exports = {
 			guildName: '',
 			iconURL: '',
 			customStickers: [],
-			managerIds: [],
-			managerRole: '',
-			contentIds: [],
-			contentRole: '',
+			guildManagerIds: [],
+			stickerManagerIds: [],
+			stickerManagerRole: '',
 			stickerName: '',
 			stickerURL: '',
 			stickerCreationError: '',
@@ -39,8 +38,8 @@ module.exports = {
 		userCanEdit: function(){
 			if(!this.userId) return false; //User must be logged in
 			if(!this.userGuilds.includes(this.guildId)) return false; //User must be part of guild
-			if(this.contentIds.includes(this.userId) || this.managerIds.includes(this.userId)) return true; //User must have content role or manager role
-			if(this.contentRole === '@everyone') return true //User can edit if content role is set to @everyone
+			if(this.stickerManagerIds.includes(this.userId) || this.guildManagerIds.includes(this.userId)) return true; //User must have content role or manager role
+			if(this.stickerManagerRole === '@everyone') return true //User can edit if content role is set to @everyone
 			return false;
 		},
 		nameFontSize: function(){
@@ -60,9 +59,8 @@ module.exports = {
 				this.guildName = res.data.guildName;
 				this.iconURL = res.data.icon ? `https://cdn.discordapp.com/icons/${res.data.id}/${res.data.icon}.png` : null;
 				this.customStickers = res.data.customStickers;	
-				this.managerIds = res.data.managerIds;
-				this.managerRole = res.data.managerRole;
-				this.contentIds = res.data.contentIds;
+				this.guildManagerIds = res.data.guildManagerIds;
+				this.stickerManagerIds = res.data.stickerManagerIds;
 				this.contentRole = res.data.contentRole;
 				document.title = `${res.data.guildName} - Stickers for Discord`;	
 				this.pageLoaded = true;

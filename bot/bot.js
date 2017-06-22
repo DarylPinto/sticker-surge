@@ -14,6 +14,7 @@ const updateGuildInfo = require('./events/update-guild-info.js');
 
 client.on('ready', () => {
 	client.user.setGame('stickersfordiscord.com');
+	client.guilds.forEach(g => updateGuildInfo(g, bot_auth));
 	console.log('Stickers for Discord bot is online!');
 });
 

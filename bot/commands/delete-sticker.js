@@ -5,7 +5,7 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 
 	let message_words = message.content.trim().split(/\s+/);	
 	if(message_words.length < 2){
-		message.channel.send(`Invalid Syntax. Use \`${prefix}deletesticker [NAME]\`.`);
+		message.channel.send(`Invalid Syntax. Use \`${prefix}deleteSticker [NAME]\`.`);
 		return;
 	}
 
