@@ -4,7 +4,7 @@ const User = require('./models/user-model.js');
 
 router.get('/', (req, res) => {
 
-	Promise.all([Guild.count({}), User.count({})])
+	Promise.all([Guild.count({isActive: true}), User.count({})])
 	.then(stats => {	
 		res.json({guilds: stats[0], users: stats[1]});
 	})

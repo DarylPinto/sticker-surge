@@ -39,6 +39,7 @@ Type \`${prefix}help\` to get started.
 		.then(res => {
 			console.log(`Guild ${guild.id} activated!`);	
 			guild.defaultChannel.send(joinMessage(res.commandPrefix));
+			updateGuildInfo(guild, bot_auth);
 		})
 		.catch(err => {
 			console.error(err.message);
