@@ -110,21 +110,24 @@ module.exports = {
 <style lang="sass">
 
 	$discord-gray: #36393E
+	$sticker-margin: 15px
 
 	.sticker-collection
+		overflow: hidden
 		> .sticker-creation-modal
 			display: none
 		.sticker-area
 			font-size: 0
+			width: calc(100% + #{$sticker-margin})
 		.loading-sticker
 			vertical-align: bottom
 			background-color: $discord-gray
 			border-radius: 5px
 			overflow: hidden
-			width: calc(25% - 11.5px)
+			width: calc(25% - #{$sticker-margin})
 			height: 280px
-			margin-right: 15px
-			margin-bottom: 15px
+			margin-right: $sticker-margin
+			margin-bottom: $sticker-margin
 			display: inline-flex
 			flex-direction: column
 			justify-content: center

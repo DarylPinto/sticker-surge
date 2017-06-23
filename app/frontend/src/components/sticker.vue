@@ -14,25 +14,24 @@ module.exports = {
 
 <style lang="sass">
 
-	$discord-gray: #36393E	
+	$discord-gray: #36393E
+	$sticker-margin: 15px
 
 	.sticker
 		font-size: 18px
 		background-color: $discord-gray
 		border-radius: 5px
 		overflow: hidden
-		width: calc(25% - 11.5px)
+		width: calc(25% - #{$sticker-margin})
 		height: 280px
-		margin-right: 15px
-		margin-bottom: 15px
+		margin-right: $sticker-margin
+		margin-bottom: $sticker-margin
 		display: inline-flex
 		flex-direction: column
 		justify-content: center
 		align-items: center
 		position: relative
 		vertical-align: top
-		&:nth-child(4n)
-			margin-right: 0
 		&:hover .delete-sticker
 			color: rgba(255,255,255,0.3)
 		.delete-sticker
