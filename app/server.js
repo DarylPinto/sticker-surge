@@ -27,11 +27,6 @@ app.use(sessions({
 	}
 }));
 
-app.get('/mess-tok', (req, res) => {
-	req.session.token = 'hehexd';
-	res.send('ok');
-});
-
 //Public dir 
 app.use('/', express.static('frontend/public'));
 
@@ -48,6 +43,8 @@ app.get('/stickers', verifyUser, (req, res) => {
 app.use('/api/users', require('./api/users.js'));
 app.use('/api/guilds', require('./api/guilds.js'));
 //app.use('/api/sticker-packs', require('./api/sticker-packs.js'));
+
+app.use('/api/stats', require('./api/stats.js'));
 app.get('/api/set-guilds', verifyUser, setGuildsCookie, (req, res) => {
 	res.send('Guilds cookie updated');
 });

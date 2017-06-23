@@ -105,17 +105,16 @@ client.on('message', message => {
 		if(message.author.id == client.user.id) return false;
 
 		rp({uri: `${covert.app_url}/api/users/${message.author.id}`, json: true})
-		.then(user => {
-
-			if(!message_has_command){
-				message.channel.send('Unrecognized command. Here are a list of commands:');
-				commands.help(message);
-			}
+		.then(user => {	
 
 			if(first_word.endsWith('stickers')) commands.stickers(message)
 			else if(first_word.endsWith('createsticker')) commands.createsticker(message, bot_auth)
 			else if(first_word.endsWith('deletesticker')) commands.deletesticker(message, bot_auth)
 			else if(first_word.endsWith('help')) commands.help(message)
+			else{
+				message.channel.send('Unrecognized command. Here are a list of commands:');
+				commands.help(message);	
+			}
 
 		})
 		.catch(err => {

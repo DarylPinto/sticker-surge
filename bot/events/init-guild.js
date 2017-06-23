@@ -11,16 +11,12 @@ Type \`${prefix}help\` to get started.
 *Tip: Set the **Stickers for Discord** role color to \`#36393E\` and give me a short nickname for a seamless experience!*
 	`;
 
-	//Get role with highest position (Thanks gymno)
-	let highest_role = guild.roles.find(r => r.calculatedPosition === guild.roles.size - 1).name;
-
 	rp({
 		method: 'POST',
 		uri: `${covert.app_url}/api/guilds/`,
 		body: {
 			id: guild.id,
 			guildName: guild.name,
-			managerRole: highest_role,
 			icon: guild.icon || null
 		},
 		headers: {Authorization: bot_auth},
