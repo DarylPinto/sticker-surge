@@ -25,9 +25,10 @@ module.exports = function(guild, bot_auth){
 			method: 'PATCH',
 			uri: `${covert.app_url}/api/guilds/${guild.id}`,
 			body: {
+				guildName: guild.name,
+				icon: guild.icon || null,
 				guildManagerIds: guild_manager_ids,
-				stickerManagerIds: sticker_manager_ids,
-				icon: guild.icon || null
+				stickerManagerIds: sticker_manager_ids
 			},
 			headers: {Authorization: bot_auth},
 			json: true
