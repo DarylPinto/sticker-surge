@@ -42,7 +42,7 @@ module.exports = {
 		},
 
 		deleteSticker(stickerName){
-			if(!confirm('Are you sure you want to delete -'+stickerName+'?')) return false;
+			if(!confirm(`Are you sure you want to delete ${stickerName}?`)) return false;
 
 			axios.delete(`/api/${this.pageType}/${this.$route.params.id}/stickers/${stickerName}`)
 			.then(res => {
@@ -88,10 +88,11 @@ module.exports = {
 			v-for="sticker in stickers"
 			v-on:deleteSticker="deleteSticker(sticker.name)"
 			v-show="sticker.name.indexOf(sanitizedStickerSearchString) > -1"
+			:type="pageType"
 			:key="sticker.name"
 			:link="sticker.url"
-			:name="stickerPrefix+sticker.name"
-			:prefix="null"
+			:prefix="stickerPrefix"
+			:name="sticker.name"
 			:isEditable="isEditable">
 		</sticker>
 	</div>

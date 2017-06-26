@@ -56,8 +56,8 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 		json: true
 	})
 	.then(res => {
-		let sticker_display_name = (message.channel.type === 'dm') ? '-'+sticker_name : sticker_name;
-		message.channel.send(`\`:${sticker_display_name}:\` sticker created!`);
+		let sticker_display_name = (message.channel.type === 'dm') ? `-${sticker_name}` : `:${sticker_name}:`;
+		message.channel.send(`\`${sticker_display_name}\` sticker created!`);
 	})
 	.catch(err => {
 		if(err.message.includes('already has a custom sticker with that name')){

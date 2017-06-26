@@ -109,7 +109,7 @@ module.exports = {
 		<stickerCollection
 			v-on:reload="loadPageData"
 			name="Custom Stickers"
-			stickerPrefix=""
+			:stickerPrefix="null"
 			:emojiNamesAllowed="false"
 			:stickers="customStickers"
 			:pageType="pageType"

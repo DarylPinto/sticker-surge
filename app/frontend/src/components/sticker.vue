@@ -1,6 +1,13 @@
 <script>
 module.exports = {
-	props: ['link', 'name', 'isEditable']
+	props: ['link', 'type', 'prefix', 'name', 'isEditable'],
+	computed: {
+		displayName(){
+			if(this.type === 'users') return `-${this.name}`;
+			else if(this.type === 'guilds')	return `:${this.name}:`;
+			else return `:${this.prefix}-${this.name}:`;
+		}
+	}
 }
 </script>
 
@@ -8,7 +15,7 @@ module.exports = {
 <div class="sticker">
 	<i class="material-icons delete-sticker" v-if="isEditable" @click="$emit('deleteSticker')">clear</i>	
 	<img :src="link" :alt="name">	
-	<p>:{{name}}:</p>
+	<p>{{displayName}}</p>
 </div>
 </template>
 

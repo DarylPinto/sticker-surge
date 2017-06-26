@@ -59,7 +59,7 @@ client.on('message', message => {
 	////////////////
 	//Send sticker//
 	////////////////
-	if( /^:[a-zA-Z0-9-]+:$/.test(message.content.trim()) ){
+	if( /^(:|-)[a-zA-Z0-9-]+:?$/.test(message.content.trim()) ){
 		sendSticker(message);
 		return false;
 	}
