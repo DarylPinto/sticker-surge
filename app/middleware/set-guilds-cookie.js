@@ -28,7 +28,9 @@ function setGuildsCookie(req, res, next){
 		let guilds_cookie = all_sticker_guild_ids.filter(id => user_guild_ids.includes(id));
 
 		//Set cookies
-		res.cookie('guilds', JSON.stringify(guilds_cookie));
+		res.cookie('guilds', JSON.stringify(guilds_cookie), {
+			expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) //1 year
+		});
 		req.session.guilds = guilds_cookie;
 
 		next();

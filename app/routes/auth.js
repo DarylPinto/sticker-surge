@@ -87,7 +87,9 @@ callback: express.Router().get('/', (req, res) => {
 		req.session.id = user_id;
 		
 		//And again as standard cookies for the view to use
-		res.cookie('id', user_id);
+		res.cookie('id', user_id, {
+			expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) //1 year
+		});
 
 		//Redirect to whichever page user was on when they clicked "Log in"
 		res.redirect(decodeURIComponent(req.query.state));
