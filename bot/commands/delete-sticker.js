@@ -3,20 +3,23 @@ const covert = require('../../covert.js');
 
 module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 
-	let message_words = message.content.trim().split(/\s+/);	
+	let message_words = message.content.trim().split(/\s+/);
+	if(message.channel.type === 'dm') prefix = '';
+	//Escape prefix to avoid issues with Discord formatting
+	let escaped_prefix = prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
+
 	if(message_words.length < 2){
-		message.channel.send(`Invalid Syntax. Use \`${prefix}deleteSticker [NAME]\`.`);
+		message.channel.send(`Invalid Syntax. Use **${escaped_prefix}deleteSticker [STICKER NAME]**.`);
 		return;
 	}
 
 	let sticker_name = message_words[1].toLowerCase().replace(/(:|-)/g, '');
-
 	let uri = `${covert.app_url}/api/users/${message.author.id}/stickers/${sticker_name}`;
 
 	if(message.channel.type === 'text'){
 		uri = `${covert.app_url}/api/guilds/${message.channel.guild.id}/stickers/${sticker_name}`;
 	}
-
+	
 	return rp({
 		method: 'DELETE',
 		uri: uri,	

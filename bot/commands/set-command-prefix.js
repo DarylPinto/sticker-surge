@@ -5,13 +5,17 @@ module.exports = function(message, bot_auth, prefix){
 
 	let guild = message.channel.guild;
 	let message_words = message.content.trim().split(/\s+/);
+	//Escape prefix to avoid issues with Discord formatting
+	let escaped_prefix = prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
 
 	if(message_words.length < 2){
-		message.channel.send(`Invalid Syntax. Use \`${prefix}setPrefix [NEW PREFIX]\`.`);
+		message.channel.send(`Invalid Syntax. Use **${escaped_prefix}setPrefix [NEW PREFIX]**.`);
 		return;
 	}
 
 	let new_prefix = message_words[1];
+	//Escape new prefix to avoid issues with Discord formatting
+	let escaped_new_prefix = new_prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
 
 	return rp({
 		method: 'PATCH',
@@ -26,7 +30,7 @@ module.exports = function(message, bot_auth, prefix){
 		json: true
 	})
 	.then(res => {
-		message.channel.send(`Stickers for Discord commands now begin with \`${res.commandPrefix}\`\nType \`${res.commandPrefix}help\` for a list of commands.`);
+		message.channel.send(`Stickers for Discord commands now begin with **${escaped_new_prefix}**\nType **${escaped_new_prefix}help** for a list of commands.`);
 	})
 	.catch(err => {
 		
@@ -35,7 +39,7 @@ module.exports = function(message, bot_auth, prefix){
 		}
 
 		else if(err.message.includes('Illegal prefix')){
-			message.channel.send(`Prefix cannot be set to \`@\` or \`#\`.`);
+			message.channel.send(`Prefix cannot be set to any of the following characters: **@ # -**`);
 		}
 
 		else if(err.message.includes('Unauthorized')){

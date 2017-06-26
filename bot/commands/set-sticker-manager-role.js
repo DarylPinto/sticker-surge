@@ -6,14 +6,18 @@ module.exports = function(message, bot_auth, prefix){
 
 	let guild = message.channel.guild;
 	let message_words = message.content.trim().split(/\s+/);
+	//Escape prefix to avoid issues with Discord formatting
+	let escaped_prefix = prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
 
 	if(message_words.length < 2){
-		message.channel.send(`Invalid Syntax. Use \`${prefix}setRole [NEW ROLE NAME]\`.`);
+		message.channel.send(`Invalid Syntax. Use **${escaped_prefix}setRole [NEW ROLE NAME]**.`);
 		return;
 	}
 
 	let new_sticker_manager_role = message_words[1];
 	if(new_sticker_manager_role === 'everyone') new_sticker_manager_role = '@everyone';
+	//Escape prefix to avoid issues with Discord formatting
+	let escaped_new_sticker_manager_role = new_sticker_manager_role.replace(/[^a-zA-Z0-9]/g, '\\$&');
 
 	if(!guild.roles.array().map(r => r.name.toLowerCase()).includes(new_sticker_manager_role.toLowerCase())){
 		message.channel.send('That role does not exist.');
@@ -35,7 +39,7 @@ module.exports = function(message, bot_auth, prefix){
 	})
 	.then(res => {
 		if(res.stickerManagerRole === '@everyone') message.channel.send(`Everyone can now manage stickers on this server.`)
-		else message.channel.send(`\`${res.stickerManagerRole}\` is now the role required to manage stickers on this server.`)
+		else message.channel.send(`**${escaped_new_sticker_manager_role}** is now the role required to manage stickers on this server.`)
 
 		//When sticker manager role is updated with setrole, call updateGuildInfo to update ids
 		updateGuildInfo(guild, bot_auth);

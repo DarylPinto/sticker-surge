@@ -36,7 +36,7 @@ client.on('roleUpdate', (oldRole, newRole) => {
 
 //Allow user to post sticker by editing a message incase of a typo
 client.on('messageUpdate', (oldMessage, newMessage) => {
-	if(/^:[a-zA-Z0-9-]+:$/.test(newMessage.content.trim())) sendSticker(newMessage);
+	if(/^(:|-)[a-zA-Z0-9-]+:?$/.test(newMessage.content.trim())) sendSticker(newMessage);
 });
 
 ////////////////
@@ -89,8 +89,7 @@ client.on('message', message => {
 			else if(first_word === `${prefix}createsticker`) commands.createsticker(message, bot_auth, prefix, sticker_manager_role)
 			else if(first_word === `${prefix}deletesticker`) commands.deletesticker(message, bot_auth, prefix, sticker_manager_role)
 			else if(first_word === `${prefix}setprefix`) commands.setprefix(message, bot_auth, prefix)
-			else if(first_word === `${prefix}setrole`) commands.setrole(message, bot_auth, prefix)
-			//else if(first_word === `${prefix}setmanagerrole`) commands.setmanagerrole(message, bot_auth, prefix, managerRole)
+			else if(first_word === `${prefix}setrole`) commands.setrole(message, bot_auth, prefix)	
 			//else if(first_word === `${prefix}info`) commands.info(message, prefix, contentRole, managerRole, guild)
 			else if(first_word === `${prefix}help`) commands.help(message, prefix, sticker_manager_role, guild_manager_ids)
 

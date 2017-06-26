@@ -4,12 +4,15 @@ const updateGuildInfo = require('../events/update-guild-info.js');
 
 module.exports = function(guild, bot_auth){
 
-	let joinMessage = prefix => `
+	let joinMessage = prefix => {
+		//Escape prefix to avoid issues with Discord formatting
+		let escaped_prefix = prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');	
+		return	`
 Your server can now use stickers!
-Type \`${prefix}help\` to get started.
+Type **${escaped_prefix}help** to get started.
 
 *Tip: Set the **Stickers for Discord** role color to \`#36393E\` and give me a short nickname for a seamless experience!*
-	`;
+		`};
 
 	rp({
 		method: 'POST',

@@ -16,8 +16,11 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 		uri = `${covert.app_url}/api/guilds/${message.channel.guild.id}/stickers`;
 	}
 
+	//Escape prefix to avoid issues with Discord formatting
+	let escaped_prefix = prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
+
 	//Prepare invalid syntax message (with or without syntax depending on if it's a private message or not)
-	invalid_syntax_message = `Invalid Syntax. Use \`${prefix}createSticker [STICKER NAME] [IMAGE URL]\` or \`${prefix}createSticker [STICKER NAME]\` with an image attached.`;
+	invalid_syntax_message = `Invalid Syntax. Use **${escaped_prefix}createSticker [STICKER NAME] [IMAGE URL]** or **${escaped_prefix}createSticker [STICKER NAME]** with an image attached.`;
 
 	//Regular syntax checking
 	if(
