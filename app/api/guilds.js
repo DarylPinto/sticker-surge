@@ -198,7 +198,7 @@ router.patch('/:id/command-prefix', verifyUserAjax, (req, res) => {
 			return null;
 		}
 
-		if(['@','#', '-'].includes(req.body.commandPrefix)){
+		if(/(@|#|-)/g.test(req.body.commandPrefix) || util.strHasEmoji(req.body.commandPrefix)){
 			res.status(400).send('Illegal prefix');
 			return null;
 		}

@@ -39,7 +39,7 @@ module.exports = function(message, bot_auth, prefix){
 		}
 
 		else if(err.message.includes('Illegal prefix')){
-			message.channel.send(`Prefix cannot be set to any of the following characters: **@ # -**`);
+			message.channel.send(`Prefix cannot contain emoji or any of the following characters: **@ # -**`);
 		}
 
 		else if(err.message.includes('Unauthorized')){
