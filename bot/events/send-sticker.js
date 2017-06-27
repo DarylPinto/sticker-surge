@@ -10,20 +10,25 @@ module.exports = function(message){
 
 	if(is_guild_message && message.member.nickname) author_name = message.member.nickname;
 
+	function useSticker(res, sticker_name){
+		let sticker = res.find(s => s.name === sticker_name);
+		if(!sticker) return false;
+
+		if(message.channel.type === 'text') message.delete();
+		message.channel.send(`**${author_name}:**`, {
+			files: [{
+				attachment: sticker.url,
+				name: sticker.name+'.png'
+			}]
+		});
+	}
+
 	//User stickers start with -
 	if(command.startsWith('-')){
 		let sticker_name = command.replace('-', '');
 
 		rp({uri: `${covert.app_url}/api/users/${user.id}/stickers`, json: true})
-		.then(res => {
-
-			let sticker = res.find(s => s.name === sticker_name);	
-			if(sticker){
-				if(message.channel.type === 'text') message.delete();
-				message.channel.send(`**${author_name}:**`, {files: [sticker.url]});	
-			}
-
-		})
+		.then(res => useSticker(res, sticker_name))
 		.catch(err => console.error);
 	}
 
@@ -33,15 +38,7 @@ module.exports = function(message){
 		let sticker_name = command;
 
 		rp({uri: `${covert.app_url}/api/guilds/${guild.id}/stickers`, json: true})
-		.then(res => {
-
-			let sticker = res.find(s => s.name === sticker_name);
-			if(sticker){
-				if(message.channel.type === 'text') message.delete();
-				message.channel.send(`**${author_name}:**`, {files: [sticker.url]});
-			}
-
-		})
+		.then(res => useSticker(res, sticker_name))
 		.catch(err => console.error);
 	}
 
