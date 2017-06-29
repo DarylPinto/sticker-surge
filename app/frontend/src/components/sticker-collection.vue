@@ -1,6 +1,7 @@
 <script>
 import Vue from 'vue';
 import axios from 'axios';
+import Clipboard from 'clipboard';
 import sticker from '../components/sticker.vue';
 import stickerCreationModal from '../components/sticker-creation-modal.vue';
 
@@ -52,6 +53,10 @@ module.exports = {
 			});
 		}
 
+	},
+
+	mounted: function(){
+		new Clipboard('.sticker');
 	},
 
 	//When this component unmounts, emit event to notify
