@@ -10,10 +10,7 @@ module.exports = function(message){
 
 	if(is_guild_message && message.member.nickname) author_name = message.member.nickname;
 
-	function useSticker(res, sticker_name){
-		let sticker = res.find(s => s.name === sticker_name);
-		if(!sticker) return false;
-
+	function useSticker(sticker){
 		if(message.channel.type === 'text') message.delete();
 		message.channel.send(`**${author_name}:**`, {
 			files: [{
@@ -27,9 +24,9 @@ module.exports = function(message){
 	if(command.startsWith('-')){
 		let sticker_name = command.replace('-', '');
 
-		rp({uri: `${covert.app_url}/api/users/${user.id}/stickers`, json: true})
-		.then(res => useSticker(res, sticker_name))
-		.catch(err => console.error);
+		rp({uri: `${covert.app_url}/api/users/${user.id}/stickers/${sticker_name}`, json: true})
+		.then(res => useSticker(res))
+		.catch(err => (err.statusCode != 404) ? console.error(err.message) : null);
 	}
 
 	//Guild stickers have no -
@@ -37,9 +34,9 @@ module.exports = function(message){
 		let guild = message.channel.guild;
 		let sticker_name = command;
 
-		rp({uri: `${covert.app_url}/api/guilds/${guild.id}/stickers`, json: true})
-		.then(res => useSticker(res, sticker_name))
-		.catch(err => console.error);
+		rp({uri: `${covert.app_url}/api/guilds/${guild.id}/stickers/${sticker_name}`, json: true})
+		.then(res => useSticker(res))
+		.catch(err => (err.statusCode != 404) ? console.error(err.message) : null);
 	}
 
 	//Sticker packs seperate their pack key and name with a -
