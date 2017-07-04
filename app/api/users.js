@@ -81,6 +81,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 
 	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
+	if(req.body.name.length > 20) return res.status(400).send('Maximum length for sticker name is 20 characters');
 	if(res.locals.userId != req.params.id) return res.status(401).send('Unauthorized');
 
 	let data = {

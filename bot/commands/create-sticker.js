@@ -79,6 +79,10 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 			message.channel.send('Sticker name must contain lowercase letters and numbers only.');
 		}
 
+		else if(err.message.includes('Maximum length for sticker name is 20 characters')){
+			message.channel.send('Maximum length for sticker name is 20 characters.');
+		}
+
 		else{
 			message.channel.send('An unknown error occured.');
 		}

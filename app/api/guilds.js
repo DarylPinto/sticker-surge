@@ -106,6 +106,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 
 	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
+	if(req.body.name.length > 20) return res.status(400).send('Maximum length for sticker name is 20 characters');
 	if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
@@ -204,7 +205,7 @@ router.patch('/:id/command-prefix', verifyUserAjax, (req, res) => {
 		}
 
 		if(req.body.commandPrefix.length > 3){
-			res.status(400).send('Prefix must be less than 4 characters');
+			res.status(400).send('Maximum length for prefix is 3 characters');
 			return null;
 		}
 
