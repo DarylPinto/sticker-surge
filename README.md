@@ -10,9 +10,13 @@ To get stickers on your Discord server, simply head over to https://stickersford
 
 ## Why
 
-Before we switched to Discord my gaming group used to use a messaging program called [Telegram](https://telegram.org/). As Discord's features were fleshed out and voice chat/simple invites became a necessity for us, we decided it was time to make the switch. Although Discord has everything Telegram does and more, it's missing one crucial element: **stickers**.
+One of my gaming groups used to bounce around various messaging and VoIP clients looking for the one that would best suit our needs. Eventually we settled with [Telegram](https://telegram.org/) due to the ease of use and polished interface on all platforms. However, it still lacked a lot of crucial features that we were looking for such as the ability to ping specific users in a group and voice chat without relying on yet another service.
 
-To dip my toes in the water, I developed a barebones [Raspberry Pi user-bot](https://github.com/DarylPinto/discord-stickerbot) exclusively for our Discord server. As we used it I realized what features would need to be added in order for it to work well in multiple servers, and eventually it became clear a full rewrite was necessary to facilitate those changes. And so, **Stickers for Discord** was born.
+Enter [Discord](https://discordapp.com/). This rapidly developing app appeared to be the *perfect* solution to our conundrum. It had everything we were looking for and more— except for one little Telegram feature that we'd accidentally fallen in love with: **Stickers**.
+
+I decided I'd try to my hand at making [a little Discord sticker-bot](https://github.com/DarylPinto/discord-stickerbot) on my Raspberry Pi to substitute the feature. While it worked pretty well, it was fairly barebones and lacked some important elements - the most noticable one being the fact that it was exclusive to a single Discord server. I began thinking about how I could expand the bot to be used on any server, and it eventually became clear that a full redesign and refactor was necessary to facilitate the additions that I really wanted to include.
+
+And so, this project was born.
 
 ## Built with
 
