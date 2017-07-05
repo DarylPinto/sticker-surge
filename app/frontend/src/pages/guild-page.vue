@@ -52,7 +52,12 @@ module.exports = {
 	methods: {
 		loadPageData(){	
 			this.pageLoaded = false;
-				
+
+			axios.get(`/api/set-guilds?nocache=${(new Date()).getTime()}`)
+			.then(() => {
+				this.userGuilds = JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || []
+			});
+
 			axios.get(`/api/${this.pageType}/${this.$route.params.id}?nocache=${(new Date()).getTime()}`)
 			.then(res => {
 				this.guildId = res.data.id;
@@ -73,20 +78,12 @@ module.exports = {
 
 	watch: {
 		'$route': function(){
-			this.loadPageData();
-			axios.get(`/api/set-guilds`)
-			.then(() => {
-				this.userGuilds = JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || []
-			});
+			this.loadPageData();	
 		}
 	},
 
 	mounted: function(){
-		this.loadPageData();
-		axios.get(`/api/set-guilds`)
-		.then(() => {
-			this.userGuilds = JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || []
-		});
+		this.loadPageData();	
 	}
 
 }
