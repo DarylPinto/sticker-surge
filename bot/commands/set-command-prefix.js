@@ -34,8 +34,8 @@ module.exports = function(message, bot_auth, prefix){
 	})
 	.catch(err => {
 		
-		if(err.message.includes('Maximum length for prefix is 3 characters')){
-			message.channel.send(`Maximum length for prefix is 3 characters.`);
+		if(err.message.includes('Prefix cannot be longer than 3 characters')){
+			message.channel.send(`Prefix cannot be longer than 3 characters.`);
 		}
 
 		else if(err.message.includes('Illegal prefix')){
