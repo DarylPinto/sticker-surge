@@ -1,4 +1,35 @@
 <script>
+	let swipeleft = new Event('swipeleft');
+	let swiperight = new Event('swiperight');
+
+	let touchPositions = [];
+	let swipeThreshhold = 40;
+
+	document.addEventListener('touchmove', function(e){
+		touchPositions.push({
+			x: e.touches[0].clientX,
+			y: e.touches[0].clientY,
+		});
+	});
+
+	//Check to dispatch swipe events
+	document.addEventListener('touchend', function(e){
+
+		if(touchPositions.length === 0) return;
+
+		let x1 = touchPositions[0].x;
+		let x2 = touchPositions[touchPositions.length - 1].x;
+		let y1 = touchPositions[0].y;
+		let y2 = touchPositions[touchPositions.length - 1].y;
+		
+		touchPositions = [];
+
+		//Prevent if vertical swipe distance is greater than horizontal
+		if(y1 - y2 > swipeThreshhold || y2 - y1 > swipeThreshhold) return;	
+
+		if(x1 - x2 > swipeThreshhold) document.dispatchEvent(swipeleft);
+		if(x2 - x1 > swipeThreshhold) document.dispatchEvent(swiperight);
+	});
 
 	module.exports = {
 		props: ['userId'],
@@ -11,8 +42,19 @@
 		methods: {
 			toggleMobileNav(){
 				this.mobileNavOpen = !this.mobileNavOpen;
+			},
+			openMobileNav(){
+				this.mobileNavOpen = true;
+			},
+			closeMobileNav(){
+				this.mobileNavOpen = false;
 			}
+		},
+		mounted: function(){
+			document.addEventListener('swipeleft', this.closeMobileNav);
+			document.addEventListener('swiperight', this.openMobileNav);
 		}
+
 	}
 
 </script>
@@ -22,7 +64,7 @@
 
 	<div class="container">
 
-		<div class="mobile-nav-btn" @click="toggleMobileNav"></div>
+		<div class="mobile-nav-btn" @click="openMobileNav"></div>
 		
 		<router-link to="/" class="logo-link">
 			<img src="/images/logo.png" class="logo" alt="Stickers for Discord">
@@ -42,22 +84,23 @@
 
 	</div>
 
-	<div class="mobile-nav" :class="{open: mobileNavOpen}" @click="toggleMobileNav">
-		<nav @click.stop>
 
-			<router-link to="/" class="logo-link">
-				<img src="/images/logo.png" class="logo" alt="Stickers for Discord">
-			</router-link>
+	<!-- Mobile Nav -->
+	<div class="mobile-nav-backdrop" :class="{open: mobileNavOpen}" @click="closeMobileNav"></div>
 
-			<router-link :to="`/user/${userId}`" v-if="loggedIn">Your Stickers</router-link>
+	<nav class="mobile-nav" :class="{open: mobileNavOpen}">
+		<router-link to="/" class="logo-link">
+			<img src="/images/logo.png" class="logo" alt="Stickers for Discord">
+		</router-link>
 
-			<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
-			<router-link to="/sticker-packs">Sticker Packs</router-link>
+		<router-link :to="`/user/${userId}`" v-if="loggedIn">Your Stickers</router-link>
 
-			<a href="/login" v-if="!loggedIn">Log In</a>
-			<a href="/logout" v-if="loggedIn">Log Out</a>
-		</nav>
-	</div>
+		<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
+		<router-link to="/sticker-packs">Sticker Packs</router-link>
+
+		<a href="/login" v-if="!loggedIn">Log In</a>
+		<a href="/logout" v-if="loggedIn">Log Out</a>
+	</nav>
 
 </header>
 </template>
@@ -115,7 +158,7 @@
 			&:after
 				top: -16px
 
-		.mobile-nav
+		.mobile-nav-backdrop
 			position: fixed
 			width: 100vw
 			height: 100vh
@@ -123,34 +166,44 @@
 			z-index: 100
 			opacity: 0
 			pointer-events: none
-			transition: .2s
-			nav
-				content: ''
-				height: 100vh
-				width: 75vw
-				left: -75vw
-				background-color: #2a2d2f
-				overflow: hidden
-				position: relative
-				transition: 0.5s
-				.logo-link, .logo-link.router-link-active
-					background-color: $brand-red
-				.logo
-					max-width: 60vw
-				a
-					display: block
-					width: 100%
-					padding: 25px 20px
-					font-size: 18px
-					text-decoration: none
-					&:hover, &.router-link-active
-						background-color: rgba(255,255,255,0.1)
+			transition: 0.3s
 
-		.mobile-nav.open
+		.mobile-nav
+			position: fixed
+			height: 100vh
+			width: 75vw
+			left: -100vw
+			background-color: #2a2d2f
+			overflow: hidden
+			transition: 0.3s
+			z-index: 110
+			.logo-link, .logo-link.router-link-active
+				background-color: $brand-red
+			.logo
+				max-width: 60vw
+			a
+				display: block
+				width: 100%
+				padding: 25px 20px
+				font-size: 18px
+				text-decoration: none
+				&:hover, &.router-link-active
+					background-color: rgba(255,255,255,0.1)
+
+		.mobile-nav-backdrop.open
 			opacity: 1
 			pointer-events: auto
-			nav
-				left: 0
+
+		.mobile-nav.open
+			left: 0
+			opacity: 1
+			box-shadow: 0 0 40px black
+			pointer-events: auto
+
+
+	@media screen and (min-width: 790px)
+		.mobile-nav.open, .mobile-nav-backdrop.open
+			display: none
 
 
 	@media screen and (max-width: 790px)
