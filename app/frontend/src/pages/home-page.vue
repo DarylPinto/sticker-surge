@@ -54,11 +54,11 @@ module.exports = {
 
 <style lang="sass">
 
-	.home-page	
+	.home-page
 		text-align: center
 		height: calc(100vh - 100px)
 		position: relative
-		transition: .2s
+		transition: opacity .2s
 		video
 			display: block
 			position: absolute
@@ -92,5 +92,39 @@ module.exports = {
 			border-radius: 40px
 			padding: 13px 25px
 			letter-spacing: -0.5px
+
+	//Media query widths
+	@media screen and (max-width: 750px)
+		.home-page .headline
+			h1
+				font-size: 38px
+			span
+				font-size: 20px		
+
+	@media screen and (max-width: 435px)
+		.home-page .headline
+			padding-top: 100px
+
+	@media screen and (max-width: 400px)
+		.home-page
+			.headline
+				h1
+					font-size: 28px
+				span
+					font-size: 15px
+			a
+				font-size: 20px
+
+	//Media query heights
+	@media screen and (max-height: 650px)
+		.home-page
+			display: flex
+			flex-direction: column
+			align-items: center
+			justify-content: center
+			.headline
+				padding-top: 0
+			video
+				display: none
 
 </style>

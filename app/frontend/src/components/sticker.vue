@@ -107,4 +107,17 @@ module.exports = {
 				top: 0
 				left: 0
 
+	@media screen and (max-width: 915px)
+		.sticker
+			width: calc(50% - #{$sticker-margin})
+
+	@media screen and (max-width: 500px)
+		.sticker
+			height: 200px
+			img
+				max-height: 140px
+				max-width: 130px
+			p
+				font-size: 14px
+
 </style>
