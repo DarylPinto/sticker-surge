@@ -7,6 +7,7 @@ const setGuildsCookie = require('../middleware/set-guilds-cookie.js');
 const Guild = require('./models/guild-model.js');
 const util = require('./utilities/utilities.js');
 const imageToCdn = require('./utilities/image-to-cdn.js');
+const deleteCdnImage = require('./utilities/delete-cdn-image.js');
 const emojis = require('./utilities/emojis.json');
 
 let multer = require('multer');
@@ -285,6 +286,8 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 			res.status(404).send('Guild does not have a custom sticker with that name');
 			return null;
 		}
+
+		deleteCdnImage(guild.customStickers[deletion_request_index].url);
 		guild.customStickers.splice(deletion_request_index, 1);
 		return guild.save();
 

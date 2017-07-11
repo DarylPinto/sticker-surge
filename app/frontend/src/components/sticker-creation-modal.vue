@@ -101,7 +101,7 @@ module.exports = {
 <form class="sticker-creation-modal lite-modal" @submit.prevent="emitAddSticker">
 
 	<i class="material-icons close-x" @click="closeModal">clear</i>
-	<h1>Add a sticker</h1>
+	<h1>Create a Sticker</h1>
 
 	<img v-show="stickerUploadPreview" :src="stickerUploadPreview">
 
@@ -111,7 +111,7 @@ module.exports = {
 	</div>	
 	<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" maxlength="20" autocomplete="off" spellcheck="false" @input="checkStickerNameValidity($event)" required>
 	<p v-if="stickerUploadError.length > 0" class="sticker-upload-error">{{stickerUploadError}}</p>
-	<button class="btn">Add</button>
+	<button class="btn">Create</button>
 
 </form>
 </template>

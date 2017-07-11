@@ -79,7 +79,7 @@ module.exports = {
 				<i class="material-icons">search</i>
 				<input type="text" placeholder="Search" v-model="stickerSearchString">	
 			</span>	
-			<button v-if="isEditable" class="btn" @click="$emit('openStickerCreationModal')">Add a Sticker</button>	
+			<button v-if="isEditable" class="btn" @click="$emit('openStickerCreationModal')">Create a Sticker</button>	
 		</div>
 	</header>	
 	<div class="sticker-area">

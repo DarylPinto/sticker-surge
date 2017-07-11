@@ -1,35 +1,6 @@
 <script>
-	let swipeleft = new Event('swipeleft');
-	let swiperight = new Event('swiperight');
-
-	let touchPositions = [];
-	let swipeThreshhold = 40;
-
-	document.addEventListener('touchmove', function(e){
-		touchPositions.push({
-			x: e.touches[0].clientX,
-			y: e.touches[0].clientY,
-		});
-	});
-
-	//Check to dispatch swipe events
-	document.addEventListener('touchend', function(e){
-
-		if(touchPositions.length === 0) return;
-
-		let x1 = touchPositions[0].x;
-		let x2 = touchPositions[touchPositions.length - 1].x;
-		let y1 = touchPositions[0].y;
-		let y2 = touchPositions[touchPositions.length - 1].y;
-		
-		touchPositions = [];
-
-		//Prevent if vertical swipe distance is greater than horizontal
-		if(y1 - y2 > swipeThreshhold || y2 - y1 > swipeThreshhold) return;	
-
-		if(x1 - x2 > swipeThreshhold) document.dispatchEvent(swipeleft);
-		if(x2 - x1 > swipeThreshhold) document.dispatchEvent(swiperight);
-	});
+	import swipeEvents from '../scripts/swipe-events.js';
+	swipeEvents.init();
 
 	module.exports = {
 		props: ['userId'],

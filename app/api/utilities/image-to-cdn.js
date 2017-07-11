@@ -22,11 +22,6 @@ module.exports = function(image, imageIsLocal){return new Promise((resolve, reje
 		format: 'png'
 	}
 
-	if(!imageIsLocal && image.includes('res.cloudinary.com/stickers-for-discord/')){
-		resolve(image);
-		return;
-	}
-
 	sizeOf(image, (err, size) => {
 
 		if(err){

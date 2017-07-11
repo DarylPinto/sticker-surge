@@ -6,6 +6,7 @@ const verifyBot = require('../middleware/verify-bot.js');
 const User = require('./models/user-model.js');
 const util = require('./utilities/utilities.js');
 const imageToCdn = require('./utilities/image-to-cdn.js');
+const deleteCdnImage = require('./utilities/delete-cdn-image.js');
 
 let multer = require('multer');
 let upload = multer({
@@ -145,6 +146,8 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 			res.status(404).send('User does not have a custom sticker with that name');
 			return null;
 		}
+
+		deleteCdnImage(user.customStickers[deletion_request_index].url);
 		user.customStickers.splice(deletion_request_index, 1);
 		return user.save();
 
