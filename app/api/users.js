@@ -7,10 +7,11 @@ const User = require('./models/user-model.js');
 const util = require('./utilities/utilities.js');
 const imageToCdn = require('./utilities/image-to-cdn.js');
 const deleteCdnImage = require('./utilities/delete-cdn-image.js');
+const multer = require('multer');
 
-let multer = require('multer');
+let storage = multer.memoryStorage();
 let upload = multer({
-	dest: './sticker-temp/',
+	storage: storage,
 	limits: {fileSize: 5 * 1024 * 1024} //5MB max image upload
 });
 let handleMulterError = function(err, req, res, next){
@@ -86,8 +87,8 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 	if(res.locals.userId != req.params.id) return res.status(401).send('Unauthorized');
 
 	let data = {
-		name: req.body.name.toLowerCase().replace(/(:|-)/g, ''),
-		sticker_path: (req.file) ? path.join(__dirname+'/../', req.file.path) : req.body.url
+		image: (req.file) ? req.file.buffer : req.body.url,
+		name: req.body.name.toLowerCase().replace(/(:|-)/g, '')
 	}	
 
 	let imageIsLocal = (req.file) ? true : false;
@@ -99,7 +100,10 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 			res.status(400).send('User already has a custom sticker with that name');
 			return null;
 		}
-		return Promise.all([user, imageToCdn(data.sticker_path, `${user.id}-${data.name}`, imageIsLocal)]);
+		return Promise.all([
+			user,
+			imageToCdn(data.image, `${user.id}-${(new Date()).getTime()}-${data.name}`)
+		]);
 	})
 	.then(arr => {
 		if(!arr) return false;
