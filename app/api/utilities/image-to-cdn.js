@@ -1,48 +1,78 @@
 const fs = require('fs');
-const imageSize = require('image-size');
-const requestImageSize = require('request-image-size');
+const {promisify} = require('util');
+const AWS = require('aws-sdk');
+const sharp = require('sharp');
+const snekfetch = require('snekfetch');
+const imagemin = require('imagemin');
+const imageminPngquant = require('imagemin-pngquant');
 const covert = require('../../../covert.js');
-const cloudinary = require('cloudinary');
-cloudinary.config(covert.cloudinary);
+
+AWS.config.update({
+	accessKeyId: covert.aws.access_key_id,
+	secretAccessKey: covert.aws.secret_access_key
+});
+
+const s3 = new AWS.S3();
+
+//Promisify
+const readFileAsync = promisify(fs.readFile);
+const s3upload = function(options){return new Promise((resolve, reject) => {
+	s3.putObject(options, (err, res) => {
+		if(err) return reject(err);
+		resolve(res);
+	});
+})};
 
 /**
-* Uploads an image to cloudinary CDN
+* Uploads a resized and compressed image to AWS S3
 *
 * @param {String} image - Path to image file on server, or direct URL to online image
+* @param {String} imageName - Name of the image to be used on the CDN
 * @param {Boolean} imageIsLocal - True if `image` is a path on the server, false if `image` is a URL to an online image
 *
-* @returns {Promise} - URL of image on cloudinary CDN
+* @returns {Promise} - URL of image on S3
 */
-module.exports = function(image, imageIsLocal){return new Promise((resolve, reject) => {
+module.exports = async function(image, imageName, imageIsLocal){
 
-	let sizeOf = imageIsLocal ? imageSize : requestImageSize;
+	let sticker;
 
-	let uploadSettings = {
-		crop: 'fit',
-		format: 'png'
-	}
+	try{
 
-	sizeOf(image, (err, size) => {
-
-		if(err){
-			reject(err);
-			return;
+		//Image buffer
+		if(imageIsLocal){
+			sticker = await readFileAsync(image);
+		}
+		else{
+			let response = await snekfetch.get(image);
+			sticker = response.body;
 		}
 
-		if(size.width > 300) uploadSettings.width = 300;
-		if(size.height > 300) uploadSettings.height = 300;	
+		//Resize to fit within 300x300
+		sticker = await sharp(sticker)
+		.resize(300, 300)
+		.max()
+		.toFormat('png')
+		.withoutEnlargement()
+		.toBuffer();
 
-		cloudinary.uploader.upload(image, (res, err) => {
-			if(err){
-				reject(err);
-				return;
-			}
+		//Compress
+		sticker = await imagemin.buffer(sticker, {
+			plugins: [imageminPngquant({quality: '65-80'})]
+		});
 
-			resolve(res.secure_url);
-			if(imageIsLocal) fs.unlink(image, () => {});
+		//Upload to S3
+		await s3upload({
+			Bucket: 'stickers-for-discord',
+			Key: `${imageName}.png`,
+			Body: sticker,
+			ACL: 'public-read'
+		});
 
-		}, uploadSettings);
+		if(imageIsLocal) fs.unlink(image, () => {});
+		return Promise.resolve(`https://s3.us-east-2.amazonaws.com/stickers-for-discord/${imageName}.png`);
 
-	});
+	}catch(err){
+		return Promise.reject(err);
+	}
 
-})}
+}

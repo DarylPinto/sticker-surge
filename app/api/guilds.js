@@ -130,7 +130,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 			res.status(400).send('Guild already has a custom sticker with that name');
 			return null;
 		}
-		return Promise.all([guild, imageToCdn(data.sticker_path, imageIsLocal)]);
+		return Promise.all([guild, imageToCdn(data.sticker_path, `${guild.id}-${data.name}`, imageIsLocal)]);
 	})
 	.then(arr => {
 		if(!arr) return false;

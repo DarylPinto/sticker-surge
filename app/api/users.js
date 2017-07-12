@@ -99,7 +99,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 			res.status(400).send('User already has a custom sticker with that name');
 			return null;
 		}
-		return Promise.all([user, imageToCdn(data.sticker_path, imageIsLocal)]);
+		return Promise.all([user, imageToCdn(data.sticker_path, `${user.id}-${data.name}`, imageIsLocal)]);
 	})
 	.then(arr => {
 		if(!arr) return false;

@@ -1,13 +1,27 @@
 const covert = require('../../../covert.js');
-const cloudinary = require('cloudinary');
-cloudinary.config(covert.cloudinary);
+const AWS = require('aws-sdk');
+
+AWS.config.update({
+	accessKeyId: covert.aws.access_key_id,
+	secretAccessKey: covert.aws.secret_access_key
+});
+
+const s3 = new AWS.S3();
 
 /**
-* Deletes an image from cloudinary CDN
+* Deletes an image from AWS S3 CDN
 *
-* @param {String} url - Path to image file on server, or direct URL to online image
+* @param {String} url - CDN image URL
 */
 module.exports = function(url){
-	let public_id = url.substring(url.lastIndexOf('/') + 1, url.length - 4);
-	cloudinary.uploader.destroy(public_id);
+
+	//Don't attempt to delete images that aren't being used on current CDN (S3)
+	if(url.includes('cloudinary.com')) return;
+
+	let sticker_filename = url.substring(url.lastIndexOf('/') + 1);
+
+	s3.deleteObject({
+		Bucket: 'stickers-for-discord',
+		Key: sticker_filename
+	}, res => {});	
 }
