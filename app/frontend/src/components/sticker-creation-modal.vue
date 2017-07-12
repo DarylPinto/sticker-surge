@@ -107,7 +107,7 @@ module.exports = {
 
 	<div v-show="!stickerUploadPreview" class="upload-area">
 		<p>Drag image or click to upload</p>
-		<input name="sticker" type="file" placeholder="Image" accept="image/png, image/jpeg" @change="showStickerPreview($event)" required>	
+		<input name="sticker" type="file" placeholder="Image" accept="image/png, image/jpeg, image/webp" @change="showStickerPreview($event)" required>	
 	</div>	
 	<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" maxlength="20" autocomplete="off" spellcheck="false" @input="checkStickerNameValidity($event)" required>
 	<p v-if="stickerUploadError.length > 0" class="sticker-upload-error">{{stickerUploadError}}</p>
