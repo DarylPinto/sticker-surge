@@ -131,6 +131,10 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 			res.status(400).send('Guild already has a custom sticker with that name');
 			return null;
 		}
+		if(guild.customStickers.length >= 400){
+			res.status(403).send('Guild has reached maximum amount of custom stickers (400)');
+			return null;
+		}
 		return Promise.all([
 			guild,
 			imageToCdn(data.image, `${guild.id}-${(new Date()).getTime()}-${data.name}`)

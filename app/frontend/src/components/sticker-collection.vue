@@ -11,7 +11,7 @@ Vue.component('stickerCreationModal', stickerCreationModal);
 const normalizeObj = obj => JSON.parse(JSON.stringify(obj));
 
 module.exports = {
-	props: ['name', 'stickerPrefix', 'emojiNamesAllowed', 'isEditable', 'stickers', 'pageType'],
+	props: ['name', 'stickerPrefix', 'emojiNamesAllowed', 'isEditable', 'stickers', 'maxStickers', 'pageType'],
 	data: function(){	
 		return {	
 			stickerSearchString: '',	
@@ -24,6 +24,9 @@ module.exports = {
 		},
 		sanitizedStickerSearchString(){
 			return this.stickerSearchString.toLowerCase().replace(/(:|-)/g, '');
+		},
+		maxStickersReached(){
+			return this.stickers.length >= this.maxStickers;
 		}
 	},
 	methods: {
@@ -79,7 +82,7 @@ module.exports = {
 				<i class="material-icons">search</i>
 				<input type="text" placeholder="Search" v-model="stickerSearchString">	
 			</span>	
-			<button v-if="isEditable" class="btn" @click="$emit('openStickerCreationModal')">Create a Sticker</button>	
+			<button v-if="isEditable" class="btn" :class="{disabled: maxStickersReached}" @click="$emit('openStickerCreationModal')">Create a Sticker</button>	
 		</div>
 	</header>	
 	<div class="sticker-area">
@@ -153,6 +156,10 @@ module.exports = {
 			justify-content: space-between
 			.section-options
 				display: flex
+				.btn.disabled
+					pointer-events: none
+					background-color: #929292
+					color: lightgray
 				input
 					text-align: left
 				> *

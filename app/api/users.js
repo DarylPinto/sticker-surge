@@ -100,6 +100,10 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 			res.status(400).send('User already has a custom sticker with that name');
 			return null;
 		}
+		if(user.customStickers.length >= 200){
+			res.status(403).send('User has reached maximum amount of custom stickers (200)');
+			return null;
+		}
 		return Promise.all([
 			user,
 			imageToCdn(data.image, `${user.id}-${(new Date()).getTime()}-${data.name}`)

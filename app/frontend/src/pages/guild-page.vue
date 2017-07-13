@@ -109,6 +109,7 @@ module.exports = {
 			:stickerPrefix="null"
 			:emojiNamesAllowed="false"
 			:stickers="customStickers"
+			:maxStickers="400"
 			:pageType="pageType"
 			:isEditable="userCanEdit">
 		</stickerCollection>

@@ -83,6 +83,14 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 			message.channel.send('Sticker name cannot be longer than 20 characters.');
 		}
 
+		else if(err.message.includes('User has reached maximum amount of custom stickers')){
+			message.channel.send('You already have too many custom stickers.');
+		}
+
+		else if(err.message.includes('Guild has reached maximum amount of custom stickers')){
+			message.channel.send('This server already has too many custom stickers.');
+		}
+
 		else{
 			message.channel.send('An unknown error occured.');
 		}
