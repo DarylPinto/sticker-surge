@@ -63,7 +63,7 @@ router.get('/:id', (req, res) => {
 		if(!guild || !guild.isActive) return res.status(404).send('Guild not found');
 		res.json(util.removeProps(guild._doc, ['isActive']));	
 	})
-	.catch(err => res.status(503).send('Database error'));
+	.catch(err => res.status(500).send('Internal server error'));
 });
 
 //GET guild's stickers
@@ -73,7 +73,7 @@ router.get('/:id/stickers', (req, res) => {
 		if(!guild || !guild.isActive) return res.status(404).send('Guild not found');
 		res.json(guild.customStickers);	
 	})
-	.catch(err => res.status(503).send('Database error'));
+	.catch(err => res.status(500).send('Internal server error'));
 });
 
 //GET a guild's custom sticker
@@ -86,7 +86,7 @@ router.get('/:id/stickers/:stickername', (req, res) => {
 		if(!sticker) return res.status(404).send('Guild does not have a custom sticker with that name');
 		return res.json(sticker);
 	})
-	.catch(err => res.status(503).send('Database error'));
+	.catch(err => res.status(500).send('Internal server error'));
 });
 
 ////////
@@ -100,7 +100,7 @@ router.post('/', verifyBot, (req, res) => {
 	new Guild(req.body).save()
 	.then(() => Guild.findOne({id: req.body.id}, removedFields))
 	.then(guild => res.status(201).json(guild))
-	.catch(err => res.status(503).send('Database error'));
+	.catch(err => res.status(500).send('Internal server error'));
 });
 
 //POST new custom sticker to existing guild
@@ -161,7 +161,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 	.catch(err => {
 		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');
 		console.error(err);
-		res.status(503).send('Database error');
+		res.status(500).send('Internal server error');
 	});
 
 });
@@ -209,7 +209,7 @@ router.patch('/:id', verifyBot, (req, res) => {
 		if(guild) res.json(guild);
 	})
 	.catch(err => {	
-		res.status(503).send('Database error');
+		res.status(500).send('Internal server error');
 	});
 
 });
@@ -250,7 +250,7 @@ router.patch('/:id/command-prefix', verifyUserAjax, (req, res) => {
 		if(guild) res.json(guild);
 	})
 	.catch(err => {	
-		res.status(503).send('Database error');
+		res.status(500).send('Internal server error');
 	});
 
 });
@@ -286,7 +286,7 @@ router.patch('/:id/sticker-manager-role', verifyUserAjax, (req, res) => {
 		if(guild) res.json(guild);
 	})
 	.catch(err => {	
-		res.status(503).send('Database error');
+		res.status(500).send('Internal server error');
 	});
 
 });
@@ -332,7 +332,7 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 	.catch(err => {
 
 		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');	
-		res.status(503).send('Database error');
+		res.status(500).send('Internal server error');
 
 	});
 

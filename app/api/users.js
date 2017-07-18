@@ -37,7 +37,7 @@ router.get('/:id', (req, res) => {
 		if(!user) return res.status(404).send('User not found');
 		res.json(user);	
 	})
-	.catch(err => res.status(503).send('Database error'));
+	.catch(err => res.status(500).send('Internal server error'));
 });
 
 //GET user's stickers
@@ -47,7 +47,7 @@ router.get('/:id/stickers', (req, res) => {
 		if(!user) return res.status(404).send('User not found');
 		res.json(user.customStickers);	
 	})
-	.catch(err => res.status(503).send('Database error'));
+	.catch(err => res.status(500).send('Internal server error'));
 });
 
 //GET a user's custom sticker
@@ -60,7 +60,7 @@ router.get('/:id/stickers/:stickername', (req, res) => {
 		if(!sticker) return res.status(404).send('User does not have a custom sticker with that name');
 		return res.json(sticker);	
 	})
-	.catch(err => res.status(503).send('Database error'));
+	.catch(err => res.status(500).send('Internal server error'));
 });
 
 ////////
@@ -75,7 +75,7 @@ router.post('/', verifyBot, (req, res) => {
 	new User(req.body).save()
 	.then(() => User.findOne({id: req.body.id}, removedFields))
 	.then(user => res.status(201).json(user))
-	.catch(err => res.status(503).send('Database error'));
+	.catch(err => res.status(500).send('Internal server error'));
 });
 
 //POST new custom sticker to existing user
@@ -130,7 +130,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 	.catch(err => {
 		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');
 		console.log(err.message);
-		res.status(503).send('Database error');
+		res.status(500).send('Internal server error');
 	});
 
 });
@@ -192,7 +192,7 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 	.catch(err => {
 
 		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');	
-		res.status(503).send('Database error');
+		res.status(500).send('Internal server error');
 
 	});
 
