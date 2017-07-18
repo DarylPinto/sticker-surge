@@ -30,7 +30,7 @@ var css = `
 		position:fixed;
 		top:0;
 		left:0;
-		transition:.3s opacity;
+		transition:.2s opacity;
 		height:100vh;
 		width:100vw;
 		z-index:100;
@@ -61,7 +61,7 @@ module.exports = {
 	init: function(closeCB){
 
 		var _this = this;
-		var modalFadeOutTime = 300;
+		var modalFadeOutTime = 200;
 
 		this.closeWithCB = function(){
 			_this.close();
