@@ -114,7 +114,10 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 
 	let data = {
 		image: (req.file) ? req.file.buffer : req.body.url,
-		name: req.body.name.toLowerCase().replace(/(:|-)/g, '')
+		name: req.body.name.toLowerCase().replace(/(:|-)/g, ''),
+		createdVia: (req.file) ? 'website' : 'discord',
+		groupId: req.params.id,
+		creatorId: res.locals.userId
 	}	
 
 	let imageIsLocal = (req.file) ? true : false;
@@ -144,7 +147,8 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 		if(!arr) return false;
 
 		let guild = arr[0];
-		let sticker = {name: data.name, url: arr[1]};
+		let sticker = data;
+		sticker.url = arr[1];
 
 		guild.customStickers.unshift(sticker);
 		return guild.save();
