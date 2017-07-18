@@ -135,6 +135,26 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 
 });
 
+//Increment `uses` property on a sticker
+router.post('/:id/stickers/:stickername/uses', verifyBot, (req, res) => {
+
+	User.findOne({id: req.params.id})
+	.then(user => {
+
+		if(!user) return res.status(404).send('User not found');
+		let sticker = user._doc.customStickers.find(s => s.name === req.params.stickername);
+
+		if(!sticker) return res.status(404).send('User does not have a custom sticker with that name');
+
+		sticker.uses += 1;
+		user.save();
+
+		return res.json(sticker);	
+
+	});
+
+});
+
 //////////
 //DELETE//
 //////////

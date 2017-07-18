@@ -166,6 +166,26 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 
 });
 
+//Increment `uses` property on a sticker
+router.post('/:id/stickers/:stickername/uses', verifyBot, (req, res) => {
+
+	Guild.findOne({id: req.params.id})
+	.then(guild => {
+
+		if(!guild) return res.status(404).send('Guild not found');
+		let sticker = guild._doc.customStickers.find(s => s.name === req.params.stickername);
+
+		if(!sticker) return res.status(404).send('Guild does not have a custom sticker with that name');
+
+		sticker.uses += 1;
+		guild.save();
+
+		return res.json(sticker);	
+
+	});
+
+});
+
 /////////
 //PATCH//
 /////////
