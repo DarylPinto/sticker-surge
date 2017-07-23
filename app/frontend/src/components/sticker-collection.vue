@@ -30,24 +30,32 @@ module.exports = {
 			return this.stickers.length >= this.maxStickers;
 		},
 		sortedStickers(){
+			//Clone stickers array
+			let sorted = [].concat(this.stickers);
+
 			//Sort by newest
 			if(this.sortMethod === 'newest'){
-				return this.stickers.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+				//Sorting is not necessary, since `stickers` are already newest -> oldest by default
+				//sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 			}
 			//Sort by oldest
 			else if(this.sortMethod === 'oldest'){
-				return this.stickers.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+				sorted.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 			}
 			//Sort by most used
 			else if(this.sortMethod === 'mostUsed'){
-				return this.stickers.sort((a, b) => b.uses - a.uses);
+				sorted.sort((a, b) => b.uses - a.uses);
 			}
+
+			return sorted;
 		}
 	},
 	methods: {
 		
 		addSticker(formData){
-			this.loadingNewSticker = true;	
+			this.loadingNewSticker = true;
+			//Sort by newest so that when new sticker is added, it's visible right away
+			this.sortMethod = 'newest';
 
 			axios.post(`/api/${this.pageType}/${this.$route.params.id}/stickers`, formData, {'Content-Type': 'multipart/form-data'})
 			.then(res => {
