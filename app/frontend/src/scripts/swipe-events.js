@@ -1,6 +1,8 @@
 module.exports = {
 	init: function(){
 
+		if(typeof window.CustomEvent != "function") return; //Prevent IE from failing to load page
+
 		let swipeleft = new Event('swipeleft');
 		let swiperight = new Event('swiperight');
 

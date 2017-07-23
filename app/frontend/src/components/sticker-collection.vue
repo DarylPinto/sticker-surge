@@ -14,7 +14,8 @@ module.exports = {
 	props: ['name', 'stickerPrefix', 'emojiNamesAllowed', 'isEditable', 'stickers', 'maxStickers', 'pageType'],
 	data: function(){	
 		return {	
-			stickerSearchString: '',	
+			stickerSearchString: '',
+			sortMethod: 'newest',
 			loadingNewSticker: false
 		}
 	},
@@ -27,6 +28,20 @@ module.exports = {
 		},
 		maxStickersReached(){
 			return this.stickers.length >= this.maxStickers;
+		},
+		sortedStickers(){
+			//Sort by newest
+			if(this.sortMethod === 'newest'){
+				return this.stickers.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+			}
+			//Sort by oldest
+			else if(this.sortMethod === 'oldest'){
+				return this.stickers.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+			}
+			//Sort by most used
+			else if(this.sortMethod === 'mostUsed'){
+				return this.stickers.sort((a, b) => b.uses - a.uses);
+			}
 		}
 	},
 	methods: {
@@ -82,6 +97,11 @@ module.exports = {
 				<i class="material-icons">search</i>
 				<input type="text" placeholder="Search" v-model="stickerSearchString">	
 			</span>	
+			<select class="sort-stickers" v-model="sortMethod">
+				<option value="newest">Sort by: Newest</option>
+				<option value="oldest">Sort by: Oldest</option>
+				<option value="mostUsed">Sort by: Most Used</option>
+			</select>
 			<button v-if="isEditable" class="btn" :class="{disabled: maxStickersReached}" @click="$emit('openStickerCreationModal')">Create a Sticker</button>	
 		</div>
 	</header>	
@@ -93,7 +113,7 @@ module.exports = {
 			<img src="/images/loading-spin.svg" alt="">
 		</div>
 		<sticker
-			v-for="sticker in stickers"
+			v-for="sticker in sortedStickers"
 			v-on:deleteSticker="deleteSticker(sticker.name)"
 			v-show="sticker.name.indexOf(sanitizedStickerSearchString) > -1"
 			:type="pageType"
@@ -160,6 +180,22 @@ module.exports = {
 					pointer-events: none
 					background-color: #929292
 					color: lightgray
+				.sort-stickers
+					background-color: #2a2d2f
+					border-radius: 40px
+					color: #7d7d7d
+					font-size: 16px
+					padding: 0 15px
+					outline: 0
+					border: 1px solid #7d7d7d
+					-webkit-appearance: none
+					-moz-appearance: none
+					text-indent: 1px
+					text-overflow: ''
+					option
+						background-color: inherit
+					&::-ms-expand
+						display: none
 				input
 					text-align: left
 				> *
