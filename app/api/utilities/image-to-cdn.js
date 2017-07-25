@@ -45,7 +45,7 @@ module.exports = async function(image, name){
 
 		//Resize to fit within 300x300
 		sticker = await sharp(sticker)
-		.resize(300, 300)
+		.resize(250, 250)
 		.max()
 		.toFormat('png')
 		.withoutEnlargement()
