@@ -3,6 +3,7 @@ const express = require('express');
 const simpleOauth = require('simple-oauth2');
 const sessions = require('client-sessions');
 const Cryptr = require('cryptr');
+const url = require('url');
 const User = require('../api/models/user-model.js');
 const util = require('../api/utilities/utilities.js');
 const covert = require('../../covert.js');
@@ -82,6 +83,9 @@ callback: express.Router().get('/', (req, res) => {
 	})	
 	.then(() => {
 
+		const url_logged_in_from = decodeURIComponent(req.query.state);
+		const path_logged_in_from = url.parse(url_logged_in_from).pathname;
+
 		//Cookies are set twice, once as tamper-proof httpOnly cookies for authentication,
 		req.session.token = access_token;
 		req.session.id = user_id;
@@ -92,7 +96,9 @@ callback: express.Router().get('/', (req, res) => {
 		});
 
 		//Redirect to whichever page user was on when they clicked "Log in"
-		res.redirect(decodeURIComponent(req.query.state));
+		//Unless it was the homepage, in that case redirect them to /servers
+		(path_logged_in_from === '/')	? res.redirect('/servers') : res.redirect(url_logged_in_from);
+
 	})
 	.catch(err => {
 		console.error(err);
