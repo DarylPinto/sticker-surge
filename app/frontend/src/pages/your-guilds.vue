@@ -91,6 +91,10 @@ module.exports = {
 		
 		<h1>Your Servers</h1>
 
+		<div v-if="!guildsLoaded" class="loading-guilds">
+			<img src="/images/loading-spin.svg">
+		</div>
+
 		<div v-if="userGuildData.length === 0 && guildsLoaded" class="no-guilds-alert">
 			<p>You're not in any servers with Stickers for Discord<br>
 			Let's fix that, shall we?</p>
@@ -153,6 +157,12 @@ module.exports = {
 				border-radius: 200px
 				border: 5px solid rgba(255, 255, 255, 0.1)
 				margin-top: 25px
+
+		.loading-guilds img
+			display: block
+			width: 150px
+			margin: 0 auto
+			margin-top: 90px
 
 		.no-guilds-alert
 			text-align: center
