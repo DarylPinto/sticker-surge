@@ -43,9 +43,8 @@
 
 		<nav class="main-nav">
 
-			<router-link :to="`/user/${userId}`" v-if="loggedIn">Your Stickers</router-link>
-
 			<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
+			<router-link :to="`/user/${userId}`" v-if="loggedIn">Personal Stickers</router-link>
 			<router-link to="/sticker-packs">Sticker Packs</router-link>
 
 			<a href="/login" v-if="!loggedIn">Log In</a>
@@ -64,9 +63,8 @@
 			<img src="/images/logo.png" class="logo" alt="Stickers for Discord">
 		</router-link>
 
-		<router-link :to="`/user/${userId}`" v-if="loggedIn">Your Stickers</router-link>
-
 		<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
+		<router-link :to="`/user/${userId}`" v-if="loggedIn">Personal Stickers</router-link>
 		<router-link to="/sticker-packs">Sticker Packs</router-link>
 
 		<a href="/login" v-if="!loggedIn">Log In</a>
