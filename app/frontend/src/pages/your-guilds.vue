@@ -157,6 +157,8 @@ module.exports = {
 				border-radius: 200px
 				border: 5px solid rgba(255, 255, 255, 0.1)
 				margin-top: 25px
+				height: 128px
+				width: 128px
 
 		.loading-guilds img
 			display: block
