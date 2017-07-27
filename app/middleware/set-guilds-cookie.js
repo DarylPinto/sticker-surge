@@ -23,9 +23,12 @@ function setGuildsCookie(req, res, next){
 	.then(data => {	
 
 		let user_guild_ids = data[0].map(g => g.id);
-		let all_sticker_guild_ids = data[1].map(g => g.id);
+		let all_sticker_guilds = data[1];
+		let guilds = all_sticker_guilds.filter(g => user_guild_ids.includes(g.id));
 
-		let guilds_cookie = all_sticker_guild_ids.filter(id => user_guild_ids.includes(id));
+		guilds.sort((a, b) => a.guildName.toLowerCase() > b.guildName.toLowerCase());
+
+		let guilds_cookie = guilds.map(g => g.id);
 
 		//Set cookies
 		res.cookie('guilds', JSON.stringify(guilds_cookie), {
@@ -38,7 +41,7 @@ function setGuildsCookie(req, res, next){
 	})
 	.catch(err => {
 
-		if(err.response.body && err.response.body.retry_after){
+		if(err.response && err.response.body && err.response.body.retry_after){
 			//Request user guilds again after Discord's rate limit ends
 			let retry_after = err.response.body.retry_after;
 			setTimeout(() => setGuildsCookie(req, res, next), retry_after + 100);

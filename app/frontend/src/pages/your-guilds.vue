@@ -22,14 +22,6 @@ module.exports = {
 		}
 	},
 
-	computed: {
-
-		sortedUserGuildData(){
-			return this.userGuildData.sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase());
-		}
-
-	},
-
 	methods: {
 		loadPageData(){	
 
@@ -101,7 +93,7 @@ module.exports = {
 			<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=8192" class="btn" target="_blank">Add to Discord</a>
 		</div>
 
-		<div v-for="guild in sortedUserGuildData" :key="guild.id" class="guild">
+		<div v-for="guild in userGuildData" :key="guild.id" class="guild">
 			<router-link :to="`/server/${guild.id}`">
 				<img v-if="guild.icon" :src="`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`" :alt="guild.name">
 				<img v-if="!guild.icon" src="/images/default-discord-icon.png" :alt="guild.name">
