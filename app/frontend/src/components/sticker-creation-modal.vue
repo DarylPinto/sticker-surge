@@ -164,12 +164,14 @@ module.exports = {
 			overflow: hidden
 			p
 				position: absolute
+				top: 0
+				left: 0
 				color: rgba(255,255,255,0.5)
 				width: 100%
 				height: 100%
 				display: inline-flex
 				justify-content: center
-				align-items: center	
+				align-items: center
 			input
 				border-radius: 0
 				opacity: 0
