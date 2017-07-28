@@ -11,6 +11,14 @@ if(!Array.prototype.includes){
 	}
 }
 
+//Custom compare function for Array.sort in order to help
+//some browsers (Safari) sort Objects by property alphabetically
+function alphabeticalCompare(a, b){
+	if(a.toLowerCase() > b.toLowerCase()) return 1;
+	else if(a.toLowerCase() < b.toLowerCase()) return -1;
+	else return 0;	
+}
+
 module.exports = {
 	data: function(){
 		return {
@@ -25,14 +33,22 @@ module.exports = {
 	methods: {
 		loadPageData(){	
 
+			let remaining_ajax_calls = this.userGuilds.length;
 			this.pageLoaded = true;
 
 			//Load data for each guild in `guilds` cookie
 			this.userGuilds.forEach(id => {
 				axios.get(`/api/guilds/${id}?nocache=${(new Date()).getTime()}`)
 				.then(res => {
+
 					this.userGuildData.push({id: id, name: res.data.guildName, icon: res.data.icon});
-					if(!this.guildsLoaded) this.guildsLoaded = true;
+					//When all ajax calls have been made, sort the data and toggle `guildsLoaded`	flag
+					remaining_ajax_calls -= 1;
+					if(remaining_ajax_calls === 0){
+						this.userGuildData.sort((a, b) => alphabeticalCompare(a.name, b.name));
+						this.guildsLoaded = true;
+					}
+
 				});
 			});
 			
@@ -87,13 +103,13 @@ module.exports = {
 			<img src="/images/loading-spin.svg">
 		</div>
 
-		<div v-if="userGuildData.length === 0 && guildsLoaded" class="no-guilds-alert">
+		<div v-if="userGuilds.length === 0 && guildsLoaded" class="no-guilds-alert">
 			<p>You're not in any servers with Stickers for Discord<br>
 			Let's fix that, shall we?</p>
 			<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=8192" class="btn" target="_blank">Add to Discord</a>
 		</div>
 
-		<div v-for="guild in userGuildData" :key="guild.id" class="guild">
+		<div v-if="userGuilds.length > 0 && guildsLoaded" v-for="guild in userGuildData" :key="guild.id" class="guild">
 			<router-link :to="`/server/${guild.id}`">
 				<img v-if="guild.icon" :src="`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`" :alt="guild.name">
 				<img v-if="!guild.icon" src="/images/default-discord-icon.png" :alt="guild.name">
