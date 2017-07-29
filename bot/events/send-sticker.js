@@ -1,3 +1,4 @@
+const Discord = require('discord.js');
 const rp = require('request-promise');
 const covert = require('../../covert.js');
 
@@ -10,14 +11,32 @@ module.exports = function(message, bot_auth){
 
 	if(is_guild_message && message.member.nickname) author_name = message.member.nickname;
 
-	function useSticker(sticker){
+	function useSticker(sticker, isPersonal){
 		if(message.channel.type === 'text') message.delete();
+
+		let embed_footer = (isPersonal) ? ' ' : `:${sticker.name}:`;
+
+		message.channel.send({embed: {
+			author: {
+				name: author_name,
+				icon_url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+			},
+			image: {
+				url: sticker.url
+			},
+			footer: {
+				"text": embed_footer
+			}
+		}});
+
+		/*
 		message.channel.send(`**${author_name}:**`, {
 			files: [{
 				attachment: sticker.url,
 				name: sticker.name+'.png'
 			}]
 		});
+		*/
 	}
 
 	//User stickers start with -
@@ -30,7 +49,7 @@ module.exports = function(message, bot_auth){
 			json: true,
 			headers: {Authorization: bot_auth}
 		})
-		.then(res => useSticker(res))
+		.then(res => useSticker(res, true))
 		.catch(err => (err.statusCode != 404) ? console.error(err.message) : null);
 	}
 
@@ -45,7 +64,7 @@ module.exports = function(message, bot_auth){
 			json: true,
 			headers: {Authorization: bot_auth}
 		})
-		.then(res => useSticker(res))
+		.then(res => useSticker(res, false))
 		.catch(err => (err.statusCode != 404) ? console.error(err.message) : null);
 	}
 
