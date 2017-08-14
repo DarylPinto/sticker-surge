@@ -187,4 +187,21 @@ module.exports = {
 			padding: 10px 0
 			width: 115px
 
+	@media screen and (max-width: 600px)
+		.sticker-creation-modal
+			width: 90vw
+			h1
+				font-size: 30px
+			.upload-area, input
+				max-width: 80%	
+
+	@media screen and (max-width: 450px)
+		.sticker-creation-modal
+			h1
+				font-size: 25px
+			.upload-area, input
+				max-width: 90%
+				p
+					font-size: 14px
+
 </style>

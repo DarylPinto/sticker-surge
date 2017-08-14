@@ -26,9 +26,9 @@ module.exports = {
 	computed: {
 		isUsersPage: function(){return this.userId === this.$route.params.id},
 		nameFontSize: function(){
-			let size = 90 - this.username.length;
-			if(size < 50)	size = 50;
-			return size.toString() + 'px';
+			let size = 1 - (this.username.length / 100);
+			if(size < 0.3) size = 0.3;
+			return size.toString() + 'em';
 		}
 	},
 
@@ -103,14 +103,31 @@ module.exports = {
 			margin-bottom: 40px
 			display: flex
 			align-items: center
+			font-size: 90px
 			> img
 				border-radius: 100%
 				height: 100px
 				width: 100px
 				border: 5px solid rgba(255, 255, 255, 0.1)
 		h1
-			font-size: 90px
 			display: inline-block
 			margin-left: 15px
+
+	@media screen and (max-width: 650px)
+		.user-page > header
+			font-size: 45px
+
+	@media screen and (max-width: 560px)
+		.user-page > header > img
+			height: 75px
+			width: 75px
+
+	@media screen and (max-width: 450px)
+		.user-page > header
+			font-size: 35px
+			> img
+				height: 60px
+				width: 60px
+				border-width: 3px
 
 </style>

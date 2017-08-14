@@ -181,6 +181,7 @@ module.exports = {
 			padding-bottom: 10px
 			border-bottom: 2px solid rgba(255, 255, 255, 0.45)
 			display: flex
+			align-items: center
 			justify-content: space-between
 			.section-options
 				display: flex
@@ -207,6 +208,7 @@ module.exports = {
 				input
 					text-align: left
 				> *
+					box-sizing: border-box
 					margin-right: 15px
 					&:last-child
 						margin-right: 0
@@ -233,6 +235,58 @@ module.exports = {
 		opacity: 0.4
 		text-align: center
 		margin-top: 100px
+		width: calc(100% - 15px)
 		font-weight: 100
+
+	@media screen and (max-width: 915px)
+		.sticker-collection .loading-sticker
+			width: calc(50% - #{$sticker-margin})
+
+	@media screen and (max-width: 830px)
+		.sticker-collection	> header	
+			h2
+				font-size: 20px	
+			.section-options
+				> *
+					margin-right: 10px
+				.search-box input
+					max-width: 85px
+
+	@media screen and (max-width: 700px)
+		.sticker-collection
+			p.no-stickers-text
+				font-size: 25px
+			> header
+				display: block
+				h2
+					margin-bottom: 20px
+
+	@media screen and (max-width: 515px)
+		.sticker-collection header .section-options	
+			> *
+				width: 30%
+				margin-bottom: 5px
+				height: 30px
+			.search-box input, .sort-stickers, .btn
+				padding: 7px
+				font-size: 12.5px
+			.search-box
+				input
+					width: 100%
+					max-width: 100%
+
+	@media screen and (max-width: 500px)
+		.sticker-collection .loading-sticker
+			height: 200px
+
+	@media screen and (max-width: 420px)
+		.sticker-collection header .section-options
+			.search-box input, .sort-stickers, .btn
+				font-size: 12px
+
+	@media screen and (max-width: 370px)
+		.sticker-collection header .section-options
+			.search-box input, .sort-stickers, .btn
+				font-size: 10px
 
 </style>

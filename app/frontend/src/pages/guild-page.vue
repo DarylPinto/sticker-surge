@@ -43,9 +43,9 @@ module.exports = {
 			return false;
 		},
 		nameFontSize: function(){
-			let size = 90 - this.guildName.length;
-			if(size < 50)	size = 50;
-			return size.toString() + 'px';
+			let size = 1 - (this.guildName.length / 100);
+			if(size < 0.3) size = 0.3;
+			return size.toString() + 'em';
 		}
 	},
 
@@ -129,13 +129,30 @@ module.exports = {
 			margin-bottom: 40px
 			display: flex
 			align-items: center
+			font-size: 90px
 			> img
 				border-radius: 100%
 				height: 100px
 				border: 5px solid rgba(255, 255, 255, 0.1)
 		h1
-			font-size: 90px
 			display: inline-block
 			margin-left: 15px
+
+	@media screen and (max-width: 650px)
+		.guild-page > header
+			font-size: 45px
+
+	@media screen and (max-width: 560px)
+		.guild-page > header > img
+				height: 75px
+				width: 75px
+
+	@media screen and (max-width: 450px)
+		.guild-page > header
+			font-size: 35px
+			> img
+				height: 60px
+				width: 60px
+				border-width: 3px
 
 </style>

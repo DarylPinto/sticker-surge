@@ -190,4 +190,31 @@ module.exports = {
 				padding: 13px 25px
 				margin-top: 30px
 
+	@media screen and (max-width: 940px)
+		.your-guilds-page
+			h1
+				font-size: 75px
+			.guild
+				box-sizing: border-box
+				width: calc(50% - 7.5px)
+				&:nth-of-type(4n)
+					margin-right: 0
+				&:nth-of-type(2n)
+					margin-right: 0
+
+	@media screen and (max-width: 600px)
+		.your-guilds-page
+			.guild
+				height: 240px
+				img
+					height: 90px
+					width: 90px
+
+	@media screen and (max-width: 500px)
+		.your-guilds-page
+			h1
+				font-size: 50px
+			.guild h2
+				font-size: 16px
+
 </style>
