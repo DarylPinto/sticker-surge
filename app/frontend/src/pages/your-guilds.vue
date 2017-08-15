@@ -202,11 +202,23 @@ module.exports = {
 				&:nth-of-type(2n)
 					margin-right: 0
 
+	@media screen and (max-width: 700px)
+		.your-guilds-page
+			.no-guilds-alert p
+				font-size: 20px
+
+	@media screen and (max-width: 650px)
+		.your-guilds-page
+			h1
+				text-align: center
+				padding-bottom: 25px
+
 	@media screen and (max-width: 600px)
 		.your-guilds-page
 			.guild
-				height: 240px
+				height: 200px
 				img
+					margin-top: 10px
 					height: 90px
 					width: 90px
 

@@ -255,14 +255,15 @@ module.exports = {
 	@media screen and (max-width: 700px)
 		.sticker-collection
 			p.no-stickers-text
-				font-size: 25px
+				font-size: 20px
 			> header
 				display: block
 				h2
 					margin-bottom: 20px
 
 	@media screen and (max-width: 515px)
-		.sticker-collection header .section-options	
+		.sticker-collection header .section-options
+			justify-content: space-between
 			> *
 				width: 30%
 				margin-bottom: 5px
