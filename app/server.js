@@ -48,6 +48,10 @@ app.use('/api/stats', require('./api/stats.js'));
 app.get('/api/set-guilds', verifyUser, setGuildsCookie, (req, res) => {
 	res.send('Guilds cookie updated');
 });
+app.get('/api/invalidate-token', (req, res) => {
+	req.session.token = 'invalidated';
+	res.send('Token invalidated');
+});
 
 //Redirect all other traffic to app root
 app.get('*', (req, res) => {
