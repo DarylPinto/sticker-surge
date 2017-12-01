@@ -91,6 +91,7 @@ module.exports = {
 			font-weight: 100
 			border-radius: 40px
 			padding: 13px 25px
+			text-shadow: 1px 1px rgba(0, 0, 0, 0.50)
 			letter-spacing: -0.5px
 
 	//Media query widths

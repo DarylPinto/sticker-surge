@@ -38,7 +38,7 @@
 		<div class="mobile-nav-btn" @click="openMobileNav"></div>
 		
 		<router-link to="/" class="logo-link">
-			<img src="/images/logo.png" class="logo" alt="Stickers for Discord">
+			<img src="/images/logo.svg" class="logo" alt="Stickers for Discord">
 		</router-link>
 
 		<nav class="main-nav">
@@ -60,7 +60,7 @@
 
 	<nav class="mobile-nav" :class="{open: mobileNavOpen}">
 		<router-link to="/" class="logo-link">
-			<img src="/images/logo.png" class="logo" alt="Stickers for Discord">
+			<img src="/images/logo.svg" class="logo" alt="Stickers for Discord">
 		</router-link>
 
 		<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
@@ -96,6 +96,7 @@
 				align-items: center
 			.logo
 				max-height: 65px
+				max-width: 249px
 				width: auto
 			.main-nav
 				font-size: 0
