@@ -133,6 +133,8 @@ module.exports = {
 			> img
 				border-radius: 100%
 				height: 100px
+				color: transparent
+				font-size: 10px
 				border: 5px solid rgba(255, 255, 255, 0.1)
 		h1
 			display: inline-block
