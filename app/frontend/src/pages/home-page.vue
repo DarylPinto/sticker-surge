@@ -11,11 +11,16 @@ module.exports = {
 			pageLoaded: false,
 			userId: this.$cookie.get('id') || null,
 			taglines: [
-				'Make your server expressive',
+				'Make your server more expressive',
 				'Spice up your server',
 				'Meme it up in your server',
+				'Liven up the mood in your server',
 				'Keep your server interesting',
 				'Add some fun to your server',
+				'Express yourself in your server',
+				'Try something new in your server',
+				'Bring a bit of humor to your server',
+				'Trash talk your buddies in new ways',
 				'Turn your server up a notch'
 			]
 		}
