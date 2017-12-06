@@ -10,13 +10,19 @@ module.exports = function(message, prefix, sticker_manager_role, guild_manager_i
 		let helpinfo = prefix+'stickers      : View this server\'s stickers.\n';
 
 		if(is_sticker_manager || is_guild_manager){
-			helpinfo  += prefix+'createSticker : Create a custom sticker for anyone on this server to use.\n';
-			helpinfo  += prefix+'deleteSticker : Delete a custom sticker from this server.\n';	
+			helpinfo  += prefix+'createSticker : Create a custom sticker for anyone on this server to use.\n';	
+		}
+
+		//delete sticker is listed twice, Note the difference in verbiage ("one of your stickers" for regular users and
+		//"a sticker" for guild managers - implying they can delete any sticker)
+		if(is_sticker_manager && !is_guild_manager){
+			helpinfo  += prefix+'deleteSticker : Delete one of your custom stickers from this server.\n';
 		}
 
 		if(is_guild_manager){
+			helpinfo  += prefix+'deleteSticker : Delete a custom sticker from this server.\n';
 			helpinfo  += prefix+'setPrefix     : Set the prefix used to trigger these commands.\n';
-			helpinfo  += prefix+'setRole       : Set the role required to manage stickers on this server.\n';
+			helpinfo  += prefix+'setRole       : Set the role required to create stickers on this server.\n';
 			//helpinfo  += prefix+'setManagerRole : Set the role required to manage everything to do with this bot.\n';
 		}
 

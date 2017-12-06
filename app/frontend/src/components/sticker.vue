@@ -1,11 +1,14 @@
 <script>
 module.exports = {
-	props: ['link', 'type', 'prefix', 'name', 'isEditable'],
+	props: ['link', 'type', 'creator', 'prefix', 'name', 'userId', 'userIsGuildManager', 'isEditable'],
 	computed: {
 		displayName(){
 			if(this.type === 'users') return `-${this.name}`;
 			else if(this.type === 'guilds')	return `:${this.name}:`;
 			else return `:${this.prefix}-${this.name}:`;
+		},
+		isCreatedByUser(){
+			return this.userId === this.creator;
 		}
 	},
 	methods: {
@@ -26,7 +29,7 @@ module.exports = {
 
 <template>
 <div class="sticker" :data-clipboard-text="displayName" @click="notifyCopied">
-	<i class="material-icons delete-sticker" v-if="isEditable" @click="emitDeleteSticker($event)">clear</i>	
+	<i class="material-icons delete-sticker" v-if="isCreatedByUser || userIsGuildManager" @click="emitDeleteSticker($event)">clear</i>	
 	<img :src="link" :alt="name">	
 	<p>{{displayName}}</p>
 </div>

@@ -295,7 +295,7 @@ router.patch('/:id/sticker-manager-role', verifyUserAjax, (req, res) => {
 //DELETE//
 //////////
 
-//DELETE existing user's custom sticker
+//DELETE existing guild's custom sticker
 router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {	
 
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
@@ -306,11 +306,6 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 			res.status(404).send('Guild not found');
 			return null;
 		}
-			
-		if(!userIsGuildManager(guild, req, res) && !userIsStickerManager(guild, req, res)){
-			res.status(401).send('Unauthorized');
-			return null;
-		}
 
 		let sticker_names = guild.customStickers.map(s => s.name);
 		let deletion_request_index = sticker_names.indexOf(req.params.stickername);
@@ -319,7 +314,16 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 			return null;
 		}
 
-		deleteCdnImage(guild.customStickers[deletion_request_index].url);
+		let sticker = guild.customStickers[deletion_request_index];
+
+		//Users can only delete stickers they created
+		//Exception to the rule: Guild managers can delete any sticker
+		if(!userIsGuildManager(guild, req, res) && (res.locals.userId != sticker.creatorId)){
+			res.status(401).send('Unauthorized');
+			return null;
+		}
+
+		deleteCdnImage(sticker.url);
 		guild.customStickers.splice(deletion_request_index, 1);
 		return guild.save();
 

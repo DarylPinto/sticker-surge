@@ -68,7 +68,7 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 		}
 
 		else if(err.message.includes('Unauthorized')){
-			message.channel.send(`You must have the role \`${sticker_manager_role}\` to create stickers for everyone on this server.\nIf you want to create stickers just for yourself, private message me.`);
+			message.channel.send(`You must have the role \`${sticker_manager_role}\` to create stickers for everyone on this server.\nIf you want to create stickers just for yourself, private message this bot.`);
 		}
 
 		else if(err.message.includes('Sticker name already in use by an emoji')){

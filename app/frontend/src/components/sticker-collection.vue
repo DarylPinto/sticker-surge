@@ -11,7 +11,7 @@ Vue.component('stickerCreationModal', stickerCreationModal);
 const normalizeObj = obj => JSON.parse(JSON.stringify(obj));
 
 module.exports = {
-	props: ['name', 'stickerPrefix', 'emojiNamesAllowed', 'isEditable', 'stickers', 'maxStickers', 'pageType'],
+	props: ['name', 'stickerPrefix', 'emojiNamesAllowed', 'userId', 'userIsGuildManager', 'isEditable', 'stickers', 'maxStickers', 'pageType'],
 	data: function(){	
 		return {	
 			stickerSearchString: '',
@@ -127,8 +127,11 @@ module.exports = {
 			:type="pageType"
 			:key="sticker.name"
 			:link="sticker.url"
+			:creator="sticker.creatorId"
 			:prefix="stickerPrefix"
 			:name="sticker.name"
+			:userId="userId"
+			:userIsGuildManager="userIsGuildManager"
 			:isEditable="isEditable">
 		</sticker>
 	</div>

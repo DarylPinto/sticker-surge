@@ -85,6 +85,7 @@ module.exports = {
 			:stickers="customStickers"
 			:maxStickers="200"
 			:pageType="pageType"
+			:userId="userId"
 			:isEditable="isUsersPage">
 		</stickerCollection>
 

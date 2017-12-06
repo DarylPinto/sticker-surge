@@ -42,6 +42,9 @@ module.exports = {
 			if(this.stickerManagerRole === '@everyone') return true //User can edit if content role is set to @everyone
 			return false;
 		},
+		userIsGuildManager: function(){
+			return this.guildManagerIds.includes(this.userId);
+		},
 		nameFontSize: function(){
 			let size = 1 - (this.guildName.length / 100);
 			if(size < 0.3) size = 0.3;
@@ -111,6 +114,8 @@ module.exports = {
 			:stickers="customStickers"
 			:maxStickers="400"
 			:pageType="pageType"
+			:userId="userId"
+			:userIsGuildManager="userIsGuildManager"
 			:isEditable="userCanEdit">
 		</stickerCollection>
 
