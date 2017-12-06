@@ -38,8 +38,8 @@ module.exports = function(message, bot_auth, prefix){
 		json: true
 	})
 	.then(res => {
-		if(res.stickerManagerRole === '@everyone') message.channel.send(`Everyone can now manage stickers on this server.`)
-		else message.channel.send(`**${escaped_new_sticker_manager_role}** is now the role required to manage stickers on this server.`)
+		if(res.stickerManagerRole === '@everyone') message.channel.send(`Everyone can now create stickers on this server.`)
+		else message.channel.send(`**${escaped_new_sticker_manager_role}** is now the role required to create stickers on this server.`)
 
 		//When sticker manager role is updated with setrole, call updateGuildInfo to update ids
 		updateGuildInfo(guild, bot_auth);
