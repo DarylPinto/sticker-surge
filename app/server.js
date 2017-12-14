@@ -10,6 +10,8 @@ const covert = require('../covert.js');
 const app = express();
 const port = 3000;
 
+process.on('unhandledRejection', r => console.log(r));
+
 //DB init
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/stickers-for-discord');
@@ -42,7 +44,7 @@ app.get('/stickers', verifyUser, (req, res) => {
 //API
 app.use('/api/users', require('./api/users.js'));
 app.use('/api/guilds', require('./api/guilds.js'));
-//app.use('/api/sticker-packs', require('./api/sticker-packs.js'));
+app.use('/api/sticker-packs', require('./api/sticker-packs.js'));
 
 app.use('/api/stats', require('./api/stats.js'));
 app.get('/api/set-guilds', verifyUser, setGuildsCookie, (req, res) => {

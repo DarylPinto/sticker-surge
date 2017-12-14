@@ -7,8 +7,8 @@ const stickerPackSchema = Schema({
 	installs: {type: Number, default: 0},
 	creatorId: {type: String, required: true},
 	stickers: [{
-		name: String,
-		url: String,
+		name: {type: String, required: true, maxlength: 20},
+		url: {type: String, required: true},
 		uses: {type: Number, default: 0},
 		creatorId: {type: String, required: true, default: 'unknown'},
 		createdAt: {type: Date, default: Date.now},	
