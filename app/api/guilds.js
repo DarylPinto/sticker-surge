@@ -180,7 +180,7 @@ router.post('/:id/stickers/:stickername/uses', verifyBot, (req, res) => {
 		sticker.uses += 1;
 		guild.save();
 
-		return res.json(sticker);	
+		return res.json(util.removeProps(sticker._doc, ['_id']));	
 
 	});
 
