@@ -30,6 +30,35 @@ const removedFields = {
 //GET//
 ///////
 
+router.get('/', async (req, res) =>{
+
+	let packsPerPage = 2;
+
+	//Page
+	let skipAmount = 0;
+	if(req.query.page != null) skipAmount = (parseInt(req.query.page) - 1) * packsPerPage;
+	
+	//TODO: handle req.query.page being 0 or NaN
+
+	//Sort Type
+	let sortType;
+
+	if(req.query.popular != null) sortType = '-installs';
+	else if(req.query.oldest != null) sortType = 'createdAt';
+	else sortType = '-createdAt';	
+
+	try{
+
+		const packs = await StickerPack.find({}, removedFields).sort(sortType).skip(skipAmount).limit(packsPerPage);
+		return res.send(packs);
+
+	}catch(err){
+		console.log(err.message);
+		return res.status(500).send('Internal server error');	
+	}	
+
+});
+
 //GET Sticker pack by key 
 router.get('/:key', async (req, res) => {
 

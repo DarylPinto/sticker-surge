@@ -5,6 +5,7 @@ const stickerPackSchema = Schema({
 	name: String,
 	key: {type: String, unique: true},
 	installs: {type: Number, default: 0},
+	createdAt: {type: Date, default: Date.now},
 	creatorId: {type: String, required: true},
 	stickers: [{
 		name: {type: String, required: true, maxlength: 20},
