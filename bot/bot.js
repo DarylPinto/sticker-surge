@@ -24,6 +24,11 @@ client.on('guildCreate', guild => initGuild(guild, bot_auth));
 //Set isActive flag to false in db when bot leaves guild
 client.on('guildDelete', guild => deactivateGuild(guild, bot_auth));
 
+//Update guild info (specifically guild name/icon) when a guild is updated
+client.on('guildUpdate', (oldGuild, newGuild) => {
+	updateGuildInfo(newGuild, bot_auth);
+});
+
 //Update guild info (specifically managerIds) when a guildMember is updated
 client.on('guildMemberUpdate', (oldMember, newMember) => {
 	if(newMember.user.id != client.user.id) updateGuildInfo(newMember.guild, bot_auth);
