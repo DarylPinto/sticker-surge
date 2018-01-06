@@ -32,24 +32,35 @@ const removedFields = {
 
 router.get('/', async (req, res) =>{
 
-	let packsPerPage = 2;
+	let packsPerPage = 4;
 
-	//Page
+	//Page #
+	let requestedPage = parseInt(req.query.page);
 	let skipAmount = 0;
-	if(req.query.page != null) skipAmount = (parseInt(req.query.page) - 1) * packsPerPage;
-	
-	//TODO: handle req.query.page being 0 or NaN
+
+	if(!isNaN(requestedPage) && requestedPage != 0){	
+		skipAmount = (parseInt(req.query.page) - 1) * packsPerPage;
+	}	
 
 	//Sort Type
 	let sortType;
 
-	if(req.query.popular != null) sortType = '-installs';
-	else if(req.query.oldest != null) sortType = 'createdAt';
-	else sortType = '-createdAt';	
+	if(req.query.sort === 'popular') sortType = '-installs';
+	else if(req.query.sort === 'oldest') sortType = 'createdAt';
+	else sortType = '-createdAt';
+
+	//Search
+	let search = {};
+
+	if(req.query.search){
+		let s = decodeURIComponent(req.query.search).trim();
+		let regex = new RegExp(s, 'i');
+		search.$or = [{name: regex}, {key: regex}];
+	}
 
 	try{
 
-		const packs = await StickerPack.find({}, removedFields).sort(sortType).skip(skipAmount).limit(packsPerPage);
+		const packs = await StickerPack.find(search, removedFields).sort(sortType).skip(skipAmount).limit(packsPerPage);
 		return res.send(packs);
 
 	}catch(err){
@@ -92,7 +103,7 @@ router.get('/:key/stickers/:stickername', async (req, res) => {
 		const pack = await StickerPack.findOne({key: req.params.key}, removedFields);
 		if(!pack) return res.status(404).send('Sticker Pack not found');
 		const sticker = pack.stickers.find(s => s.name === req.params.stickername);
-		if(!sticker) return res.status(404).send('Sticker Pack does not contain a custom sticker with that name');
+		if(!sticker) return res.status(404).send('Sticker Pack does not contain a sticker with that name');
 		res.json(sticker);
 	}catch(err){
 		res.status(500).send('Internal server error');
@@ -127,19 +138,19 @@ router.post('/', /*verifyUserAjax,*/ async (req, res) => {
 });
 
 //POST new sticker to sticker pack
-router.post('/:key/stickers', /*verifyUserAjax,*/ upload.single('sticker'), handleMulterError, async (req, res) => {
+router.post('/:key/stickers', verifyUserAjax, upload.single('sticker'), handleMulterError, async (req, res) => {
 
 	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
 	if(req.body.name.length > 20) return res.status(400).send('Sticker name cannot be longer than 20 characters');	
-	//if(!res.locals.userId) return res.status(401).send('Unauthorized');
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
 	let sticker = {
 		image: (req.file) ? req.file.buffer : req.body.url,
 		name: req.body.name.toLowerCase().replace(/(:|-)/g, ''),
 		createdVia: (req.file) ? 'website' : 'discord',
 		groupId: req.params.key,
-		creatorId: 'test-id'//res.locals.userId
+		creatorId: res.locals.userId
 	}
 
 	let imageIsLocal = (req.file) ? true : false;
@@ -148,8 +159,8 @@ router.post('/:key/stickers', /*verifyUserAjax,*/ upload.single('sticker'), hand
 
 		let pack = await StickerPack.findOne({key: req.params.key});
 		if(!pack) return res.status(404).send('Sticker Pack not found');
-		//if(res.locals.userId != pack.creatorId) return res.status(401).send('Unauthorized');
-		if(pack.stickers.map(s => s.name).includes(sticker.name)) return res.status(400).send('Sticker Pack already has a custom sticker with that name');
+		if(res.locals.userId != pack.creatorId) return res.status(401).send('Unauthorized');
+		if(pack.stickers.map(s => s.name).includes(sticker.name)) return res.status(400).send('Sticker Pack already has a sticker with that name');
 		if(pack.stickers.length >= 400) return res.status(403).send('Sticker Pack has reached maximum amount of stickers (400)');
 
 		sticker.url = await imageToCdn(sticker.image, `${pack.key}-${(new Date()).getTime()}-${sticker.name}`);
@@ -176,12 +187,46 @@ router.post('/:key/stickers/:stickername/uses', /*verifyBot,*/ async (req, res) 
 	let pack = await StickerPack.findOne({key: req.params.key});
 	if(!pack) return res.status(404).send('Sticker Pack not found');
 	let sticker = pack._doc.stickers.find(s => s.name === req.params.stickername);
-	if(!sticker) return res.status(404).send('Sticker Pack does not have a custom sticker with that name');
+	if(!sticker) return res.status(404).send('Sticker Pack does not have a sticker with that name');
 
 	sticker.uses += 1;
 	pack.save();
 
 	return res.json(util.removeProps(sticker._doc, ['_id']));
+
+});
+
+//////////
+//DELETE//
+//////////
+
+//DELETE sticker from sticker pack
+router.delete('/:key/stickers/:stickername', verifyUserAjax, async (req, res) => {	
+
+	try{
+
+		let pack = await StickerPack.findOne({key: req.params.key});
+
+		if(!pack) return res.status(404).send('Sticker Pack not found');
+		if(res.locals.userId != pack.creatorId) return res.status(401).send('Unauthorized');
+
+		let sticker_names = pack.stickers.map(s => s.name);
+		let deletion_request_index = sticker_names.indexOf(req.params.stickername);
+		if(deletion_request_index === -1) return res.status(404).send('Sticker Pack does not have a sticker with that name');
+
+		deleteCdnImage(pack.stickers[deletion_request_index].url);
+		pack.stickers.splice(deletion_request_index, 1);
+		await pack.save();
+
+		return res.send('Successfully deleted sticker');
+
+	}catch(err){
+
+		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');
+		console.error(err);
+		res.status(500).send('Internal server error');
+
+	}
 
 });
 

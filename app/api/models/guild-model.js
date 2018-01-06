@@ -15,7 +15,6 @@ const guildSchema = Schema({
 		createdVia: {type: String, required: true, default: 'unknown'},
 		groupType: {type: String, required: true, default: 'guild'},
 		groupId: {type: String, required: true, default: 'unknown'}
-
 	}],
 	recentStickers: [String],
 	stickerPacks: [String],

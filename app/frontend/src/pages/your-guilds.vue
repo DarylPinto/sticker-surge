@@ -129,7 +129,7 @@ module.exports = {
 		transition: .2s
 		h1
 			font-size: 85px
-			padding-bottom: 45px	
+			padding-bottom: 15px	
 			margin-bottom: 30px
 			border-bottom: 2px solid rgba(255, 255, 255, 0.45)
 		.guild

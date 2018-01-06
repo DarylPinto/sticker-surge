@@ -17,6 +17,7 @@
     "babel-preset-stage-0": "^6.24.1",
     "clipboard": "^1.7.1",
     "css-loader": "^0.28.1",
+    "debounce": "^1.1.0",
     "es6-promise-promise": "^1.0.0",
     "file-loader": "^0.11.1",
     "image-webpack-loader": "^3.3.1",

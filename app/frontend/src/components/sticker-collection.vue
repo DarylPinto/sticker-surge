@@ -186,52 +186,6 @@ module.exports = {
 			display: flex
 			align-items: center
 			justify-content: space-between
-			.section-options
-				display: flex
-				.btn.disabled
-					pointer-events: none
-					background-color: #929292
-					color: lightgray
-				.sort-stickers
-					background-color: #2a2d2f
-					border-radius: 40px
-					color: #7d7d7d
-					font-size: 16px
-					padding: 0 15px
-					outline: 0
-					border: 1px solid #7d7d7d
-					-webkit-appearance: none
-					-moz-appearance: none
-					text-indent: 1px
-					text-overflow: ''
-					option
-						background-color: inherit
-					&::-ms-expand
-						display: none
-				input
-					text-align: left
-				> *
-					box-sizing: border-box
-					margin-right: 15px
-					&:last-child
-						margin-right: 0
-				.search-box
-					border: 1px solid #7d7d7d
-					border-radius: 40px
-					display: flex
-					align-items: center
-					padding-left: 10px
-					i
-						font-size: 20px
-						color: #7d7d7d
-					input
-						padding: 8px 15px
-						padding-left: 4px
-						font-size: 16px
-						width: 140px
-						background-color: transparent
-						border: none
-						outline: 0
 	
 	p.no-stickers-text
 		font-size: 40px
