@@ -4,9 +4,11 @@ import axios from 'axios';
 import Clipboard from 'clipboard';
 import sticker from '../components/sticker.vue';
 import stickerCreationModal from '../components/sticker-creation-modal.vue';
+import packOptions from '../components/pack-options.vue';
 
 Vue.component('sticker', sticker);
 Vue.component('stickerCreationModal', stickerCreationModal);
+Vue.component('packOptions', packOptions);
 
 const normalizeObj = obj => JSON.parse(JSON.stringify(obj));
 
@@ -16,7 +18,8 @@ module.exports = {
 		return {	
 			stickerSearchString: '',
 			sortMethod: 'newest',
-			loadingNewSticker: false
+			loadingNewSticker: false,
+			packOptions: false
 		}
 	},
 	computed: {
@@ -110,9 +113,18 @@ module.exports = {
 				<option value="oldest">Sort by: Oldest</option>
 				<option value="mostUsed">Sort by: Most Used</option>
 			</select>
-			<button v-if="isEditable" class="btn" :class="{disabled: maxStickersReached}" @click="$emit('openStickerCreationModal')">Create a Sticker</button>	
+			<button v-if="isEditable" class="btn" :class="{disabled: maxStickersReached}" @click="$emit('openStickerCreationModal')">Create a Sticker</button>
+			<button v-if="userId && pageType === 'sticker-packs'" class="pack-options-btn" @click="$emit('togglePackOptions')"><i class="material-icons">star</i></button>
 		</div>
-	</header>	
+
+		<!-- Sticker Pack Options -->
+		<packOptions
+			v-if="pageType === 'sticker-packs'"
+			:userId="userId"
+		>
+		</packOptions>
+
+	</header>
 	<div class="sticker-area">
 
 		<p v-if="stickers.length === 0 && !loadingNewSticker" class="no-stickers-text">{{noStickersText}}</p>
@@ -153,7 +165,7 @@ module.exports = {
 	$sticker-margin: 15px
 
 	.sticker-collection
-		overflow: hidden
+		//overflow: hidden
 		> .sticker-creation-modal
 			display: none
 		.sticker-area
@@ -186,6 +198,7 @@ module.exports = {
 			display: flex
 			align-items: center
 			justify-content: space-between
+			position: relative
 	
 	p.no-stickers-text
 		font-size: 40px

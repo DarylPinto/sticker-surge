@@ -69,7 +69,7 @@ module.exports = {
 					<option value="newest">Sort by: Newest</option>
 					<option value="oldest">Sort by: Oldest</option>
 				</select>
-				<button class="btn">Create a Sticker Pack</button>	
+				<button class="btn" v-if="userId">Create a Sticker Pack</button>	
 			</div>	
 		</header>	
 
@@ -79,9 +79,9 @@ module.exports = {
 
 		<div v-if="packsLoaded" v-for="pack in packs" :key="pack.key" class="sticker-pack">
 			<router-link :to="`/pack/${pack.key}`">
-				<img src="/images/default-discord-icon.png" :alt="pack.name">
+				<img :src="pack.icon ? pack.icon : '/images/default-discord-icon.png'" :alt="pack.name">
 				<h2>{{pack.name}}</h2>	
-			</router-link>	
+			</router-link>
 		</div>
 
 	</div>

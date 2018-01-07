@@ -17,9 +17,6 @@ module.exports = {
 			iconURL: '',
 			creatorId: '',
 			stickers: [],
-			stickerName: '',
-			stickerURL: '',
-			stickerCreationError: '',
 			pageLoaded: false,
 			userId: this.$cookie.get('id') || null
 		}
@@ -43,7 +40,7 @@ module.exports = {
 				this.name = res.data.name;
 				this.key = res.data.key;
 				this.stickers = res.data.stickers;
-				this.iconURL = res.data.icon ? this.iconURL : null;
+				this.iconURL = res.data.icon ? res.data.icon : null;
 				this.creatorId = res.data.creatorId;
 				document.title = `${res.data.name} - Stickers for Discord`;	
 				this.pageLoaded = true;
@@ -76,8 +73,7 @@ module.exports = {
 	<div class="container sticker-pack-page" :class="{transparent: !pageLoaded}">
 		
 		<header>
-			<img v-if="iconURL" :src="iconURL" :alt="name">
-			<img v-if="!iconURL" src="/images/default-discord-icon.png" :alt="name">
+			<img :src="iconURL ? iconURL : '/images/default-discord-icon.png'" :alt="name">
 			<h1 :style="`font-size: ${nameFontSize}`">{{name}}</h1>	
 		</header>
 

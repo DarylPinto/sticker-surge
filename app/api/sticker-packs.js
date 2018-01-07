@@ -32,7 +32,7 @@ const removedFields = {
 
 router.get('/', async (req, res) =>{
 
-	let packsPerPage = 4;
+	let packsPerPage = 8;
 
 	//Page #
 	let requestedPage = parseInt(req.query.page);
