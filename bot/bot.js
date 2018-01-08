@@ -11,6 +11,9 @@ const sendSticker = require('./events/send-sticker.js');
 const initGuild = require('./events/init-guild.js');
 const deactivateGuild = require('./events/deactivate-guild.js');
 const updateGuildInfo = require('./events/update-guild-info.js');
+const initUser = require('./events/init-user.js');
+const updateUserInfo = require('./events/update-user-info.js');
+
 
 client.on('ready', () => {
 	client.user.setGame('stickersfordiscord.com');
@@ -120,27 +123,17 @@ client.on('message', message => {
 				commands.help(message);	
 			}
 
+			updateUserInfo(message.author, bot_auth); //note: this is async
+
 		})
 		.catch(err => {
 
 			//If user doesn't exist, initialize user and welcome them
 			if(!err.message.includes('User not found')) return false;
 
-			rp({
-				method: 'POST',
-				uri: `${covert.app_url}/api/users`,
-				body: {	
-					id: message.author.id,	
-					username: message.author.username,
-					avatar: message.author.avatar
-				},
-				headers: {Authorization: bot_auth},
-				json: true
-			})
-			.then(() => {
-				message.channel.send('Hello! Here are a list of commands:');
-				commands.help(message);
-			});
+			initUser(message.author, bot_auth); //note: this is async
+			message.channel.send('Hello! Here are a list of commands:');
+			commands.help(message);
 
 		});
 

@@ -31,7 +31,7 @@ Type **${escaped_prefix}help** to get started.
 		updateGuildInfo(guild, bot_auth);
 	})
 	.catch(err => {
-		
+
 		rp({
 			method: 'PATCH',
 			uri: `${covert.app_url}/api/guilds/${guild.id}`,

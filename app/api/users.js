@@ -155,6 +155,34 @@ router.post('/:id/stickers/:stickername/uses', verifyBot, (req, res) => {
 
 });
 
+/////////
+//PATCH//
+/////////
+
+//Update user info (bot only)
+router.patch('/:id', verifyBot, (req, res) => {
+
+	User.findOne({id: req.params.id})
+	.then(user => {
+
+		if(!user){
+			res.status(404).send('User not found');
+			return null;	
+		}
+
+		Object.assign(user, req.body);
+		return user.save();
+
+	})
+	.then(user => {
+		if(user) res.json(user);
+	})
+	.catch(err => {	
+		res.status(500).send('Internal server error');
+	});
+
+});
+
 //////////
 //DELETE//
 //////////
