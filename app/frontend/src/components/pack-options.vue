@@ -7,7 +7,7 @@ module.exports = {
 	data: function(){
 		return {
 			isOpen: false,
-			userGuilds: JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || [],
+			userGuilds: [],
 			userGuildData: []
 		}
 	},
@@ -28,6 +28,8 @@ module.exports = {
 		
 		axios.get(`/api/set-guilds?nocache=${(new Date()).getTime()}`)
 		.then(() => {
+
+			this.userGuilds = JSON.parse(decodeURIComponent(this.$cookie.get('guilds')));
 
 			this.userGuilds.forEach(id => {
 				axios.get(`/api/guilds/${id}?nocache=${(new Date()).getTime()}`)

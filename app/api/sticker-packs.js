@@ -124,14 +124,20 @@ router.post('/', /*verifyUserAjax,*/ async (req, res) => {
 	if(req.body.name.length > 60) return res.status(400).send('Sticker Pack name cannot be longer than 60 characters');
 	//if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
+	//Check if Sticker Pack key is already used
+	const keyAlreadyUsed = await StickerPack.findOne({key: req.body.key});
+	if(keyAlreadyUsed) return res.status(400).send('There is already a Sticker Pack with that key');	
+
+	//Create Sticker Pack
 	let data = Object.assign({}, req.body);
 	data.creatorId = 'test-id';//res.locals.userId;
-
+	
 	try{
 		await new StickerPack(data).save();
 		const pack = await StickerPack.findOne({key: req.body.key}, removedFields);
 		res.status(201).json(pack);
 	}catch(err){
+		console.error(err);
 		res.status(500).send('Internal server error');
 	}
 
