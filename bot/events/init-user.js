@@ -9,7 +9,7 @@ module.exports = function(user, bot_auth){
 		body: {	
 			id: user.id,	
 			username: user.username,
-			avatar: user.avatar
+			avatar: user.avatar || null
 		},
 		headers: {Authorization: bot_auth},
 		json: true
