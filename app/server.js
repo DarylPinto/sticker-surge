@@ -17,6 +17,7 @@ const db = mongoose.connection;
 db.on('error', err => {if(err) throw err});
 
 //Middleware
+app.disable('x-powered-by');
 app.use(bodyParser.json());
 app.use(sessions({
 	cookieName: 'session',
