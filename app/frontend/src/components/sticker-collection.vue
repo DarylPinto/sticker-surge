@@ -4,11 +4,11 @@ import axios from 'axios';
 import Clipboard from 'clipboard';
 import sticker from '../components/sticker.vue';
 import stickerCreationModal from '../components/sticker-creation-modal.vue';
-import packOptions from '../components/pack-options.vue';
+import addPackDropdown from '../components/add-pack-dropdown.vue';
 
 Vue.component('sticker', sticker);
 Vue.component('stickerCreationModal', stickerCreationModal);
-Vue.component('packOptions', packOptions);
+Vue.component('addPackDropdown', addPackDropdown);
 
 const normalizeObj = obj => JSON.parse(JSON.stringify(obj));
 
@@ -18,16 +18,12 @@ module.exports = {
 		return {	
 			stickerSearchString: '',
 			sortMethod: 'newest',
-			loadingNewSticker: false,
-			packOptions: false
+			loadingNewSticker: false	
 		}
 	},
 	computed: {
 		noStickersText(){
 			return (!this.isEditable) ? 'No stickers here just yet!' : 'No stickers here just yet. Add some!';
-		},
-		sanitizedStickerSearchString(){
-			return this.stickerSearchString.toLowerCase().replace(/(:|-)/g, '');
 		},
 		maxStickersReached(){
 			return this.stickers.length >= this.maxStickers;
@@ -55,6 +51,12 @@ module.exports = {
 	},
 	methods: {
 		
+		searchMatchesSticker(prefix, name){
+			let searchString = this.stickerSearchString.toLowerCase().replace(/(:|-)/g, '');
+			name = (prefix) ? prefix + name : name;	
+			return name.includes(searchString);
+		},
+
 		addSticker(formData){
 			this.loadingNewSticker = true;
 			//Sort by newest so that when new sticker is added, it's visible right away
@@ -114,15 +116,15 @@ module.exports = {
 				<option value="mostUsed">Sort by: Most Used</option>
 			</select>
 			<button v-if="isEditable" class="btn" :class="{disabled: maxStickersReached}" @click="$emit('openStickerCreationModal')">Create a Sticker</button>
-			<button v-if="userId && pageType === 'sticker-packs'" class="pack-options-btn" @click="$emit('togglePackOptions')"><i class="material-icons">star</i></button>
+			<button v-if="userId && pageType === 'sticker-packs'" class="add-pack-dropdown-btn" @click="$emit('togglePackDropdown')"><i class="material-icons">star</i></button>
 		</div>
 
 		<!-- Sticker Pack Options -->
-		<packOptions
+		<addPackDropdown
 			v-if="pageType === 'sticker-packs'"
 			:userId="userId"
 		>
-		</packOptions>
+		</addPackDropdown>
 
 	</header>
 	<div class="sticker-area">
@@ -135,7 +137,7 @@ module.exports = {
 		<sticker
 			v-for="sticker in sortedStickers"
 			v-on:deleteSticker="deleteSticker(sticker.name)"
-			v-show="sticker.name.indexOf(sanitizedStickerSearchString) > -1"
+			v-show="searchMatchesSticker(stickerPrefix, sticker.name)"
 			:type="pageType"
 			:key="sticker.name"
 			:link="sticker.url"

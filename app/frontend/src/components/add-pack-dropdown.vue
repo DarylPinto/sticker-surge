@@ -1,6 +1,9 @@
 <script>
 import Vue from 'vue';
 import axios from 'axios';
+import packDropdownGuild from './pack-dropdown-guild.vue';
+
+Vue.component('packDropdownGuild', packDropdownGuild);
 
 module.exports = {
 	props: ['userId'],
@@ -12,7 +15,7 @@ module.exports = {
 		}
 	},
 	methods: {
-		togglePackOptions: function(){
+		togglePackDropdown: function(){
 			this.isOpen = !this.isOpen;
 		},
 
@@ -43,32 +46,34 @@ module.exports = {
 		});
 		
 		//Listen for parent event to open/close pack options
-		this.$parent.$on('togglePackOptions', this.togglePackOptions);
+		this.$parent.$on('togglePackDropdown', this.togglePackDropdown);
 
 	}
 }
 </script>
 
 <template>
-<div class="pack-options-wrapper" :class="{hidden: !isOpen}">
+<div class="pack-dropdown-wrapper" :class="{hidden: !isOpen}">
 
-	<div class="pack-options">
+	<div class="pack-dropdown">
 		<h2>Use this pack in:</h2>
 		<ul>
-			<li>Personal Stickers</li>	
-			<li v-for="guild in userGuildData">{{guild.name}}</li>
+			<packDropdownGuild :name="'Personal Stickers'" />
+			<packDropdownGuild v-for="guild in userGuildData" :name="guild.name" />
+			<!-- <li>Personal Stickers</li> -->
+			<!-- <li v-for="guild in userGuildData">{{guild.name}}</li> -->
 		</ul>
 		<button class="btn">Done</button>
 	</div>
 
-	<div class="pack-options-backdrop" @click="togglePackOptions()"></div>
+	<div class="pack-dropdown-backdrop" @click="togglePackDropdown()"></div>
 
 </div>
 </template>
 
 <style lang="sass">
 
-	.pack-options-wrapper
+	.pack-dropdown-wrapper
 		position: absolute
 		right: -5px
 		transition: .2s
@@ -78,7 +83,7 @@ module.exports = {
 			opacity: 0
 			pointer-events: none
 
-	.pack-options
+	.pack-dropdown
 		background-color: #36393e
 		box-shadow: 0 0 20px rgba(0, 0, 0, 0.64) 
 		border: 1px solid rgba(255, 255, 255, 0.05)
@@ -111,10 +116,11 @@ module.exports = {
 			li
 				padding: 15px 10px
 				cursor: pointer
+				user-select: none
 				&:nth-child(2n)
 					background-color: rgba(0,0,0,0.1)
 
-	.pack-options-backdrop
+	.pack-dropdown-backdrop
 		position: fixed
 		height: 100vh
 		width: 100vw
