@@ -100,7 +100,10 @@ router.post('/', verifyBot, (req, res) => {
 	new Guild(req.body).save()
 	.then(() => Guild.findOne({id: req.body.id}, removedFields))
 	.then(guild => res.status(201).json(guild))
-	.catch(err => res.status(500).send('Internal server error'));
+	.catch(err => {	
+		if(err.code === 11000) return res.status(409).send('Guild with that id already exists');
+		res.status(500).send('Internal server error');
+	});
 });
 
 //POST new custom sticker to existing guild
