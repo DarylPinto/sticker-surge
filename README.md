@@ -18,6 +18,10 @@ I decided I'd try to my hand at making [a little Discord sticker-bot](https://gi
 
 And so, this project was born.
 
+## Support
+
+For help with Stickers for Discord, join the support server: [https://discord.gg/HNFmKsE](https://discord.gg/HNFmKsE)
+
 ## Built with
 
 * [Node](https://nodejs.org/)
