@@ -9,7 +9,6 @@ module.exports = function(guild, bot_auth){
 	//And send message to first channel that we have permission to
 	const sendWelcomeMessage = prefix => {
 		let escaped_prefix = prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
-		let message_sent = false;
 
 		let channels = guild.channels.array().filter(c => c.type === 'text');
 		let general_channel = (channels.map(c => c.name).includes('general')) ? channels[channels.map(c => c.name).indexOf('general')] : null;
@@ -33,7 +32,7 @@ Type **${escaped_prefix}help** to get started.
 			`)	
 			.catch(err => {
 				channel_index++;
-				attemptWelcome();	
+				if(channel_index < sorted_channels.length) attemptWelcome();
 			});
 		}
 
