@@ -10,6 +10,9 @@ const covert = require('../covert.js');
 const app = express();
 const port = 3000;
 
+//Useful stack trace for unhandledRejection errors
+process.on('unhandledRejection', r => console.error(r));
+
 //DB init
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/stickers-for-discord');
