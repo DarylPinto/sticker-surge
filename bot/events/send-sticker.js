@@ -2,8 +2,6 @@ const Discord = require('discord.js');
 const rp = require('request-promise');
 const covert = require('../../covert.js');
 
-const use_embed = false;
-
 module.exports = function(message, bot_auth){
 
 	let command = message.content.toLowerCase().replace(/:/g, '');
@@ -16,35 +14,24 @@ module.exports = function(message, bot_auth){
 	function useSticker(sticker, isPersonal){
 		if(message.channel.type === 'text') message.delete();
 
-		if(use_embed){
+		return message.channel.send(`**${author_name}:**`, {
+			files: [{
+				attachment: sticker.url,
+				name: sticker.name+'.png'
+			}]
+		});
 
-			/*RichEmbed style sticker*/
-			let embed_footer = (isPersonal) ? ' ' : `:${sticker.name}:`;
+	}
 
-			message.channel.send({embed: {
-				author: {
-					name: author_name,
-					icon_url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
-				},
-				image: {
-					url: sticker.url
-				},
-				footer: {
-					"text": embed_footer
-				}
-			}});	
-
-		}else{
-
-			/*Standard style sticker*/
-			message.channel.send(`**${author_name}:**`, {
-				files: [{
-					attachment: sticker.url,
-					name: sticker.name+'.png'
-				}]
-			});
-
-		}
+	function handleSendStickerError(err){
+		if(err.statusCode) err.status = err.statusCode;
+		if(err.status === 404) return;
+		console.error(`
+			Guild: ${message.guild.id}
+			Message: ${message.content}
+			Error Code: ${err.code}
+			Error Message: ${err.message}
+		`.replace(/\t+/g, ''));
 	}
 
 	//User stickers start with -
@@ -58,7 +45,7 @@ module.exports = function(message, bot_auth){
 			headers: {Authorization: bot_auth}
 		})
 		.then(res => useSticker(res, true))
-		.catch(err => (err.statusCode != 404) ? console.error(err.message) : null);
+		.catch(err => handleSendStickerError(err));
 	}
 
 	//Guild stickers have no -
@@ -73,7 +60,7 @@ module.exports = function(message, bot_auth){
 			headers: {Authorization: bot_auth}
 		})
 		.then(res => useSticker(res, false))
-		.catch(err => (err.statusCode != 404) ? console.error(err.message) : null);
+		.catch(err => handleSendStickerError(err));
 	}
 
 	//Sticker packs seperate their pack key and name with a -
