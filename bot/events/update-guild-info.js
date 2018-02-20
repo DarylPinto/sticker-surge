@@ -25,6 +25,7 @@ module.exports = function(guild, bot_auth){
 			method: 'PATCH',
 			uri: `${covert.app_url}/api/guilds/${guild.id}`,
 			body: {
+				isActive: true,
 				guildName: guild.name,
 				icon: guild.icon || null,
 				guildManagerIds: guild_manager_ids,
@@ -36,7 +37,7 @@ module.exports = function(guild, bot_auth){
 
 	})
 	.catch(err => {
-		console.error(err.message);
+		console.error("Error updating guild info:\n" + err.message);	
 	});
 	
 }
