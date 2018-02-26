@@ -63,8 +63,8 @@ module.exports = {
 				this.$emit('reload');
 			}).catch(err => {
 				this.loadingNewSticker = false;
-				if(err.response.status === 401) window.location.href = '/login';
 				console.error(err.response.data);
+				if(err.response.status === 401 || err.response.status === 504) window.location.href = '/login';
 			});
 		},
 
@@ -75,7 +75,8 @@ module.exports = {
 			.then(res => {
 				this.$emit('reload');
 			}).catch(err => {
-				if(err.response.status === 401) window.location.href = '/login';
+				console.error(err.response.data);
+				if(err.response.status === 401 || err.response.status === 504) window.location.href = '/login';
 			});
 		}
 
