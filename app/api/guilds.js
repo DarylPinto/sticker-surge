@@ -110,7 +110,7 @@ router.post('/', verifyBot, (req, res) => {
 router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMulterError, (req, res) => {
 
 	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
-	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
+	if(!req.body.name.match(/^:?-?[a-zа-яё0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
 	if(req.body.name.length > 20) return res.status(400).send('Sticker name cannot be longer than 20 characters');
 	if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');

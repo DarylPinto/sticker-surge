@@ -65,7 +65,7 @@ module.exports = async function(image, name){
 			ACL: 'public-read'
 		});
 
-		return Promise.resolve(`https://s3.us-east-2.amazonaws.com/stickers-for-discord/${name}.png`);
+		return Promise.resolve(`https://s3.us-east-2.amazonaws.com/stickers-for-discord/${encodeURIComponent(name)}.png`);
 
 	}catch(err){
 		return Promise.reject(err);

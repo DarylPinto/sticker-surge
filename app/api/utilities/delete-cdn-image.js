@@ -22,6 +22,6 @@ module.exports = function(url){
 
 	s3.deleteObject({
 		Bucket: 'stickers-for-discord',
-		Key: sticker_filename
+		Key: decodeURIComponent(sticker_filename)
 	}, res => {});
 }

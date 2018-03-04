@@ -47,7 +47,7 @@ client.on('roleUpdate', (oldRole, newRole) => {
 
 //Allow user to post sticker by editing a message incase of a typo
 client.on('messageUpdate', (oldMessage, newMessage) => {
-	if(/^(:|-)[a-zA-Z0-9-]+:?$/.test(newMessage.content.trim())) sendSticker(newMessage, bot_auth);
+	if(/^(:|-)[a-zA-Zа-яёА-ЯЁ0-9-]+:?$/.test(newMessage.content.trim())) sendSticker(newMessage, bot_auth);
 });
 
 ////////////////
@@ -70,7 +70,7 @@ client.on('message', message => {
 	////////////////
 	//Send sticker//
 	////////////////
-	if( /^(:|-)[a-zA-Z0-9-]+:?$/.test(message.content.trim()) ){
+	if( /^(:|-)[a-zA-Zа-яёА-ЯЁ0-9-]+:?$/.test(message.content.trim()) ){
 		sendSticker(message, bot_auth);
 		return false;
 	}

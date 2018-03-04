@@ -14,6 +14,8 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 	}
 
 	let sticker_name = message_words[1].toLowerCase().replace(/(:|-)/g, '');
+	sticker_name = encodeURIComponent(sticker_name);
+
 	let uri = `${covert.app_url}/api/users/${message.author.id}/stickers/${sticker_name}`;
 
 	if(message.channel.type === 'text'){
@@ -30,6 +32,7 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 		json: true
 	})
 	.then(res => {
+		sticker_name = decodeURIComponent(sticker_name);
 		let sticker_display_name = (message.channel.type === 'dm') ? `-${sticker_name}` : `:${sticker_name}:`;
 		message.channel.send(`\`${sticker_display_name}\` sticker deleted!`);
 	})
