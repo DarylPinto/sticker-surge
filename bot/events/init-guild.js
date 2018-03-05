@@ -25,11 +25,9 @@ module.exports = function(guild, bot_auth){
 
 		function attemptWelcome(){
 			sorted_channels[channel_index].send(`
-Your server can now use stickers!
-Type **${escaped_prefix}help** to get started.
-
-*Tip: Set the **Stickers for Discord** role color to \`#36393E\` and give this bot a short nickname for a seamless experience!*
-			`)	
+				Your server can now use stickers!
+				Type **${escaped_prefix}help** to get started.
+			`.replace(/\t+/g, ''))	
 			.catch(err => {
 				channel_index++;
 				if(channel_index < sorted_channels.length) attemptWelcome();

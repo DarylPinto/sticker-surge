@@ -11,15 +11,35 @@ module.exports = function(message, bot_auth){
 
 	if(is_guild_message && message.member.nickname) author_name = message.member.nickname;
 
-	function useSticker(sticker, isPersonal){
+	async function useSticker(sticker){
 		if(message.channel.type === 'text') message.delete();
 
-		return message.channel.send(`**${author_name}:**`, {
+		let message_options = {
 			files: [{
 				attachment: sticker.url,
 				name: sticker.name+'.png'
 			}]
-		});
+		}
+
+		try{
+
+			//Webhook style sticker
+			if(message.channel.type === 'text' && message.channel.guild.me.hasPermission('MANAGE_WEBHOOKS')){
+				let hook_name = (`${author_name} sent a sticker`.length <= 32) ? `${author_name} sent a sticker` : author_name;
+				let hook_avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`;
+				let hook = await message.channel.createWebhook(hook_name, hook_avatar);
+				await hook.send(message_options);
+				return hook.delete();
+			}
+
+			//Classic style sticker
+			else{
+				return message.channel.send(`**${author_name}:**`, message_options);
+			}	
+
+		}catch(err){
+			handleSendStickerError(err);
+		}
 
 	}
 
