@@ -24,10 +24,9 @@ module.exports = function(message, bot_auth){
 		try{
 
 			//Webhook style sticker
-			if(message.channel.type === 'text' && message.channel.guild.me.hasPermission('MANAGE_WEBHOOKS')){
-				let hook_name = (`${author_name} sent a sticker`.length <= 32) ? `${author_name} sent a sticker` : author_name;
-				let hook_avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`;
-				let hook = await message.channel.createWebhook(hook_name, hook_avatar);
+			if(message.channel.type === 'text' && message.channel.guild.me.hasPermission('MANAGE_WEBHOOKS')){	
+				let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`;
+				let hook = await message.channel.createWebhook(author_name, avatar);
 				await hook.send(message_options);
 				return hook.delete();
 			}
