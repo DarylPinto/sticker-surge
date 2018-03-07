@@ -55,6 +55,7 @@ client.on('roleUpdate', (oldRole, newRole) => {
 
 //Allow user to post sticker by editing a message incase of a typo
 client.on('messageUpdate', (oldMessage, newMessage) => {
+	if(newMessage.author.bot) return false;
 	if(/^(:|-)[a-zA-Zа-яёА-ЯЁ0-9-]+:?$/.test(newMessage.content.trim())) sendSticker(newMessage, bot_auth);
 });
 
@@ -74,6 +75,9 @@ const commands = {
 
 //Listen for posting stickers or using commands
 client.on('message', message => {
+
+	//Ignore messages from bots
+	if(message.author.bot) return false;
 
 	////////////////
 	//Send sticker//
@@ -119,9 +123,6 @@ client.on('message', message => {
 	//Private messages
 	else if(message.channel.type == 'dm'){
 
-		//Stop immediately if message was sent by this bot and not user
-		if(message.author.id == client.user.id) return false;
-
 		rp({uri: `${covert.app_url}/api/users/${message.author.id}`, json: true})
 		.then(user => {	
 
@@ -130,7 +131,7 @@ client.on('message', message => {
 			else if(first_word.endsWith('deletesticker')) commands.deletesticker(message, bot_auth)
 			else if(first_word.endsWith('help')) commands.help(message)
 			else{
-				message.channel.send('Unrecognized command. Here are a list of commands:');
+				message.channel.send('Unrecognized command. Here is a list of commands:');
 				commands.help(message);	
 			}
 
@@ -143,7 +144,7 @@ client.on('message', message => {
 			if(!err.message.includes('User not found')) return false;
 
 			initUser(message.author, bot_auth); //note: this is async
-			message.channel.send('Hello! Here are a list of commands:');
+			message.channel.send('Hello! Here is a list of commands:');
 			commands.help(message);
 
 		});

@@ -1,4 +1,4 @@
-const DBL = require("dblapi.js");
+const DBL = require('dblapi.js');
 const covert = require('../../covert.js');
 
 //Update guild count on Discord Bot List
