@@ -16,19 +16,27 @@ const deactivateGuild = require('./events/deactivate-guild.js');
 const updateGuildInfo = require('./events/update-guild-info.js');
 const initUser = require('./events/init-user.js');
 const updateUserInfo = require('./events/update-user-info.js');
+const updateDblStats = require('./events/update-dbl-stats.js');
 
 
 client.on('ready', () => {
 	client.user.setGame('stickersfordiscord.com');
 	client.guilds.forEach(g => updateGuildInfo(g, bot_auth));
+	updateDblStats(client);
 	console.log('Stickers for Discord bot is online!');
 });
 
-//Add guild to db for the first time
-client.on('guildCreate', guild => initGuild(guild, bot_auth));
+//Add guild to db for the first time, update Discord Bot List guild count
+client.on('guildCreate', guild => {
+	initGuild(guild, bot_auth);
+	updateDblStats(client);
+});
 
-//Set isActive flag to false in db when bot leaves guild
-client.on('guildDelete', guild => deactivateGuild(guild, bot_auth));
+//Set isActive flag to false in db when bot leaves guild, update Discord Bot List guild count
+client.on('guildDelete', guild => {
+	deactivateGuild(guild, bot_auth);
+	updateDblStats(client);
+});
 
 //Update guild info (specifically guild name/icon) when a guild is updated
 client.on('guildUpdate', (oldGuild, newGuild) => {
