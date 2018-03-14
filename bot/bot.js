@@ -90,14 +90,16 @@ client.on('message', message => {
 	////////////
 	//Commands//
 	////////////
-	let message_words = message.content.toLowerCase().trim().split(/\s+/);
+	let message_content = message.content.toLowerCase().trim();
+	let message_words = message_content.split(/\s+/);
 	let first_word = message_words[0];
+	let second_word = message_words.length > 1 ? message_words[1] : null;
 	let message_has_command = Object.keys(commands).some(command => {
-		return first_word.endsWith(command);
+		return first_word.endsWith(command) || first_word === `<@${client.user.id}>`;
 	});
 
 	//Guild messages
-	if(message.channel.type == 'text'){
+	if(message.channel.type === 'text'){
 
 		if(!message_has_command) return false; //Ensures the API isn't called on every message
 
@@ -108,28 +110,40 @@ client.on('message', message => {
 			let guild_manager_ids = guild.guildManagerIds;
 			let sticker_manager_role = guild.stickerManagerRole;
 
-			if(first_word === `${prefix}stickers`) commands.stickers(message)
-			else if(first_word === `${prefix}createsticker`) commands.createsticker(message, bot_auth, prefix, sticker_manager_role)
-			else if(first_word === `${prefix}deletesticker`) commands.deletesticker(message, bot_auth, prefix, sticker_manager_role)
-			else if(first_word === `${prefix}setprefix`) commands.setprefix(message, bot_auth, prefix)
-			else if(first_word === `${prefix}setrole`) commands.setrole(message, bot_auth, prefix)	
-			//else if(first_word === `${prefix}info`) commands.info(message, prefix, contentRole, managerRole, guild)
-			else if(first_word === `${prefix}help`) commands.help(message, prefix, sticker_manager_role, guild_manager_ids)
+			const usedGuildCommand = command => {
+				if(first_word === `${prefix}${command}`) return true;
+				else if(first_word === `<@${client.user.id}>` && second_word === command) return true;
+				else return false;
+			}
+
+			if(usedGuildCommand('stickers')) commands.stickers(message)
+			else if(usedGuildCommand('createsticker')) commands.createsticker(message, bot_auth, prefix, sticker_manager_role)
+			else if(usedGuildCommand('deletesticker')) commands.deletesticker(message, bot_auth, prefix, sticker_manager_role)
+			else if(usedGuildCommand('setprefix')) commands.setprefix(message, bot_auth, prefix)
+			else if(usedGuildCommand('setrole')) commands.setrole(message, bot_auth, prefix)	
+			//else if(usedGuildCommand('info')) commands.info(message, prefix, contentRole, managerRole, guild)
+			else if(usedGuildCommand('help')) commands.help(message, prefix, sticker_manager_role, guild_manager_ids)
 
 		});
 
 	}
 
 	//Private messages
-	else if(message.channel.type == 'dm'){
+	else if(message.channel.type === 'dm'){
 
 		rp({uri: `${covert.app_url}/api/users/${message.author.id}`, json: true})
-		.then(user => {	
+		.then(user => {
 
-			if(first_word.endsWith('stickers')) commands.stickers(message)
-			else if(first_word.endsWith('createsticker')) commands.createsticker(message, bot_auth)
-			else if(first_word.endsWith('deletesticker')) commands.deletesticker(message, bot_auth)
-			else if(first_word.endsWith('help')) commands.help(message)
+			const usedDmCommand = command => {
+				if(first_word.endsWith(command)) return true;
+				else if(first_word === `<@${client.user.id}>` && second_word === command) return true;
+				else return false;
+			}
+
+			if(usedDmCommand('stickers')) commands.stickers(message)
+			else if(usedDmCommand('createsticker')) commands.createsticker(message, bot_auth)
+			else if(usedDmCommand('deletesticker')) commands.deletesticker(message, bot_auth)
+			else if(usedDmCommand('help')) commands.help(message)
 			else{
 				message.channel.send('Unrecognized command. Here is a list of commands:');
 				commands.help(message);	
