@@ -12,7 +12,7 @@ module.exports = function(message, bot_auth){
 	if(is_guild_message && message.member.nickname) author_name = message.member.nickname;
 
 	async function useSticker(sticker){
-		if(message.channel.type === 'text') message.delete();
+		if(message.channel.type === 'text' && message.channel.guild.me.hasPermission('MANAGE_MESSAGES')) message.delete();
 
 		let message_options = {
 			files: [{
@@ -25,7 +25,7 @@ module.exports = function(message, bot_auth){
 
 			//Webhook style sticker
 			if(message.channel.type === 'text' && message.channel.guild.me.hasPermission('MANAGE_WEBHOOKS')){	
-				let avatar = `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}.png`;
+				let avatar = message.author.displayAvatarURL;
 				let hook = await message.channel.createWebhook(author_name, avatar);
 				await hook.send(message_options);
 				return hook.delete();
