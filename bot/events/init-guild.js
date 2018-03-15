@@ -7,7 +7,7 @@ module.exports = function(guild, bot_auth){
 	
 	const sendWelcomeMessage = prefix => {
 		let escaped_prefix = prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
-		messageDefaultChannel(guild, `This server can now use stickers! Type **${escaped_prefix}help** to get started.`);	
+		messageDefaultChannel(guild, `This server can now use stickers! Type **${escaped_prefix}commands** to get started.`);	
 	}
 
 	rp({

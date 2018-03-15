@@ -70,6 +70,7 @@ const commands = {
 	//'removestickerpack': require('./commands/remove-stickerpack.js'),
 	'setprefix': require('./commands/set-command-prefix.js'),
 	'setrole': require('./commands/set-sticker-manager-role.js'),
+	'commands': require('./commands/commands.js'),
 	'help': require('./commands/help.js')
 }
 
@@ -109,20 +110,21 @@ client.on('message', message => {
 			let prefix = guild.commandPrefix;
 			let guild_manager_ids = guild.guildManagerIds;
 			let sticker_manager_role = guild.stickerManagerRole;
+			let sticker_amount = guild.customStickers.length;
 
 			const usedGuildCommand = command => {
 				if(first_word === `${prefix}${command}`) return true;
 				else if(first_word === `<@${client.user.id}>` && second_word === command) return true;
 				else return false;
-			}
+			}	
 
 			if(usedGuildCommand('stickers')) commands.stickers(message)
 			else if(usedGuildCommand('createsticker')) commands.createsticker(message, bot_auth, prefix, sticker_manager_role)
 			else if(usedGuildCommand('deletesticker')) commands.deletesticker(message, bot_auth, prefix, sticker_manager_role)
 			else if(usedGuildCommand('setprefix')) commands.setprefix(message, bot_auth, prefix)
-			else if(usedGuildCommand('setrole')) commands.setrole(message, bot_auth, prefix)	
-			//else if(usedGuildCommand('info')) commands.info(message, prefix, contentRole, managerRole, guild)
-			else if(usedGuildCommand('help')) commands.help(message, prefix, sticker_manager_role, guild_manager_ids)
+			else if(usedGuildCommand('setrole')) commands.setrole(message, bot_auth, prefix)		
+			else if(usedGuildCommand('commands')) commands.commands(message, prefix, sticker_manager_role, guild_manager_ids)
+			else if(usedGuildCommand('help')) commands.help(message, prefix, sticker_amount, sticker_manager_role, guild_manager_ids)
 
 		});
 
@@ -143,10 +145,11 @@ client.on('message', message => {
 			if(usedDmCommand('stickers')) commands.stickers(message)
 			else if(usedDmCommand('createsticker')) commands.createsticker(message, bot_auth)
 			else if(usedDmCommand('deletesticker')) commands.deletesticker(message, bot_auth)
+			else if(usedDmCommand('commands')) commands.commands(message)
 			else if(usedDmCommand('help')) commands.help(message)
 			else{
 				message.channel.send('Unrecognized command. Here is a list of commands:');
-				commands.help(message);	
+				commands.commands(message);	
 			}
 
 			updateUserInfo(message.author, bot_auth); //note: this is async
@@ -159,7 +162,7 @@ client.on('message', message => {
 
 			initUser(message.author, bot_auth); //note: this is async
 			message.channel.send('Hello! Here is a list of commands:');
-			commands.help(message);
+			commands.commands(message);
 
 		});
 
