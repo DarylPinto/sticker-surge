@@ -2,45 +2,98 @@ const rp = require('request-promise');
 
 module.exports = function(message, prefix, sticker_manager_role, guild_manager_ids){
 
+	const embed_color = 16540258;
+
 	if(message.channel.type === 'text'){
 
 		let is_sticker_manager = message.member.roles.map(r => r.name.toLowerCase()).includes(sticker_manager_role.toLowerCase());
 		let is_guild_manager = guild_manager_ids.includes(message.author.id);
 
-		let commandlist = prefix+'stickers      : View this server\'s stickers.\n';
+		const help_message = (is_guild_manager) ? "Here is a list of commands" : "Here is a list of commands you have permission to use:";
+
+		let command_list = {
+			color: embed_color,
+			fields: [
+				{
+					name: `${prefix}stickers`,
+					value: 'View this server\'s stickers.'
+				}
+			]
+		}
 
 		if(is_sticker_manager || is_guild_manager){
-			commandlist  += prefix+'createSticker : Create a custom sticker for anyone on this server to use.\n';	
+			command_list.fields.push({
+				name: `${prefix}createSticker`,
+				value: 'Create a custom sticker for anyone on this server to use.'
+			});
 		}
 
 		//delete sticker is listed twice, Note the difference in verbiage ("one of your stickers" for regular users and
 		//"a sticker" for guild managers - implying they can delete any sticker)
 		if(!is_guild_manager){
-			commandlist  += prefix+'deleteSticker : Delete a custom sticker that you\'ve created for this server.\n';
+			command_list.fields.push({
+				name: `${prefix}deleteSticker`,
+				value: 'Delete a custom sticker that you\'ve created for this server.'
+			});
 		}
 
 		if(is_guild_manager){
-			commandlist  += prefix+'deleteSticker : Delete a custom sticker from this server.\n';
-			commandlist  += prefix+'setPrefix     : Set the prefix used to trigger these commands.\n';
-			commandlist  += prefix+'setRole       : Set the role required to create stickers on this server.\n';
+			command_list.fields.push(...[
+				{
+					name: `${prefix}deleteSticker`,
+					value: 'Delete a custom sticker from this server.'
+				},
+				{
+					name: `${prefix}setPrefix`,
+					value: 'Set the prefix used to invoke these commands.'
+				},
+				{
+					name: `${prefix}setRole`,
+					value: 'Set the role required to create stickers on this server.'
+				}
+			]);	
 		}
 
-		commandlist    += prefix+'commands      : List commands.\n';
-		commandlist    += prefix+'help          : Get help and general info.';
+		command_list.fields.push(...[
+			{
+				name: `${prefix}commands`,
+				value: 'List commands.'
+			},
+			{
+				name: `${prefix}help`,
+				value: 'Get help and general info.'
+			}
+		]);	
 
-		message.channel.send(commandlist, {reply: message.author.id, code: true});
+		message.channel.send(help_message, {reply: message.author.id, embed: command_list});
 
 	}else{
 		
-		let commandlist = `
-stickers      : View your personal stickers.
-createSticker : Create a custom sticker to use on any server with Stickers for Discord.
-deleteSticker : Delete one of your custom stickers.
-commands      : List commands.
-help          : Get help and general info.
-`;
-
-		message.channel.send(commandlist, {reply: message.author.id, code: true});
+		message.channel.send({embed: {
+			color: embed_color,
+			fields: [
+				{
+					name: "stickers",
+					value: "View your personal stickers."
+				},
+				{
+					name: "createSticker",
+					value: "Create a custom sticker to use on any server with Stickers for Discord."
+				},
+				{
+					name: "deleteSticker",
+					value: "Delete one of your custom stickers."
+				},
+				{
+					name: "commands",
+					value: "List commands."
+				},
+				{
+					name: "help",
+					value: "Get help and general info"
+				}
+			]
+		}});
 
 	}
 	

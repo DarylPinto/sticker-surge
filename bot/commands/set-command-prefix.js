@@ -13,7 +13,7 @@ module.exports = function(message, bot_auth, prefix){
 	let escaped_prefix = prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
 
 	if(message_words.length < 2){
-		message.channel.send(`Invalid Syntax. Use **${escaped_prefix}setPrefix [NEW PREFIX]**.`);
+		message.channel.send(`Invalid Syntax. Use **${escaped_prefix}setPrefix [NEW PREFIX]**`);
 		return;
 	}
 
@@ -34,7 +34,7 @@ module.exports = function(message, bot_auth, prefix){
 		json: true
 	})
 	.then(res => {
-		message.channel.send(`Stickers for Discord commands now begin with **${escaped_new_prefix}**\nType **${escaped_new_prefix}help** for a list of commands.`);
+		message.channel.send(`Stickers for Discord commands now begin with **${escaped_new_prefix}**\nType **${escaped_new_prefix}commands** for a list of commands.`);
 	})
 	.catch(err => {
 		
