@@ -8,6 +8,9 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 	let invalid_syntax_message;
 	let uri;
 
+	//Remove first word from message_words if command was invoked with an @ mention
+	if(/<@\d+>/.test(message_words[0]))	message_words.shift();
+
 	//change request uri and prefix if message is a private message
 	if(message.channel.type === 'dm'){
 		uri = `${covert.app_url}/api/users/${message.author.id}/stickers`;
