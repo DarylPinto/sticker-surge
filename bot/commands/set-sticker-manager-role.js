@@ -31,6 +31,7 @@ module.exports = function(message, bot_auth, prefix){
 	}else{
 		let role = guild.roles.array().find(r => r.name.toLowerCase() === new_sticker_manager_role_name.toLowerCase());
 		new_sticker_manager_role = role.id;
+		new_sticker_manager_role_name = role.name;
 	}
 
 	//Escape role name to avoid issues with Discord formatting

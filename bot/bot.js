@@ -53,6 +53,11 @@ client.on('roleUpdate', (oldRole, newRole) => {
 	updateGuildInfo(newRole.guild, bot_auth);
 });
 
+//Update guild info (specifically sticker manager role) when a role is deleted
+client.on('roleDelete', role => {
+	updateGuildInfo(role.guild, bot_auth);
+});
+
 //Allow user to post sticker by editing a message incase of a typo
 client.on('messageUpdate', (oldMessage, newMessage) => {
 	if(newMessage.author.bot) return false;
