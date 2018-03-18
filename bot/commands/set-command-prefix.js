@@ -10,7 +10,7 @@ module.exports = function(message, bot_auth, prefix){
 	if(/<@\d+>/.test(message_words[0]))	message_words.shift();
 	
 	//Escape prefix to avoid issues with Discord formatting
-	let escaped_prefix = prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
+	let escaped_prefix = prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
 
 	if(message_words.length < 2){
 		message.channel.send(`Invalid Syntax. Use **${escaped_prefix}setPrefix [NEW PREFIX]**`);
@@ -19,7 +19,7 @@ module.exports = function(message, bot_auth, prefix){
 
 	let new_prefix = message_words[1];
 	//Escape new prefix to avoid issues with Discord formatting
-	let escaped_new_prefix = new_prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
+	let escaped_new_prefix = new_prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
 
 	return rp({
 		method: 'PATCH',

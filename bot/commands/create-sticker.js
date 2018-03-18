@@ -20,7 +20,7 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 	}
 
 	//Escape prefix to avoid issues with Discord formatting
-	let escaped_prefix = prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
+	let escaped_prefix = prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
 
 	//Prepare invalid syntax message (with or without syntax depending on if it's a private message or not)
 	invalid_syntax_message = `Invalid Syntax. Use **${escaped_prefix}createSticker [STICKER NAME] [IMAGE URL]** or **${escaped_prefix}createSticker [STICKER NAME]** with an image attached.`;
@@ -71,7 +71,10 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 		}
 
 		else if(err.message.includes('Unauthorized')){
-			message.channel.send(`You must have the role \`${sticker_manager_role}\` to create stickers for everyone on this server.\nIf you want to create stickers just for yourself, private message this bot.`);
+			let role = message.channel.guild.roles.find(r => r.id === sticker_manager_role);
+			sticker_manager_role_name = role.name.replace(/[^a-zA-Zа-яёА-ЯЁ0-9\s]/g, '\\$&');
+
+			message.channel.send(`You must have the role **${sticker_manager_role_name}** to create stickers for everyone on this server.\nIf you want to create your own stickers (which will still be usable here), private message this bot.`);
 		}
 
 		else if(err.message.includes('Sticker name already in use by an emoji')){

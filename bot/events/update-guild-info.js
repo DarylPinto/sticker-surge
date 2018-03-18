@@ -10,13 +10,12 @@ module.exports = function(guild, bot_auth){
 	.then(res => {
 
 		if(res.stickerManagerRole === '@everyone'){
-			sticker_manager_ids = [];
-			return;
+			sticker_manager_ids = [];	
+		}else{
+			sticker_manager_ids = guild.roles
+				.find(r => r.id === res.stickerManagerRole).members
+				.map(m => m.id);
 		}
-
-		sticker_manager_ids = guild.roles
-			.find(r => r.name.toLowerCase() === res.stickerManagerRole.toLowerCase()).members
-			.map(m => m.id);
 
 	})
 	.then(() => {

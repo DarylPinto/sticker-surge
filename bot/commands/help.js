@@ -13,6 +13,16 @@ module.exports = function(message, prefix, sticker_amount, sticker_manager_role,
 
 	if(message.channel.type === 'text'){
 
+		const guild = message.channel.guild;
+		let sticker_manager_role_name;
+
+		if(sticker_manager_role === '@everyone'){
+			sticker_manager_role_name = 'everyone';
+		}else{
+			let role = guild.roles.find(r => r.id === sticker_manager_role);
+			sticker_manager_role_name = role.name.replace(/[^a-zA-Zа-яёА-ЯЁ0-9\s]/g, '\\$&');
+		}
+
 		message.channel.send({embed: {
 			color: embed_color,
 			fields: [
@@ -27,7 +37,7 @@ module.exports = function(message, prefix, sticker_amount, sticker_manager_role,
 					name: message.guild.name,
 					value: `
 						Command Prefix: ${escaped_prefix}
-						Required Role: ${sticker_manager_role === '@everyone' ? 'everyone' : sticker_manager_role}
+						Required Role: ${sticker_manager_role_name}
 						Custom Stickers: ${sticker_amount}
 						[View Stickers](https://stickersfordiscord.com/server/${message.guild.id})
 						.

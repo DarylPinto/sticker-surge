@@ -8,6 +8,7 @@ module.exports = function(message, prefix, sticker_manager_role, guild_manager_i
 
 		let is_sticker_manager = message.member.roles.map(r => r.name.toLowerCase()).includes(sticker_manager_role.toLowerCase());
 		let is_guild_manager = guild_manager_ids.includes(message.author.id);
+		const escaped_prefix = prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
 
 		const help_message = (is_guild_manager) ? "Here is a list of commands" : "Here is a list of commands you have permission to use:";
 
@@ -15,7 +16,7 @@ module.exports = function(message, prefix, sticker_manager_role, guild_manager_i
 			color: embed_color,
 			fields: [
 				{
-					name: `${prefix}stickers`,
+					name: `${escaped_prefix}stickers`,
 					value: 'View this server\'s stickers.'
 				}
 			]
@@ -23,7 +24,7 @@ module.exports = function(message, prefix, sticker_manager_role, guild_manager_i
 
 		if(is_sticker_manager || is_guild_manager){
 			command_list.fields.push({
-				name: `${prefix}createSticker`,
+				name: `${escaped_prefix}createSticker`,
 				value: 'Create a custom sticker for anyone on this server to use.'
 			});
 		}
@@ -32,7 +33,7 @@ module.exports = function(message, prefix, sticker_manager_role, guild_manager_i
 		//"a sticker" for guild managers - implying they can delete any sticker)
 		if(!is_guild_manager){
 			command_list.fields.push({
-				name: `${prefix}deleteSticker`,
+				name: `${escaped_prefix}deleteSticker`,
 				value: 'Delete a custom sticker that you\'ve created for this server.'
 			});
 		}
@@ -40,15 +41,15 @@ module.exports = function(message, prefix, sticker_manager_role, guild_manager_i
 		if(is_guild_manager){
 			command_list.fields.push(...[
 				{
-					name: `${prefix}deleteSticker`,
+					name: `${escaped_prefix}deleteSticker`,
 					value: 'Delete a custom sticker from this server.'
 				},
 				{
-					name: `${prefix}setPrefix`,
+					name: `${escaped_prefix}setPrefix`,
 					value: 'Set the prefix used to invoke these commands.'
 				},
 				{
-					name: `${prefix}setRole`,
+					name: `${escaped_prefix}setRole`,
 					value: 'Set the role required to create stickers on this server.'
 				}
 			]);	
@@ -56,11 +57,11 @@ module.exports = function(message, prefix, sticker_manager_role, guild_manager_i
 
 		command_list.fields.push(...[
 			{
-				name: `${prefix}commands`,
+				name: `${escaped_prefix}commands`,
 				value: 'List commands.'
 			},
 			{
-				name: `${prefix}help`,
+				name: `${escaped_prefix}help`,
 				value: 'Get help and general info.'
 			}
 		]);	

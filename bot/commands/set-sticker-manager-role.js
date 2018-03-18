@@ -11,23 +11,30 @@ module.exports = function(message, bot_auth, prefix){
 	if(/<@\d+>/.test(message_words[0]))	message_words.shift();
 
 	//Escape prefix to avoid issues with Discord formatting
-	let escaped_prefix = prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
+	let escaped_prefix = prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
 
 	if(message_words.length < 2){
-		message.channel.send(`Invalid Syntax. Use **${escaped_prefix}setRole [NEW ROLE NAME]**`);
+		message.channel.send(`Invalid Syntax. Use **${escaped_prefix}setRole [ROLE NAME]**`);
 		return;
 	}
 
-	let new_sticker_manager_role = message_words[1];
-	if(new_sticker_manager_role === 'everyone') new_sticker_manager_role = '@everyone';
-	//Escape prefix to avoid issues with Discord formatting
-	let escaped_new_sticker_manager_role = new_sticker_manager_role.replace(/[^a-zA-Z0-9]/g, '\\$&');
+	let new_sticker_manager_role;
+	let new_sticker_manager_role_name = message_words.slice(1).join(" ");
+	if(new_sticker_manager_role_name === 'everyone') new_sticker_manager_role_name = '@everyone';	
 
-	if(!guild.roles.array().map(r => r.name.toLowerCase()).includes(new_sticker_manager_role.toLowerCase())){
+	if(!guild.roles.array().map(r => r.name.toLowerCase()).includes(new_sticker_manager_role_name.toLowerCase())){
 		message.channel.send('That role does not exist.');
 		return;
 	}
+	else if(new_sticker_manager_role_name === '@everyone'){
+		new_sticker_manager_role = '@everyone';
+	}else{
+		let role = guild.roles.array().find(r => r.name.toLowerCase() === new_sticker_manager_role_name.toLowerCase());
+		new_sticker_manager_role = role.id;
+	}
 
+	//Escape role name to avoid issues with Discord formatting
+	let escaped_new_sticker_manager_role_name = new_sticker_manager_role_name.replace(/[^a-zA-Zа-яёА-ЯЁ0-9\s]/g, '\\$&');
 
 	return rp({
 		method: 'PATCH',
@@ -43,7 +50,7 @@ module.exports = function(message, bot_auth, prefix){
 	})
 	.then(res => {
 		if(res.stickerManagerRole === '@everyone') message.channel.send(`Everyone can now create stickers on this server.`)
-		else message.channel.send(`**${escaped_new_sticker_manager_role}** is now the role required to create stickers on this server.`)
+		else message.channel.send(`**${escaped_new_sticker_manager_role_name}** is now the role required to create stickers on this server.`)
 
 		//When sticker manager role is updated with setrole, call updateGuildInfo to update ids
 		updateGuildInfo(guild, bot_auth);

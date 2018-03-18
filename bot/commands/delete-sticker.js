@@ -10,7 +10,7 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 
 	if(message.channel.type === 'dm') prefix = '';
 	//Escape prefix to avoid issues with Discord formatting
-	let escaped_prefix = prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
+	let escaped_prefix = prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
 
 	if(message_words.length < 2){
 		message.channel.send(`Invalid Syntax. Use **${escaped_prefix}deleteSticker [STICKER NAME]**.`);
