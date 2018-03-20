@@ -20,7 +20,7 @@ const guildSchema = Schema({
 	recentStickers: [String],
 	stickerPacks: [String],
 	guildManagerIds: [String],
-	stickerManagerRole: {type: String, default: '@everyone', maxlength: 30},
+	stickerManagerRole: {type: String, required: true, default: '@everyone'},
 	stickerManagerIds: [String],
 	isActive: {type: Boolean, default: true}
 });
