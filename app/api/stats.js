@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Guild = require('./models/guild-model.js');
 const User = require('./models/user-model.js');
 
+//Live stats count
 router.get('/', async (req, res) => {
 
 	try{
@@ -35,6 +36,33 @@ router.get('/', async (req, res) => {
 		console.error("Error fetching stats: " + err.message);
 		res.status(500).send('Internal server error');
 	}
+
+});
+
+//25 Most Recently Created Guild/User Stickers
+router.get('/recent-stickers', async (req, res) => {
+
+	let guild_stickers = await Guild.aggregate([
+		{$unwind: "$customStickers"},
+		{$sort: {"customStickers.createdAt": -1}},
+		{$group: {_id: null, stickers: {$push: "$customStickers"}}},
+		{$project: {_id: null, stickers: {$slice: ["$stickers", 25]}}}
+	]);
+
+	let user_stickers = await User.aggregate([
+		{$unwind: "$customStickers"},
+		{$sort: {"customStickers.createdAt": -1}},
+		{$group: {_id: null, stickers: {$push: "$customStickers"}}},
+		{$project: {_id: null, stickers: {$slice: ["$stickers", 25]}}}
+	]);
+
+	guild_stickers = guild_stickers[0] ? guild_stickers[0].stickers : [];
+	user_stickers = user_stickers[0] ? user_stickers[0].stickers : [];
+
+	guild_stickers.forEach(s => delete s._id);
+	user_stickers.forEach(s => delete s._id);
+
+	return res.json({guild_stickers, user_stickers});
 
 });
 
