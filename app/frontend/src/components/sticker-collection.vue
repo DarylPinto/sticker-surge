@@ -88,10 +88,9 @@ module.exports = {
 		let _this = this;
 		new Clipboard('.sticker');
 
-		//If editable, allow dragging over page to open sticker creation modal
-		if(!this.isEditable) return;
-		this.$el.addEventListener('dragenter', function(event){
-			_this.$emit('openStickerCreationModal');
+		//If editable, allow dragging over page to open sticker creation modal	
+		this.$el.addEventListener('dragenter', function(event){	
+			if(_this.isEditable) _this.$emit('openStickerCreationModal');
 		});
 	},
 
