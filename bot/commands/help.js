@@ -71,9 +71,16 @@ module.exports = function(message, prefix, sticker_amount, sticker_manager_role,
 					`.replace(/\t/g, '')
 				},
 				{
+					name: message.author.username,
+					value: `
+						Custom Stickers: ${sticker_amount}
+						[View Stickers](https://stickersfordiscord.com/user/${message.author.id})
+						.
+					`.replace(/\t/g, '')
+				},
+				{
 					name: "Useful Links",
 					value: `
-						[View Your Personal Stickers](https://stickersfordiscord.com/user/${message.author.id})
 						[Join our Discord](${discord_link})
 						[Add bot to a server](${add_bot_link})
 						[Enjoy the bot? Upvote it on DiscordBotList <3](${bot_vote_link})

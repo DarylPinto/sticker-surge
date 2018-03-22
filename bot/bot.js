@@ -143,6 +143,8 @@ client.on('message', message => {
 		rp({uri: `${covert.app_url}/api/users/${message.author.id}`, json: true})
 		.then(user => {
 
+			let sticker_amount = user.customStickers.length;
+
 			const usedDmCommand = command => {
 				if(first_word.endsWith(command)) return true;
 				else if(first_word === `<@${client.user.id}>` && second_word === command) return true;
@@ -153,7 +155,7 @@ client.on('message', message => {
 			else if(usedDmCommand('createsticker')) commands.createsticker(message, bot_auth)
 			else if(usedDmCommand('deletesticker')) commands.deletesticker(message, bot_auth)
 			else if(usedDmCommand('commands')) commands.commands(message)
-			else if(usedDmCommand('help')) commands.help(message)
+			else if(usedDmCommand('help')) commands.help(message, null, sticker_amount)
 			else{
 				message.channel.send('Unrecognized command. Here is a list of commands:');
 				commands.commands(message);	
