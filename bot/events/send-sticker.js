@@ -4,7 +4,7 @@ const covert = require('../../covert.js');
 
 module.exports = function(message, bot_auth){
 
-	let command = message.content.toLowerCase().replace(/:/g, '');
+	let command = message.content.toLowerCase().replace(/(:|;)/g, '');
 	let user = message.author;
 	let is_guild_message = message.channel.type === 'text';
 	let author_name = message.author.username;

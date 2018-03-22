@@ -18,7 +18,6 @@ const initUser = require('./events/init-user.js');
 const updateUserInfo = require('./events/update-user-info.js');
 const updateDblStats = require('./events/update-dbl-stats.js');
 
-
 client.on('ready', () => {
 	client.user.setGame('stickersfordiscord.com');
 	client.guilds.forEach(g => updateGuildInfo(g, bot_auth));
@@ -58,12 +57,6 @@ client.on('roleDelete', role => {
 	updateGuildInfo(role.guild, bot_auth);
 });
 
-//Allow user to post sticker by editing a message incase of a typo
-client.on('messageUpdate', (oldMessage, newMessage) => {
-	if(newMessage.author.bot) return false;
-	if(/^(:|-)[a-zA-Zа-яёА-ЯЁ0-9-]+:?$/.test(newMessage.content.trim())) sendSticker(newMessage, bot_auth);
-});
-
 ////////////////
 //Bot commands//
 ////////////////
@@ -79,6 +72,15 @@ const commands = {
 	'help': require('./commands/help.js')
 }
 
+//Sticker detection regex
+const sticker_regex = () => /^((:|;)[a-zA-Zа-яёА-ЯЁ0-9-]+(:|;)|-[a-zA-Zа-яёА-ЯЁ0-9-]+)$/g;
+
+//Allow user to post sticker by editing a message incase of a typo
+client.on('messageUpdate', (oldMessage, newMessage) => {
+	if(newMessage.author.bot) return false;
+	if(sticker_regex().test(newMessage.content.trim())) sendSticker(newMessage, bot_auth);
+});
+
 //Listen for posting stickers or using commands
 client.on('message', message => {
 
@@ -88,7 +90,7 @@ client.on('message', message => {
 	////////////////
 	//Send sticker//
 	////////////////
-	if( /^(:|-)[a-zA-Zа-яёА-ЯЁ0-9-]+:?$/.test(message.content.trim()) ){
+	if(sticker_regex().test(message.content.trim())){
 		sendSticker(message, bot_auth);
 		return false;
 	}
