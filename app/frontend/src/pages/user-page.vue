@@ -15,9 +15,6 @@ module.exports = {
 			username: '',
 			avatarURL: '',
 			customStickers: [],
-			stickerName: '',
-			stickerURL: '',
-			stickerCreationError: '',
 			pageLoaded: false,
 			userId: this.$cookie.get('id') || null
 		}
@@ -69,6 +66,10 @@ module.exports = {
 
 	<header-bar :userId="userId"></header-bar>
 	
+	<div v-if="!pageLoaded" class="loading-page">
+		<img src="/images/loading-spin.svg">
+	</div>
+
 	<div class="container user-page" :class="{transparent: !pageLoaded}">
 		
 		<header>

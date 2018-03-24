@@ -99,7 +99,7 @@ module.exports = {
 		
 		<h1>Your Servers</h1>
 
-		<div v-if="!guildsLoaded" class="loading-guilds">
+		<div v-if="!guildsLoaded" class="loading-page">
 			<img src="/images/loading-spin.svg">
 		</div>
 
@@ -167,12 +167,6 @@ module.exports = {
 				margin-top: 25px
 				height: 128px
 				width: 128px
-
-		.loading-guilds img
-			display: block
-			width: 150px
-			margin: 0 auto
-			margin-top: 90px
 
 		.no-guilds-alert
 			text-align: center

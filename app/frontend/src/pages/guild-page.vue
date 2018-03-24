@@ -25,9 +25,6 @@ module.exports = {
 			guildManagerIds: [],
 			stickerManagerIds: [],
 			stickerManagerRole: '',
-			stickerName: '',
-			stickerURL: '',
-			stickerCreationError: '',
 			pageLoaded: false,
 			userId: this.$cookie.get('id') || null,
 			userGuilds: JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || []
@@ -98,6 +95,10 @@ module.exports = {
 
 	<header-bar :userId="userId"></header-bar>
 	
+	<div v-if="!pageLoaded" class="loading-page">
+		<img src="/images/loading-spin.svg">
+	</div>
+
 	<div class="container guild-page" :class="{transparent: !pageLoaded}">
 		
 		<header>
