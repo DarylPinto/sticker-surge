@@ -57,7 +57,6 @@ var css = `
 
 // Modal functions
 module.exports = {
-	hasInitialized: false,
 	init: function(closeCB){
 
 		var _this = this;
@@ -71,8 +70,7 @@ module.exports = {
 		}
 
 		//Prevent script from being initialized more than once
-		if(this.hasInitialized || qs('#modal-bg')) return false;
-		this.hasInitialized = true;
+		if(qs('#modal-bg')) return false;
 
 		style.textContent = css;
 		d.head.appendChild(style);

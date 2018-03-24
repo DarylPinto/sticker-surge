@@ -90,8 +90,11 @@ module.exports = {
 		//Normally vue handles this, but since element
 		//has been moved around the dom, it must be done manually
 		this.$parent.$on('destroyed', () => {
-			let el = this.$el;
-			el.parentNode.removeChild(el);
+			const modal = this.$el;
+			const modal_bg = modal.parentNode;
+
+			modal.parentNode.removeChild(modal);
+			modal_bg.parentNode.removeChild(modal_bg);
 		});
 	}
 }
