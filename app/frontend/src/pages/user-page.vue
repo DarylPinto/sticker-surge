@@ -40,6 +40,16 @@ module.exports = {
 				this.avatarURL = res.data.avatar ? `https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png` : null;
 				document.title = `${res.data.username} - Stickers for Discord`;	
 				this.pageLoaded = true;
+			}).then(() => {
+
+				//If user is logged in and on their own page, update their avatar
+				if(!this.isUsersPage) return;
+				
+				axios.get('/api/set-avatar')
+				.then(res => {
+					if(res.data.avatar_updated) this.avatarURL = `https://cdn.discordapp.com/avatars/${this.userId}/${res.data.avatar}.png`;
+				});
+
 			}).catch(err => {
 				if(err.response.status === 404) window.location.replace('/');
 			});
