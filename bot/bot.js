@@ -117,7 +117,7 @@ client.on('message', message => {
 			let prefix = guild.commandPrefix;
 			let guild_manager_ids = guild.guildManagerIds;
 			let sticker_manager_role = guild.stickerManagerRole;
-			let sticker_amount = guild.customStickers.length;
+			let custom_stickers = guild.customStickers;
 
 			const usedGuildCommand = command => {
 				if(first_word === `${prefix}${command}`) return true;
@@ -130,8 +130,8 @@ client.on('message', message => {
 			else if(usedGuildCommand('deletesticker')) commands.deletesticker(message, bot_auth, prefix, sticker_manager_role)
 			else if(usedGuildCommand('setprefix')) commands.setprefix(message, bot_auth, prefix)
 			else if(usedGuildCommand('setrole')) commands.setrole(message, bot_auth, prefix)		
-			else if(usedGuildCommand('commands')) commands.commands(message, prefix, sticker_manager_role, guild_manager_ids)
-			else if(usedGuildCommand('help')) commands.help(message, prefix, sticker_amount, sticker_manager_role, guild_manager_ids)
+			else if(usedGuildCommand('commands')) commands.commands(message, prefix, custom_stickers, sticker_manager_role, guild_manager_ids)
+			else if(usedGuildCommand('help')) commands.help(message, prefix, custom_stickers, sticker_manager_role, guild_manager_ids)
 
 		});
 
@@ -143,7 +143,7 @@ client.on('message', message => {
 		rp({uri: `${covert.app_url}/api/users/${message.author.id}`, json: true})
 		.then(user => {
 
-			let sticker_amount = user.customStickers.length;
+			let custom_stickers = user.customStickers;
 
 			const usedDmCommand = command => {
 				if(first_word.endsWith(command)) return true;
@@ -155,7 +155,7 @@ client.on('message', message => {
 			else if(usedDmCommand('createsticker')) commands.createsticker(message, bot_auth)
 			else if(usedDmCommand('deletesticker')) commands.deletesticker(message, bot_auth)
 			else if(usedDmCommand('commands')) commands.commands(message)
-			else if(usedDmCommand('help')) commands.help(message, null, sticker_amount)
+			else if(usedDmCommand('help')) commands.help(message, null, custom_stickers)
 			else{
 				message.channel.send('Unrecognized command. Here is a list of commands:');
 				commands.commands(message);	

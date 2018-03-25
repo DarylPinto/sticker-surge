@@ -1,6 +1,6 @@
 const rp = require('request-promise');
 
-module.exports = function(message, prefix, sticker_amount, sticker_manager_role, guild_manager_ids){
+module.exports = function(message, prefix, custom_stickers, sticker_manager_role, guild_manager_ids){
 
 	const embed_color = 16540258;
 	const lib_version = "11.2.1";
@@ -9,11 +9,12 @@ module.exports = function(message, prefix, sticker_amount, sticker_manager_role,
 	const bot_vote_link = "https://discordbots.org/bot/224415693393625088/vote";
 
 	//Escape prefix to avoid issues with Discord formatting
-	const escaped_prefix = (prefix) ? prefix.replace(/[^a-zA-Z0-9]/g, '\\$&') : null;	
+	const escaped_prefix = (prefix) ? prefix.replace(/[^a-zA-Z0-9]/g, '\\$&') : null;
+	const sticker_amount = custom_stickers.length;
 
 	if(message.channel.type === 'text'){
 
-		const guild = message.channel.guild;
+		const guild = message.channel.guild;	
 		let sticker_manager_role_name;
 
 		if(sticker_manager_role === '@everyone'){

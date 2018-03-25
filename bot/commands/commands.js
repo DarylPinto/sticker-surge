@@ -1,14 +1,15 @@
 const rp = require('request-promise');
 
-module.exports = function(message, prefix, sticker_manager_role, guild_manager_ids){
+module.exports = function(message, prefix, custom_stickers, sticker_manager_role, guild_manager_ids){
 
 	const embed_color = 16540258;
 
 	if(message.channel.type === 'text'){
 
-		let is_sticker_manager = message.member.roles.map(r => r.name.toLowerCase()).includes(sticker_manager_role.toLowerCase());
+		let is_sticker_manager = message.member.roles.map(r => r.id).includes(sticker_manager_role);
 		let is_guild_manager = guild_manager_ids.includes(message.author.id);
 		const escaped_prefix = prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
+		const custom_sticker_creator_ids = custom_stickers.map(s => s.creatorId);
 
 		const help_message = (is_guild_manager) ? "Here is a list of commands" : "Here is a list of commands you have permission to use:";
 
@@ -31,10 +32,13 @@ module.exports = function(message, prefix, sticker_manager_role, guild_manager_i
 
 		//delete sticker is listed twice, Note the difference in verbiage ("one of your stickers" for regular users and
 		//"a sticker" for guild managers - implying they can delete any sticker)
-		if(!is_guild_manager){
+		if(
+			(!is_guild_manager && is_sticker_manager) ||
+			!is_guild_manager && custom_sticker_creator_ids.includes(message.author.id)
+		){
 			command_list.fields.push({
 				name: `${escaped_prefix}deleteSticker`,
-				value: 'Delete a custom sticker that you\'ve created for this server.'
+				value: 'Delete one of the custom stickers that you\'ve created for this server.'
 			});
 		}
 
