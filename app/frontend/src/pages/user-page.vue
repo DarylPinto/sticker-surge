@@ -42,12 +42,15 @@ module.exports = {
 				this.pageLoaded = true;
 			}).then(() => {
 
-				//If user is logged in and on their own page, update their avatar
+				//If user is logged in and on their own page, update their username + avatar
 				if(!this.isUsersPage) return;
 				
-				axios.get('/api/set-avatar')
+				axios.get('/api/update-user-info')
 				.then(res => {
-					if(res.data.avatar_updated) this.avatarURL = `https://cdn.discordapp.com/avatars/${this.userId}/${res.data.avatar}.png`;
+					if(!res.data.updated) return;
+					this.username = res.data.username;
+					this.avatarURL = `https://cdn.discordapp.com/avatars/${this.userId}/${res.data.avatar}.png`;
+					document.title = `${res.data.username} - Stickers for Discord`;
 				});
 
 			}).catch(err => {

@@ -5,7 +5,7 @@ const sessions = require('client-sessions');
 const path = require('path');
 const verifyUser = require('./middleware/verify-user.js')({ajax: false});
 const setGuildsCookie = require('./middleware/set-guilds-cookie.js');
-const setUserAvatar = require('./middleware/set-user-avatar.js');
+const setUserAvatar = require('./middleware/update-user-info.js');
 const covert = require('../covert.js');
 
 const app = express();
@@ -53,8 +53,12 @@ app.use('/api/stats', require('./api/stats.js'));
 app.get('/api/set-guilds', verifyUser, setGuildsCookie, (req, res) => {
 	res.send('Guilds cookie updated');
 });
-app.get('/api/set-avatar', verifyUser, setUserAvatar, (req, res) => {
-	res.send({avatar_updated: res.locals.updated, avatar: res.locals.avatar});
+app.get('/api/update-user-info', verifyUser, setUserAvatar, (req, res) => {
+	res.send({
+		updated: res.locals.updated,
+		username: res.locals.username,
+		avatar: res.locals.avatar
+	});
 });
 app.get('/api/invalidate-token', (req, res) => {
 	req.session.token = 'invalidated';
