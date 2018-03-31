@@ -6,7 +6,7 @@ module.exports = function(message, prefix, custom_stickers, sticker_manager_role
 
 	if(message.channel.type === 'text'){
 
-		let is_sticker_manager = message.member.roles.map(r => r.id).includes(sticker_manager_role);
+		let is_sticker_manager = message.member.roles.map(r => r.id).includes(sticker_manager_role) || sticker_manager_role === '@everyone';
 		let is_guild_manager = guild_manager_ids.includes(message.author.id);
 		const escaped_prefix = prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
 		const custom_sticker_creator_ids = custom_stickers.map(s => s.creatorId);
