@@ -38,14 +38,14 @@ router.get('/', async (req, res) =>{
 	let requestedPage = parseInt(req.query.page);
 	let skipAmount = 0;
 
-	if(!isNaN(requestedPage) && requestedPage != 0){	
+	if(!isNaN(requestedPage) && requestedPage !== 0){	
 		skipAmount = (parseInt(req.query.page) - 1) * packsPerPage;
 	}	
 
 	//Sort Type
 	let sortType;
 
-	if(req.query.sort === 'popular') sortType = '-installs';
+	if(req.query.sort === 'popular') sortType = '-subscribers';
 	else if(req.query.sort === 'oldest') sortType = 'createdAt';
 	else sortType = '-createdAt';
 
@@ -199,6 +199,25 @@ router.post('/:key/stickers/:stickername/uses', /*verifyBot,*/ async (req, res) 
 	pack.save();
 
 	return res.json(util.removeProps(sticker._doc, ['_id']));
+
+});
+
+/////////
+//PATCH//
+/////////
+
+router.patch('/:key/subscribers/', /*verifyUserAjax,*/ async (req, res) => {
+
+	if(!req.body.guilds || !req.body.user) return res.status(400).send('Invalid body data');
+
+	try{
+
+
+
+	}catch(err){
+		console.error(err);
+		res.status(500).send('Internal server error');
+	}
 
 });
 
