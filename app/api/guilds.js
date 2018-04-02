@@ -27,31 +27,6 @@ const removedFields = {
 	'customStickers._id': false
 }
 
-/**
-* Check if user is sticker manager
-*
-* First, we check if guild's stickerManagerIds includes user's id
-* If stickerManagerRole is set to @everyone, then there's no stickerManagerIds,
-* in this case we have to make sure that either:
-* A) the command came from the bot, and therefore the user is guaranteed to be in the guild
-* B) the command came from the user, and the user's guilds includes the current guild id
-*/
-function userIsStickerManager(guild, req, res){
-
-	if(guild.stickerManagerIds.includes(res.locals.userId)) return true;
-
-	if(guild.stickerManagerRole === '@everyone'){
-		if(!req.session.guilds) return true;
-		if(req.session.guilds.includes(guild.id)) return true;
-	}
-
-	return false;
-}
-
-function userIsGuildManager(guild, req, res){
-	return guild.guildManagerIds.includes(res.locals.userId);
-}
-
 ///////
 //GET//
 ///////
@@ -126,7 +101,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 	.then(guild => {
 		if(!guild) return res.status(404).send('Guild not found');
 
-		if(!userIsGuildManager(guild, req, res) && !userIsStickerManager(guild, req, res)){
+		if(!util.userIsGuildManager(guild, req, res) && !util.userIsStickerManager(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -227,7 +202,7 @@ router.patch('/:id/command-prefix', verifyUserAjax, (req, res) => {
 			return null;	
 		}
 
-		if(!userIsGuildManager(guild, req, res)){
+		if(!util.userIsGuildManager(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -268,7 +243,7 @@ router.patch('/:id/sticker-manager-role', verifyUserAjax, (req, res) => {
 			return null;	
 		}
 
-		if(!userIsGuildManager(guild, req, res)){
+		if(!util.userIsGuildManager(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -318,7 +293,7 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 
 		//Users can only delete stickers they created
 		//Exception to the rule: Guild managers can delete any sticker
-		if(!userIsGuildManager(guild, req, res) && (res.locals.userId != sticker.creatorId)){
+		if(!util.userIsGuildManager(guild, req, res) && (res.locals.userId != sticker.creatorId)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}

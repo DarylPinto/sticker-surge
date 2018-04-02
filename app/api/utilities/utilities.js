@@ -41,6 +41,42 @@ module.exports = {
 	strHasEmoji(str){
 		let emoji_regex = new RegExp('(?:[\u2700-\u27bf]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?(?:\u200d(?:[^\ud800-\udfff]|(?:\ud83c[\udde6-\uddff]){2}|[\ud800-\udbff][\udc00-\udfff])[\ufe0e\ufe0f]?(?:[\u0300-\u036f\ufe20-\ufe23\u20d0-\u20f0]|\ud83c[\udffb-\udfff])?)*', 'g');
 		return emoji_regex.test(str);
+	},
+
+	/**
+	* Check if user is sticker manager
+	*
+	* First, we check if guild's stickerManagerIds includes user's id
+	* If stickerManagerRole is set to @everyone, then there's no stickerManagerIds,
+	* in this case we have to make sure that either:
+	* A) the command came from the bot, and therefore the user is guaranteed to be in the guild
+	* B) the command came from the user, and the user's guilds includes the current guild id
+	*
+	* @param {Guild (mongo object)} Guild
+	* @param {req, res} default express req, res
+	* @returns {Boolean} User is a sticker manager
+	*/
+	userIsStickerManager(guild, req, res){
+
+		if(guild.stickerManagerIds.includes(res.locals.userId)) return true;
+
+		if(guild.stickerManagerRole === '@everyone'){
+			if(!req.session.guilds) return true;
+			if(req.session.guilds.includes(guild.id)) return true;
+		}
+
+		return false;
+	},
+
+	/**
+	* Check if user is guild manager 
+	*
+	* @param {Guild (mongo object)} Guild
+	* @param {req, res} default express req, res
+	* @returns {Boolean} User is a guild manager
+	*/
+	userIsGuildManager(guild, req, res){
+		return guild.guildManagerIds.includes(res.locals.userId);
 	}
 	
 }

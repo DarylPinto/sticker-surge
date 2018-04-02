@@ -4,6 +4,8 @@ const rp = require('request-promise');
 const verifyUserAjax = require('../middleware/verify-user.js')({ajax: true});
 const verifyBot = require('../middleware/verify-bot.js');
 const StickerPack = require('./models/sticker-pack-model.js');
+const Guild = require('./models/guild.js');
+const User = require('./models/user.js');
 const util = require('./utilities/utilities.js');
 const imageToCdn = require('./utilities/image-to-cdn.js');
 const deleteCdnImage = require('./utilities/delete-cdn-image.js');
@@ -208,11 +210,19 @@ router.post('/:key/stickers/:stickername/uses', /*verifyBot,*/ async (req, res) 
 
 router.patch('/:key/subscribers/', /*verifyUserAjax,*/ async (req, res) => {
 
-	if(!req.body.guilds || !req.body.user) return res.status(400).send('Invalid body data');
+	if(!req.body.subscriptions) return res.status(400).send('Invalid body data');
 
 	try{
 
+		let guild_sub_updates = req.body.subscriptions.filter(s => s.type === 'guild');
+		let user_subs_update = req.body.subscriptions.filter(s => s.type === 'user')[0];
 
+		Promise.all(guild_sub_updates.map(s => Guild.findOne({s.id})))
+		.then(guilds => {
+
+			
+
+		});
 
 	}catch(err){
 		console.error(err);
