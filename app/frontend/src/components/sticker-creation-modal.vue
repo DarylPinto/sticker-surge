@@ -10,14 +10,24 @@ module.exports = {
 		return {
 			stickerUploadPreview: '',
 			stickerUploadError: '',
-			newStickerName: ''
+			newStickerName: '',
+			newStickerDefaultName: ''
 		}
 	},
 	methods: {
 
 		emitAddSticker(){
 			//Error checking
-			let file = document.querySelector('.sticker-creation-modal input[type="file"]').files[0];	
+			let file = document.querySelector('.sticker-creation-modal input[type="file"]').files[0];
+
+			//If `newStickerName` is empty string, set it to `newStickerDefaultName`
+			if(this.newStickerName.length === 0) this.newStickerName = this.newStickerDefaultName;	
+
+			//If it's still an empty string, prompt user to enter a name
+			if(this.newStickerName.length === 0){
+				this.stickerUploadError = "Enter a name for this sticker.";
+				return false;
+			}
 
 			if(this.stickers.map(s => s.name).indexOf(this.newStickerName) > -1){
 				this.stickerUploadError = "Name already in use by another sticker.";
@@ -33,19 +43,34 @@ module.exports = {
 			}
 
 			//Emit add sticker event
-			let stickerCreationFormData = new FormData(document.querySelector('.sticker-creation-modal'));
 			this.stickerUploadError = '';
 			this.closeModal();
-			this.$emit('addSticker', stickerCreationFormData);
+			window.setTimeout(() => {
+				let stickerCreationFormData = new FormData(document.querySelector('.sticker-creation-modal'));
+				this.$emit('addSticker', stickerCreationFormData);	
+			}, 100);
+			
 		},
 
 		initModal: liteModal.init.bind(liteModal),
 		openModal: liteModal.open.bind(liteModal),
 		closeModal: liteModal.close.bind(liteModal),
 
+		//Sanitize `name` and set it to vm.newDefaultStickerName
+		//(used as sticker name if none provided)
+		setDefaultStickerName(name){	
+			const max_length = 20;
+			if(name.indexOf('.') > -1) name = name.substr(0, name.lastIndexOf('.'));
+			name = name.toLowerCase().replace(/[^a-zа-яё0-9]/g, '');
+			name = (name.length > max_length) ? name.substr(0, max_length) : name;
+			this.newStickerDefaultName = name;
+		},
+
 		showStickerPreview(e){
 			let file = e.target.files[0];
 			if(!file) return false;
+			this.setDefaultStickerName(file.name);
+			
 			let reader = new FileReader();
 			reader.readAsDataURL(file);
 			reader.addEventListener('load', () => {
@@ -70,6 +95,7 @@ module.exports = {
 			document.querySelector('.sticker-creation-modal input[type="file"]').value = '';
 			this.stickerUploadPreview = '';
 			this.newStickerName = '';
+			this.newStickerDefaultName = '';
 			this.stickerUploadError = '';
 		});
 		//Then we change the closeModal method on the vue instance to include callback
@@ -112,7 +138,7 @@ module.exports = {
 		<p>Drag image or click to upload</p>
 		<input name="sticker" type="file" placeholder="Image" accept="image/png, image/jpeg, image/webp" @change="showStickerPreview($event)" required>	
 	</div>	
-	<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-zа-яё0-9]+:?$" maxlength="20" autocomplete="off" spellcheck="false" @input="checkStickerNameValidity($event)" required>
+	<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-zа-яё0-9]+:?$" maxlength="20" autocomplete="off" spellcheck="false" @input="checkStickerNameValidity($event)">
 	<p v-if="stickerUploadError.length > 0" class="sticker-upload-error">{{stickerUploadError}}</p>
 	<button class="btn">Create</button>
 
