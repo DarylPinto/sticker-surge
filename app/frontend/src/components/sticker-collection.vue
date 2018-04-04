@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import axios from 'axios';
 import Clipboard from 'clipboard';
+import naturalCompare from 'natural-compare-lite';
 import sticker from '../components/sticker.vue';
 import stickerCreationModal from '../components/sticker-creation-modal.vue';
 
@@ -45,6 +46,15 @@ module.exports = {
 			//Sort by most used
 			else if(this.sortMethod === 'mostUsed'){
 				sorted.sort((a, b) => b.uses - a.uses);
+			}
+			//Sort alphabetically
+			else if(this.sortMethod === 'alpha'){
+				sorted.sort((a, b) => naturalCompare(a.name, b.name));
+			}
+			//Sort alphabetically (Reversed)
+			else if(this.sortMethod === 'alphaReverse'){
+				sorted.sort((a, b) => naturalCompare(a.name, b.name));
+				sorted.reverse();
 			}
 
 			return sorted;
@@ -118,6 +128,8 @@ module.exports = {
 				<option value="newest">Sort by: Newest</option>
 				<option value="oldest">Sort by: Oldest</option>
 				<option value="mostUsed">Sort by: Most Used</option>
+				<option value="alpha">Sort by: A-Z</option>
+				<option value="alphaReverse">Sort by: Z-A</option>
 			</select>
 			<button v-if="isEditable" class="btn" :class="{disabled: maxStickersReached}" @click="$emit('openStickerCreationModal')">Create a Sticker</button>	
 		</div>
