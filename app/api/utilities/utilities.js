@@ -52,7 +52,7 @@ module.exports = {
 	* A) the command came from the bot, and therefore the user is guaranteed to be in the guild
 	* B) the command came from the user, and the user's guilds includes the current guild id
 	*
-	* @param {Guild (mongo object)} Guild
+	* @param {Guild (mongo document)} Guild
 	* @param {req, res} default express req, res
 	* @returns {Boolean} User is a sticker manager
 	*/
@@ -71,12 +71,29 @@ module.exports = {
 	/**
 	* Check if user is guild manager 
 	*
-	* @param {Guild (mongo object)} Guild
+	* @param {Guild (mongo document)} Guild
 	* @param {req, res} default express req, res
 	* @returns {Boolean} User is a guild manager
 	*/
 	userIsGuildManager(guild, req, res){
 		return guild.guildManagerIds.includes(res.locals.userId);
+	},
+
+	/**
+	* Check if each object in objArr has all properties in propNameArr
+	* 
+	* @param {objArr} Array of objects to test
+	* @param {propNameArr} Array of property names (Strings) to test against
+	* @returns {Boolean} True if all objects have all property names
+	*/
+	objArrHasProps(objArr, propNameArr){
+		let ret = true;
+		objArr.forEach(obj => {
+			propNameArr.forEach(propName => {
+				if(!obj.hasOwnProperty(propName)) ret = false;
+			});
+		});
+		return ret;
 	}
 	
 }

@@ -4,8 +4,8 @@ const rp = require('request-promise');
 const verifyUserAjax = require('../middleware/verify-user.js')({ajax: true});
 const verifyBot = require('../middleware/verify-bot.js');
 const StickerPack = require('./models/sticker-pack-model.js');
-const Guild = require('./models/guild.js');
-const User = require('./models/user.js');
+const Guild = require('./models/guild-model.js');
+const User = require('./models/user-model.js');
 const util = require('./utilities/utilities.js');
 const imageToCdn = require('./utilities/image-to-cdn.js');
 const deleteCdnImage = require('./utilities/delete-cdn-image.js');
@@ -208,26 +208,95 @@ router.post('/:key/stickers/:stickername/uses', /*verifyBot,*/ async (req, res) 
 //PATCH//
 /////////
 
-router.patch('/:key/subscribers/', /*verifyUserAjax,*/ async (req, res) => {
+router.patch('/:key/subscribers', /*verifyUserAjax,*/ async (req, res) => {
 
-	if(!req.body.subscriptions) return res.status(400).send('Invalid body data');
+	let pack = await StickerPack.findOne({key: req.params.key});
+
+	if(!pack) return res.status(404).send('Sticker Pack not found');
+	if(
+		!req.body.subscriptions ||
+	  !util.objArrHasProps(req.body.subscriptions, ['type', 'id', 'subscribed'])
+	){
+		return res.status(400).send('Invalid body data');
+	}
+
+	//Init response data
+	let response_data = JSON.parse(JSON.stringify(req.body.subscriptions));
 
 	try{
 
-		let guild_sub_updates = req.body.subscriptions.filter(s => s.type === 'guild');
-		let user_subs_update = req.body.subscriptions.filter(s => s.type === 'user')[0];
+		let pack_key = req.params.key;
+		let guild_update_requests = req.body.subscriptions.filter(s => s.type === 'guild');
+		let user_update_requests = req.body.subscriptions.filter(s => s.type === 'user');
 
-		Promise.all(guild_sub_updates.map(s => Guild.findOne({s.id})))
-		.then(guilds => {
+		let guilds = await Promise.all(guild_update_requests.map(s => Guild.findOne({id: s.id})));	
+		let users = await Promise.all(user_update_requests.map(s => User.findOne({id: s.id})));	
 
-			
+		//Init response data success property
+		response_data.forEach(update_req => update_req.successfully_updated = false);
 
+		guilds.forEach(guild => {
+			//If guild doesn't exist, break loop early
+			if(!guild) return;
+			//If user doesn't have permission break loop early
+			if(!util.userIsStickerManager(guild, req, res) && !util.userIsGuildManager(guild, req, res)){
+				return;
+			}
+
+			let subscribed = guild_update_requests.find(s => s.id === guild.id).subscribed;
+			//Remove pack from guilds that need it removed
+			if(guild.stickerPacks.includes(pack_key) && !subscribed){
+				const pack_key_index = guild.stickerPacks.indexOf(pack_key);
+				guild.stickerPacks.splice(pack_key_index, 1);
+				pack.subscribers -= 1;
+				if(pack.subscribers < 0) pack.subscribers = 0;
+			}
+			//Add pack to guilds that need it added
+			if(!guild.stickerPacks.includes(pack_key) && subscribed){
+				guild.stickerPacks.push(pack_key);
+				pack.subscribers += 1;
+			}
+			guild.save();
+
+			//Update response data
+			response_data.find(update_req => update_req.id === guild.id).successfully_updated = true;
 		});
+
+		users.forEach(user => {
+			//If user doesn't exist, break loop early
+			if(!user) return;
+			//If request user id doesn't match user id, break early for lack of permission 
+			if(user.id != res.locals.userId){
+				return;
+			}
+
+			let subscribed = user_update_requests.find(s => s.id === user.id).subscribed;
+			//Remove pack from users that need it removed
+			if(user.stickerPacks.includes(pack_key) && !subscribed){
+				const pack_key_index = user.stickerPacks.indexOf(pack_key);
+				user.stickerPacks.splice(pack_key_index, 1);
+				pack.subscribers -= 1;
+				if(pack.subscribers < 0) pack.subscribers = 0;
+			}
+			//Add pack to users that need it added
+			if(!user.stickerPacks.includes(pack_key) && subscribed){
+				user.stickerPacks.push(pack_key);
+				pack.subscribers += 1;
+			}
+			user.save();
+
+			//Update response data
+			response_data.find(update_req => update_req.id === user.id).successfully_updated = true;
+		});
+
+		await pack.save();
 
 	}catch(err){
 		console.error(err);
-		res.status(500).send('Internal server error');
+		return res.status(500).send('Internal server error');
 	}
+
+	return res.status(207).send(response_data);
 
 });
 

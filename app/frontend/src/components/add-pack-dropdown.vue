@@ -59,7 +59,7 @@ module.exports = {
 		<h2>Use this pack in:</h2>
 		<ul>
 			<packDropdownGuild :name="'Personal Stickers'" />
-			<packDropdownGuild v-for="guild in userGuildData" :name="guild.name" />
+			<packDropdownGuild v-for="guild in userGuildData" :name="guild.name" :key="guild.id" />
 			<!-- <li>Personal Stickers</li> -->
 			<!-- <li v-for="guild in userGuildData">{{guild.name}}</li> -->
 		</ul>

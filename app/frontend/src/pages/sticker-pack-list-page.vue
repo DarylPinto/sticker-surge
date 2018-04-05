@@ -44,7 +44,7 @@ module.exports = {
 	mounted: function(){
 		document.title = 'Sticker Packs - Stickers for Discord';
 		this.pageLoaded = true;
-		this.loadPacks(1, 'popular');
+		this.loadPacks();
 	}
 
 }
