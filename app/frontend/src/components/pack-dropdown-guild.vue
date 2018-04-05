@@ -2,7 +2,7 @@
 import Vue from 'vue';
 
 module.exports = {
-	props: ['name'],
+	props: ['type', 'name', 'groupId'],
 	data: function(){
 		return {
 			active: false

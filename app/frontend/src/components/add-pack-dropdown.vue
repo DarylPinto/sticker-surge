@@ -11,7 +11,8 @@ module.exports = {
 		return {
 			isOpen: false,
 			userGuilds: [],
-			userGuildData: []
+			userPackData: null,
+			guildPackData: []
 		}
 	},
 	methods: {
@@ -38,11 +39,16 @@ module.exports = {
 				axios.get(`/api/guilds/${id}?nocache=${(new Date()).getTime()}`)
 				.then(res => {
 					if(this.userCanManageStickersInGuild(res.data)){
-						this.userGuildData.push({id: id, name: res.data.guildName});	
+						this.guildPackData.push({id: id, name: res.data.guildName, stickerPacks: res.data.stickerPacks});	
 					}	
 				});
 			});
 
+		});
+
+		axios.get(`/api/users/${this.userId}?nocache=${(new Date()).getTime()}`)
+		.then(res => {
+			this.userPackData = {id: res.data.id, name: "Personal Stickers", stickerPacks: res.data.stickerPacks}
 		});
 		
 		//Listen for parent event to open/close pack options
@@ -58,10 +64,18 @@ module.exports = {
 	<div class="pack-dropdown">
 		<h2>Use this pack in:</h2>
 		<ul>
-			<packDropdownGuild :name="'Personal Stickers'" />
-			<packDropdownGuild v-for="guild in userGuildData" :name="guild.name" :key="guild.id" />
-			<!-- <li>Personal Stickers</li> -->
-			<!-- <li v-for="guild in userGuildData">{{guild.name}}</li> -->
+			<packDropdownGuild
+				type="user"
+				:name="'Personal Stickers'"
+				:groupId="userPackData.id"
+			/>
+			<packDropdownGuild
+				v-for="guild in guildPackData"
+				type="guild"
+				:name="guild.name"
+				:groupId="guild.id"
+				:key="guild.id"
+			/>
 		</ul>
 		<button class="btn">Done</button>
 	</div>
