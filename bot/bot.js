@@ -19,7 +19,7 @@ const updateUserInfo = require('./events/update-user-info.js');
 const updateDblStats = require('./events/update-dbl-stats.js');
 
 client.on('ready', () => {
-	client.user.setGame('stickersfordiscord.com');
+	client.user.setPresence({game: {name: 'stickersfordiscord.com'}});
 	client.guilds.forEach(g => updateGuildInfo(g, bot_auth));
 	updateDblStats(client);
 	console.log('Stickers for Discord bot is online!');
