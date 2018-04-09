@@ -1,6 +1,6 @@
 const rp = require('request-promise');
 
-module.exports = function(message, prefix, custom_stickers, sticker_manager_role, guild_manager_ids){
+module.exports = function(message, prefix, custom_stickers, sticker_manager_role){
 
 	const embed_color = 16540258;
 	const lib_version = "11.2.1";

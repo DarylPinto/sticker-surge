@@ -103,7 +103,7 @@ client.on('message', message => {
 	let first_word = message_words[0];
 	let second_word = message_words.length > 1 ? message_words[1] : null;
 	let message_has_command = Object.keys(commands).some(command => {
-		return first_word.endsWith(command) || first_word === `<@${client.user.id}>`;
+		return first_word.endsWith(command) || first_word === `<@${client.user.id}>` || first_word === `<@!${client.user.id}>`;
 	});
 
 	//Guild messages
@@ -121,9 +121,11 @@ client.on('message', message => {
 
 			const usedGuildCommand = command => {
 				if(first_word === `${prefix}${command}`) return true;
-				else if(first_word === `<@${client.user.id}>` && second_word === command) return true;
+				else if((first_word === `<@${client.user.id}>` || first_word === `<@!${client.user.id}>`) && second_word === command){
+					return true;
+				}
 				else return false;
-			}	
+			}
 
 			if(usedGuildCommand('stickers')) commands.stickers(message)
 			else if(usedGuildCommand('createsticker')) commands.createsticker(message, bot_auth, prefix, sticker_manager_role)
@@ -131,7 +133,7 @@ client.on('message', message => {
 			else if(usedGuildCommand('setprefix')) commands.setprefix(message, bot_auth, prefix)
 			else if(usedGuildCommand('setrole')) commands.setrole(message, bot_auth, prefix)		
 			else if(usedGuildCommand('commands')) commands.commands(message, prefix, custom_stickers, sticker_manager_role, guild_manager_ids)
-			else if(usedGuildCommand('help')) commands.help(message, prefix, custom_stickers, sticker_manager_role, guild_manager_ids)
+			else if(usedGuildCommand('help')) commands.help(message, prefix, custom_stickers, sticker_manager_role)
 
 		});
 
@@ -147,7 +149,9 @@ client.on('message', message => {
 
 			const usedDmCommand = command => {
 				if(first_word.endsWith(command)) return true;
-				else if(first_word === `<@${client.user.id}>` && second_word === command) return true;
+				else if((first_word === `<@${client.user.id}>` || first_word === `<@!${client.user.id}>`) && second_word === command){
+					return true;
+				}
 				else return false;
 			}
 

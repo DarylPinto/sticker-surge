@@ -9,7 +9,7 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 	let uri;
 
 	//Remove first word from message_words if command was invoked with an @ mention
-	if(/<@\d+>/.test(message_words[0]))	message_words.shift();
+	if(/<@!?\d+>/.test(message_words[0]))	message_words.shift();
 
 	//change request uri and prefix if message is a private message
 	if(message.channel.type === 'dm'){

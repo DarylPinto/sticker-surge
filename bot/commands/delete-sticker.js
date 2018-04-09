@@ -6,7 +6,7 @@ module.exports = function(message, bot_auth, prefix, sticker_manager_role){
 	let message_words = message.content.trim().split(/\s+/);
 
 	//Remove first word from message_words if command was invoked with an @ mention
-	if(/<@\d+>/.test(message_words[0]))	message_words.shift();
+	if(/<@!?\d+>/.test(message_words[0]))	message_words.shift();
 
 	if(message.channel.type === 'dm') prefix = '';
 	//Escape prefix to avoid issues with Discord formatting

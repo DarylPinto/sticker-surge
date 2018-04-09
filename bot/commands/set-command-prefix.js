@@ -7,7 +7,7 @@ module.exports = function(message, bot_auth, prefix){
 	let message_words = message.content.trim().split(/\s+/);
 
 	//Remove first word from message_words if command was invoked with an @ mention
-	if(/<@\d+>/.test(message_words[0]))	message_words.shift();
+	if(/<@!?\d+>/.test(message_words[0]))	message_words.shift();
 	
 	//Escape prefix to avoid issues with Discord formatting
 	let escaped_prefix = prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
