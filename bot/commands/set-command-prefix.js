@@ -17,7 +17,7 @@ module.exports = function(message, bot_auth, prefix){
 		return;
 	}
 
-	let new_prefix = message_words[1];
+	let new_prefix = message_words[1].toLowerCase();
 	//Escape new prefix to avoid issues with Discord formatting
 	let escaped_new_prefix = new_prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
 

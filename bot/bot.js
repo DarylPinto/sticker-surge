@@ -114,7 +114,7 @@ client.on('message', message => {
 		rp({uri: `${covert.app_url}/api/guilds/${message.channel.guild.id}`, json: true})
 		.then(guild => {
 
-			let prefix = guild.commandPrefix;
+			let prefix = guild.commandPrefix.toLowerCase();
 			let guild_manager_ids = guild.guildManagerIds;
 			let sticker_manager_role = guild.stickerManagerRole;
 			let custom_stickers = guild.customStickers;
