@@ -1,9 +1,9 @@
 <script>
 import Vue from 'vue';
 import axios from 'axios';
-import packDropdownGuild from './pack-dropdown-guild.vue';
+import packSubscriberListItem from './pack-subscriber-list-item.vue';
 
-Vue.component('packDropdownGuild', packDropdownGuild);
+Vue.component('packSubscriberListItem', packSubscriberListItem);
 
 module.exports = {
 	props: ['userId', 'packKey'],
@@ -37,11 +37,7 @@ module.exports = {
 		updateStickerPackGroups(){
 			console.log('Loading...');
 			axios.patch(`/api/sticker-packs/${this.packKey}/subscribers`, this.patchReqObject)
-			.then(res => {
-				console.log(res.status);
-				console.log(res.data);
-				this.isOpen = false;
-			});
+			.then(() => this.isOpen = false);
 		},
 
 		//Determine if user can manage stickers in guild - duh
@@ -98,7 +94,7 @@ module.exports = {
 	<div class="pack-dropdown">
 		<h2>Use this pack in:</h2>
 		<ul>	
-			<packDropdownGuild
+			<packSubscriberListItem
 				v-for="item in packItemData"
 				v-on:selectionChange="selectionChange($event)"
 				:type="item.type"

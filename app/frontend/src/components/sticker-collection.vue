@@ -4,11 +4,11 @@ import axios from 'axios';
 import Clipboard from 'clipboard';
 import sticker from '../components/sticker.vue';
 import stickerCreationModal from '../components/sticker-creation-modal.vue';
-import addPackDropdown from '../components/add-pack-dropdown.vue';
+import packSubscriberList from '../components/pack-subscriber-list.vue';
 
 Vue.component('sticker', sticker);
 Vue.component('stickerCreationModal', stickerCreationModal);
-Vue.component('addPackDropdown', addPackDropdown);
+Vue.component('packSubscriberList', packSubscriberList);
 
 const normalizeObj = obj => JSON.parse(JSON.stringify(obj));
 
@@ -120,12 +120,11 @@ module.exports = {
 		</div>
 
 		<!-- Sticker Pack Options -->
-		<addPackDropdown
+		<packSubscriberList
 			v-if="pageType === 'sticker-packs'"
 			:userId="userId"
-			:packKey="stickerPrefix"
-		>
-		</addPackDropdown>
+			:packKey="stickerPrefix" 
+		/>	
 
 	</header>
 	<div class="sticker-area">
