@@ -2,30 +2,38 @@
 import Vue from 'vue';
 
 module.exports = {
-	props: ['type', 'name', 'groupId'],
+	props: ['type', 'name', 'groupId', 'initiallySelected'],
 	data: function(){
 		return {
-			active: false
+			selected: false
 		}
 	},
 	methods: {
+		handleClick: function(){
+			this.selected = !this.selected;		
+			this.$emit('selectionChange', {
+				type: this.type,
+				id: this.groupId,
+				subscribed: this.selected
+			});
+		}
 	},
-	mounted: function(){
-
+	created: function(){
+		this.selected = this.initiallySelected;
 	}
 }
 </script>
 
 <template>
-<li :class="{active: active}" @click="active = !active">
+<li :class="{selected: selected}" @click="handleClick">
 	{{name}}
-	<i v-show="active" class="material-icons">done</i>
+	<i v-show="selected" class="material-icons">done</i>
 </li>
 </template>
 
 <style lang="sass">
 
-	.pack-dropdown ul li.active
+	.pack-dropdown ul li.selected
 		background-color: #415a88
 		&:nth-child(2n)
 			background-color: rgba(65, 90, 136, 0.8)

@@ -6,18 +6,42 @@ import packDropdownGuild from './pack-dropdown-guild.vue';
 Vue.component('packDropdownGuild', packDropdownGuild);
 
 module.exports = {
-	props: ['userId'],
+	props: ['userId', 'packKey'],
 	data: function(){
 		return {
 			isOpen: false,
 			userGuilds: [],
-			userPackData: null,
-			guildPackData: []
+			packItemData: [{
+				id: "",
+				name: "",
+				type: "",
+				stickerPacks: []
+			}],	
+			patchReqObject: {subscriptions: []}
 		}
 	},
 	methods: {
 		togglePackDropdown: function(){
 			this.isOpen = !this.isOpen;
+		},
+
+		selectionChange: function(data){
+			this.patchReqObject.subscriptions.forEach((sub, i) => {
+				if(sub.id === data.id && sub.type === data.type){
+					this.patchReqObject.subscriptions.splice(i, 1);
+				}
+			});
+			this.patchReqObject.subscriptions.push(data);
+		},
+
+		updateStickerPackGroups(){
+			console.log('Loading...');
+			axios.patch(`/api/sticker-packs/${this.packKey}/subscribers`, this.patchReqObject)
+			.then(res => {
+				console.log(res.status);
+				console.log(res.data);
+				this.isOpen = false;
+			});
 		},
 
 		//Determine if user can manage stickers in guild - duh
@@ -39,7 +63,12 @@ module.exports = {
 				axios.get(`/api/guilds/${id}?nocache=${(new Date()).getTime()}`)
 				.then(res => {
 					if(this.userCanManageStickersInGuild(res.data)){
-						this.guildPackData.push({id: id, name: res.data.guildName, stickerPacks: res.data.stickerPacks});	
+						this.packItemData.push({
+							id: id,
+							name: res.data.guildName,
+							type: "guild",
+							stickerPacks: res.data.stickerPacks
+						});
 					}	
 				});
 			});
@@ -48,7 +77,12 @@ module.exports = {
 
 		axios.get(`/api/users/${this.userId}?nocache=${(new Date()).getTime()}`)
 		.then(res => {
-			this.userPackData = {id: res.data.id, name: "Personal Stickers", stickerPacks: res.data.stickerPacks}
+			this.packItemData[0] = {
+				id: res.data.id,
+				name: "Personal Stickers",
+				type: "user",
+				stickerPacks: res.data.stickerPacks
+			}
 		});
 		
 		//Listen for parent event to open/close pack options
@@ -63,21 +97,18 @@ module.exports = {
 
 	<div class="pack-dropdown">
 		<h2>Use this pack in:</h2>
-		<ul>
+		<ul>	
 			<packDropdownGuild
-				type="user"
-				:name="'Personal Stickers'"
-				:groupId="userPackData.id"
-			/>
-			<packDropdownGuild
-				v-for="guild in guildPackData"
-				type="guild"
-				:name="guild.name"
-				:groupId="guild.id"
-				:key="guild.id"
+				v-for="item in packItemData"
+				v-on:selectionChange="selectionChange($event)"
+				:type="item.type"
+				:name="item.name"
+				:groupId="item.id"
+				:initiallySelected="item.stickerPacks.includes(packKey)"
+				:key="item.type+item.id"
 			/>
 		</ul>
-		<button class="btn">Done</button>
+		<button class="btn" @click="updateStickerPackGroups">Done</button>
 	</div>
 
 	<div class="pack-dropdown-backdrop" @click="togglePackDropdown()"></div>

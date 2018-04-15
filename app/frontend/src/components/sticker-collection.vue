@@ -123,6 +123,7 @@ module.exports = {
 		<addPackDropdown
 			v-if="pageType === 'sticker-packs'"
 			:userId="userId"
+			:packKey="stickerPrefix"
 		>
 		</addPackDropdown>
 

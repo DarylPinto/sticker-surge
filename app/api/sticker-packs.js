@@ -208,7 +208,7 @@ router.post('/:key/stickers/:stickername/uses', /*verifyBot,*/ async (req, res) 
 //PATCH//
 /////////
 
-router.patch('/:key/subscribers', /*verifyUserAjax,*/ async (req, res) => {
+router.patch('/:key/subscribers', verifyUserAjax, async (req, res) => {
 
 	let pack = await StickerPack.findOne({key: req.params.key});
 
@@ -239,7 +239,7 @@ router.patch('/:key/subscribers', /*verifyUserAjax,*/ async (req, res) => {
 			//If guild doesn't exist, break loop early
 			if(!guild) return;
 			//If user doesn't have permission break loop early
-			if(!util.userIsStickerManager(guild, req, res) && !util.userIsGuildManager(guild, req, res)){
+			if(!util.userIsStickerManager(guild, req, res) && !util.userIsGuildManager(guild, req, res)){	
 				return;
 			}
 
@@ -262,7 +262,7 @@ router.patch('/:key/subscribers', /*verifyUserAjax,*/ async (req, res) => {
 			response_data.find(update_req => update_req.id === guild.id).successfully_updated = true;
 		});
 
-		users.forEach(user => {
+		users.forEach(user => {	
 			//If user doesn't exist, break loop early
 			if(!user) return;
 			//If request user id doesn't match user id, break early for lack of permission 
