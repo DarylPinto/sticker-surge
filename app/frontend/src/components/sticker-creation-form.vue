@@ -2,7 +2,6 @@
 import Vue from 'vue';
 import axios from 'axios';
 import emojis from '../data/emojis.json';
-import liteModal from '../scripts/lite-modal.js';
 
 module.exports = {
 	props: ['stickers', 'emojiNamesAllowed'],
@@ -10,14 +9,24 @@ module.exports = {
 		return {
 			stickerUploadPreview: '',
 			stickerUploadError: '',
-			newStickerName: ''
+			newStickerName: '',
+			newStickerDefaultName: ''
 		}
 	},
 	methods: {
 
 		emitAddSticker(){
 			//Error checking
-			let file = document.querySelector('.sticker-creation-modal input[type="file"]').files[0];	
+			let file = document.querySelector('.sticker-creation-form input[type="file"]').files[0];
+
+			//If `newStickerName` is empty string, set it to `newStickerDefaultName`
+			if(this.newStickerName.length === 0) this.newStickerName = this.newStickerDefaultName;	
+
+			//If it's still an empty string, prompt user to enter a name
+			if(this.newStickerName.length === 0){
+				this.stickerUploadError = "Enter a name for this sticker.";
+				return false;
+			}
 
 			if(this.stickers.map(s => s.name).indexOf(this.newStickerName) > -1){
 				this.stickerUploadError = "Name already in use by another sticker.";
@@ -32,25 +41,40 @@ module.exports = {
 				return false;
 			}
 
-			//Emit add sticker event
-			let stickerCreationFormData = new FormData(document.querySelector('.sticker-creation-modal'));
-			this.stickerUploadError = '';
-			this.closeModal();
-			this.$emit('addSticker', stickerCreationFormData);
-		},
+			//de-reference
+			file = null;
 
-		initModal: liteModal.init.bind(liteModal),
-		openModal: liteModal.open.bind(liteModal),
-		closeModal: liteModal.close.bind(liteModal),
+			//Emit add sticker event
+			this.stickerUploadError = '';	
+			window.setTimeout(() => {	
+				let stickerCreationFormData = new FormData(document.querySelector('.sticker-creation-form'));
+				this.$emit('addSticker', stickerCreationFormData);
+				this.$parent.close();
+			}, 100);
+			
+		},	
+
+		//Sanitize `name` and set it to vm.newDefaultStickerName
+		//(used as sticker name if none provided)
+		setDefaultStickerName(name){	
+			const max_length = 20;
+			if(name.indexOf('.') > -1) name = name.substr(0, name.lastIndexOf('.'));
+			name = name.toLowerCase().replace(/[^a-zа-яё0-9]/g, '');
+			name = (name.length > max_length) ? name.substr(0, max_length) : name;
+			this.newStickerDefaultName = name;
+		},
 
 		showStickerPreview(e){
 			let file = e.target.files[0];
 			if(!file) return false;
+			this.setDefaultStickerName(file.name);
+			
 			let reader = new FileReader();
 			reader.readAsDataURL(file);
 			reader.addEventListener('load', () => {
 				this.stickerUploadPreview = reader.result;
-				document.querySelector('.sticker-creation-modal input[name="name"]').focus();
+				document.querySelector('.sticker-creation-form input[name="name"]').focus();
+				reader = null; //de-reference
 			});
 		},
 
@@ -61,87 +85,52 @@ module.exports = {
 			e.target.checkValidity();
 			e.target.setCustomValidity(e.target.validity.valid ? '' : 'Lowercase letters and numbers only');
 		}
-
-	},
-	mounted: function(){
-		//While initializing lite-modal, we'll pass in a
-		//callback to be executed when modal is closed
-		this.initModal(() => {
-			document.querySelector('.sticker-creation-modal input[type="file"]').value = '';
-			this.stickerUploadPreview = '';
-			this.newStickerName = '';
-			this.stickerUploadError = '';
-		});
-		//Then we change the closeModal method on the vue instance to include callback
-		this.closeModal = liteModal.closeWithCB.bind(liteModal);
-
-		//Move to modal bg
-		document.querySelector('#modal-bg').appendChild(this.$el);
-
-		//Prevent event bubbling (clicking within modal shouldn't close it)
-		this.$el.addEventListener('click', e => e.stopPropagation());	
-
-		//Listen for parent event to open modal
-		this.$parent.$on('openStickerCreationModal', () => {
-			this.openModal('.sticker-creation-modal');
-		});
-
-		//Remove this component when parent is destroyed
-		//Normally vue handles this, but since element
-		//has been moved around the dom, it must be done manually
-		this.$parent.$on('destroyed', () => {
-			let el = this.$el;
-			el.parentNode.removeChild(el);
-		});
 	}
 }
 </script>
 
 <template>
-<form class="sticker-creation-modal lite-modal" @submit.prevent="emitAddSticker">
-
-	<i class="material-icons close-x" @click="closeModal">clear</i>
+<form class="sticker-creation-form" @submit.prevent="emitAddSticker">
 	<h1>Create a Sticker</h1>
 
 	<img v-show="stickerUploadPreview" :src="stickerUploadPreview">
 
 	<div v-show="!stickerUploadPreview" class="upload-area">
 		<p>Drag image or click to upload</p>
-		<input name="sticker" type="file" placeholder="Image" accept="image/png, image/jpeg, image/webp" @change="showStickerPreview($event)" required>	
+		<input
+			name="sticker"
+			type="file"
+			placeholder="Image"
+			accept="image/png, image/jpeg, image/webp"
+			@change="showStickerPreview($event)"
+			required
+		>	
 	</div>	
-	<input v-model="newStickerName" name="name" placeholder="Sticker Name" pattern="^:?-?[a-z0-9]+:?$" maxlength="20" autocomplete="off" spellcheck="false" @input="checkStickerNameValidity($event)" required>
+	<input
+		v-model="newStickerName"
+		@input="checkStickerNameValidity"
+		name="name"
+		placeholder="Sticker Name"
+		pattern="^:?-?[a-zа-яё0-9]+:?$"	
+		maxlength="20"
+		autocomplete="off"
+		spellcheck="false"
+	>
 	<p v-if="stickerUploadError.length > 0" class="sticker-upload-error">{{stickerUploadError}}</p>
 	<button class="btn">Create</button>
-
 </form>
 </template>
 
 <style lang="sass">
 
-	.sticker-creation-modal	
-		position: relative
-		background-color: #36393E
-		padding: 30px
-		box-shadow: 0 0 10px black
-		border: 1px solid rgba(255, 255, 255, 0.15)
-		border-radius: 4px
-		text-align: center
-		width: 80vw
-		max-width: 640px
-		box-sizing: border-box
+	.sticker-creation-form	
+		text-align: center	
 		img
+			display: block
+			margin: 0 auto
+			margin-bottom: 15px
 			max-height: 200px
 			max-width: 200px
-		.close-x
-			position: absolute
-			padding: 15px
-			top: 0px
-			right: 3px
-			color: rgba(255, 255, 255, 0.3)
-			cursor: default
-			font-size: 30px
-			&:hover
-				color: rgba(255,255,255,0.5)
 		h1
 			font-weight: 400
 			font-size: 40px
@@ -188,15 +177,14 @@ module.exports = {
 			width: 115px
 
 	@media screen and (max-width: 600px)
-		.sticker-creation-modal
-			width: 90vw
+		.sticker-creation-form
 			h1
 				font-size: 30px
 			.upload-area, input
 				max-width: 80%	
 
 	@media screen and (max-width: 450px)
-		.sticker-creation-modal
+		.sticker-creation-form
 			h1
 				font-size: 25px
 			.upload-area, input

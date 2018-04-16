@@ -2,13 +2,14 @@
 import Vue from 'vue';
 import axios from 'axios';
 import Clipboard from 'clipboard';
-import sticker from '../components/sticker.vue';
-import stickerCreationModal from '../components/sticker-creation-modal.vue';
-import packSubscriberList from '../components/pack-subscriber-list.vue';
+import naturalCompare from 'natural-compare-lite';
+import sticker from './sticker.vue';
+import modal from './modal.vue';
+import stickerCreationForm from './sticker-creation-form.vue';
 
 Vue.component('sticker', sticker);
-Vue.component('stickerCreationModal', stickerCreationModal);
-Vue.component('packSubscriberList', packSubscriberList);
+Vue.component('modal', modal);
+Vue.component('stickerCreationForm', stickerCreationForm);
 
 const normalizeObj = obj => JSON.parse(JSON.stringify(obj));
 
@@ -18,12 +19,16 @@ module.exports = {
 		return {	
 			stickerSearchString: '',
 			sortMethod: 'newest',
-			loadingNewSticker: false	
+			loadingNewSticker: false,
+			showStickerCreationModal: false
 		}
 	},
 	computed: {
 		noStickersText(){
 			return (!this.isEditable) ? 'No stickers here just yet!' : 'No stickers here just yet. Add some!';
+		},
+		sanitizedStickerSearchString(){
+			return this.stickerSearchString.toLowerCase().replace(/(:|-)/g, '');
 		},
 		maxStickersReached(){
 			return this.stickers.length >= this.maxStickers;
@@ -45,17 +50,20 @@ module.exports = {
 			else if(this.sortMethod === 'mostUsed'){
 				sorted.sort((a, b) => b.uses - a.uses);
 			}
+			//Sort alphabetically
+			else if(this.sortMethod === 'alpha'){
+				sorted.sort((a, b) => naturalCompare(a.name, b.name));
+			}
+			//Sort alphabetically (Reversed)
+			else if(this.sortMethod === 'alphaReverse'){
+				sorted.sort((a, b) => naturalCompare(a.name, b.name));
+				sorted.reverse();
+			}
 
 			return sorted;
 		}
 	},
-	methods: {
-		
-		searchMatchesSticker(prefix, name){
-			let searchString = this.stickerSearchString.toLowerCase().replace(/(:|-)/g, '');
-			name = (prefix) ? prefix + name : name;	
-			return name.includes(searchString);
-		},
+	methods: {	
 
 		addSticker(formData){
 			this.loadingNewSticker = true;
@@ -68,8 +76,9 @@ module.exports = {
 				this.$emit('reload');
 			}).catch(err => {
 				this.loadingNewSticker = false;
-				if(err.response.status === 401) window.location.href = '/login';
+				console.error(err.response.status);
 				console.error(err.response.data);
+				if(err.response.status === 401) window.location.href = '/login';
 			});
 		},
 
@@ -80,27 +89,24 @@ module.exports = {
 			.then(res => {
 				this.$emit('reload');
 			}).catch(err => {
+				console.error(err.response.status);
+				console.error(err.response.data);
 				if(err.response.status === 401) window.location.href = '/login';
 			});
 		}
 
 	},
 
-	mounted: function(){
+	mounted: function(){	
+		let _this = this;
 		new Clipboard('.sticker');
-	},
-
-	//When this component unmounts, emit event to notify
-	//children who have been moved around the dom
-	destroyed: function(){
-		this.$emit('destroyed');
 	}
 
 }
 </script>
 
 <template>
-<section class="sticker-collection">
+<section class="sticker-collection" @dragenter="(isEditable) ? showStickerCreationModal = true : null">
 
 	<!-- Main Page -->
 	<header>
@@ -114,19 +120,12 @@ module.exports = {
 				<option value="newest">Sort by: Newest</option>
 				<option value="oldest">Sort by: Oldest</option>
 				<option value="mostUsed">Sort by: Most Used</option>
+				<option value="alpha">Sort by: A-Z</option>
+				<option value="alphaReverse">Sort by: Z-A</option>
 			</select>
-			<button v-if="isEditable" class="btn" :class="{disabled: maxStickersReached}" @click="$emit('openStickerCreationModal')">Create a Sticker</button>
-			<button v-if="userId && pageType === 'sticker-packs'" class="add-pack-dropdown-btn" @click="$emit('togglePackDropdown')"><i class="material-icons">star</i></button>
+			<button v-if="isEditable" class="btn" :class="{disabled: maxStickersReached}" @click="showStickerCreationModal = true">Create a Sticker</button>	
 		</div>
-
-		<!-- Sticker Pack Options -->
-		<packSubscriberList
-			v-if="pageType === 'sticker-packs'"
-			:userId="userId"
-			:packKey="stickerPrefix" 
-		/>	
-
-	</header>
+	</header>	
 	<div class="sticker-area">
 
 		<p v-if="stickers.length === 0 && !loadingNewSticker" class="no-stickers-text">{{noStickersText}}</p>
@@ -137,7 +136,7 @@ module.exports = {
 		<sticker
 			v-for="sticker in sortedStickers"
 			v-on:deleteSticker="deleteSticker(sticker.name)"
-			v-show="searchMatchesSticker(stickerPrefix, sticker.name)"
+			v-show="sticker.name.indexOf(sanitizedStickerSearchString) > -1"
 			:type="pageType"
 			:key="sticker.name"
 			:link="sticker.url"
@@ -150,13 +149,17 @@ module.exports = {
 		</sticker>
 	</div>
 
-	<!-- Sticker Creation Modal -->
-	<stickerCreationModal
-		v-show="isEditable"
-		v-on:addSticker="addSticker($event)"
-		:emojiNamesAllowed="emojiNamesAllowed"
-		:stickers="stickers">
-	</stickerCreationModal>
+	<modal
+		v-if="showStickerCreationModal"
+		@close="showStickerCreationModal = false"
+	>
+		<component
+			is="stickerCreationForm"
+			@addSticker="addSticker($event)"
+			:emojiNamesAllowed="emojiNamesAllowed"
+			:stickers="stickers"
+		/>
+	</modal>
 
 </section>
 </template>
@@ -167,7 +170,7 @@ module.exports = {
 	$sticker-margin: 15px
 
 	.sticker-collection
-		//overflow: hidden
+		overflow: hidden
 		> .sticker-creation-modal
 			display: none
 		.sticker-area
@@ -200,7 +203,52 @@ module.exports = {
 			display: flex
 			align-items: center
 			justify-content: space-between
-			position: relative
+			.section-options
+				display: flex
+				.btn.disabled
+					pointer-events: none
+					background-color: #929292
+					color: lightgray
+				.sort-stickers
+					background-color: #2a2d2f
+					border-radius: 40px
+					color: #7d7d7d
+					font-size: 16px
+					padding: 0 15px
+					outline: 0
+					border: 1px solid #7d7d7d
+					-webkit-appearance: none
+					-moz-appearance: none
+					text-indent: 1px
+					text-overflow: ''
+					option
+						background-color: inherit
+					&::-ms-expand
+						display: none
+				input
+					text-align: left
+				> *
+					box-sizing: border-box
+					margin-right: 15px
+					&:last-child
+						margin-right: 0
+				.search-box
+					border: 1px solid #7d7d7d
+					border-radius: 40px
+					display: flex
+					align-items: center
+					padding-left: 10px
+					i
+						font-size: 20px
+						color: #7d7d7d
+					input
+						padding: 8px 15px
+						padding-left: 4px
+						font-size: 16px
+						width: 140px
+						background-color: transparent
+						border: none
+						outline: 0
 	
 	p.no-stickers-text
 		font-size: 40px
