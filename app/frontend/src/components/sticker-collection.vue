@@ -3,11 +3,13 @@ import Vue from 'vue';
 import axios from 'axios';
 import Clipboard from 'clipboard';
 import naturalCompare from 'natural-compare-lite';
-import sticker from '../components/sticker.vue';
-import stickerCreationModal from '../components/sticker-creation-modal.vue';
+import sticker from './sticker.vue';
+import modal from './modal.vue';
+import stickerCreationForm from './sticker-creation-form.vue';
 
 Vue.component('sticker', sticker);
-Vue.component('stickerCreationModal', stickerCreationModal);
+Vue.component('modal', modal);
+Vue.component('stickerCreationForm', stickerCreationForm);
 
 const normalizeObj = obj => JSON.parse(JSON.stringify(obj));
 
@@ -17,7 +19,8 @@ module.exports = {
 		return {	
 			stickerSearchString: '',
 			sortMethod: 'newest',
-			loadingNewSticker: false
+			loadingNewSticker: false,
+			showStickerCreationModal: false
 		}
 	},
 	computed: {
@@ -60,8 +63,8 @@ module.exports = {
 			return sorted;
 		}
 	},
-	methods: {
-		
+	methods: {	
+
 		addSticker(formData){
 			this.loadingNewSticker = true;
 			//Sort by newest so that when new sticker is added, it's visible right away
@@ -94,27 +97,16 @@ module.exports = {
 
 	},
 
-	mounted: function(){
+	mounted: function(){	
 		let _this = this;
 		new Clipboard('.sticker');
-
-		//If editable, allow dragging over page to open sticker creation modal	
-		this.$el.addEventListener('dragenter', function(event){	
-			if(_this.isEditable) _this.$emit('openStickerCreationModal');
-		});
-	},
-
-	//When this component unmounts, emit event to notify
-	//children who have been moved around the dom
-	destroyed: function(){
-		this.$emit('destroyed');
 	}
 
 }
 </script>
 
 <template>
-<section class="sticker-collection">
+<section class="sticker-collection" @dragenter="(isEditable) ? showStickerCreationModal = true : null">
 
 	<!-- Main Page -->
 	<header>
@@ -131,7 +123,7 @@ module.exports = {
 				<option value="alpha">Sort by: A-Z</option>
 				<option value="alphaReverse">Sort by: Z-A</option>
 			</select>
-			<button v-if="isEditable" class="btn" :class="{disabled: maxStickersReached}" @click="$emit('openStickerCreationModal')">Create a Sticker</button>	
+			<button v-if="isEditable" class="btn" :class="{disabled: maxStickersReached}" @click="showStickerCreationModal = true">Create a Sticker</button>	
 		</div>
 	</header>	
 	<div class="sticker-area">
@@ -157,13 +149,17 @@ module.exports = {
 		</sticker>
 	</div>
 
-	<!-- Sticker Creation Modal -->
-	<stickerCreationModal
-		v-show="isEditable"
-		v-on:addSticker="addSticker($event)"
-		:emojiNamesAllowed="emojiNamesAllowed"
-		:stickers="stickers">
-	</stickerCreationModal>
+	<modal
+		v-if="showStickerCreationModal"
+		@close="showStickerCreationModal = false"
+	>
+		<component
+			is="stickerCreationForm"
+			@addSticker="addSticker($event)"
+			:emojiNamesAllowed="emojiNamesAllowed"
+			:stickers="stickers"
+		/>
+	</modal>
 
 </section>
 </template>
