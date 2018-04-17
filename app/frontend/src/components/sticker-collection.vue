@@ -123,7 +123,14 @@ module.exports = {
 				<option value="alpha">Sort by: A-Z</option>
 				<option value="alphaReverse">Sort by: Z-A</option>
 			</select>
-			<button v-if="isEditable" class="btn" :class="{disabled: maxStickersReached}" @click="showStickerCreationModal = true">Create a Sticker</button>	
+			<button
+				v-if="isEditable"
+				class="btn"
+				:class="{disabled: maxStickersReached}"
+				@click="showStickerCreationModal = true"
+			>
+				Create a Sticker
+			</button>	
 		</div>
 	</header>	
 	<div class="sticker-area">

@@ -3,9 +3,13 @@ import Vue from 'vue';
 import axios from 'axios';
 import header from '../components/header.vue';
 import stickerCollection from '../components/sticker-collection.vue';
+import modal from '../components/modal.vue';
+import packSubscriberList from '../components/pack-subscriber-list.vue';
 
 Vue.component('header-bar', header);
 Vue.component('stickerCollection', stickerCollection);
+Vue.component('modal', modal);
+Vue.component('packSubscriberList', packSubscriberList);
 
 module.exports = {
 	props: ['pageType'],
@@ -18,14 +22,15 @@ module.exports = {
 			creatorId: '',
 			stickers: [],
 			pageLoaded: false,
-			userId: this.$cookie.get('id') || null
+			userId: this.$cookie.get('id') || null,
+			showPackSubscriberList: false
 		}
 	},
 
 	computed: {
 		isUsersPack: function(){return this.userId === this.creatorId},
 		nameFontSize: function(){
-			let size = 1 - (this.name.length / 100);
+			let size = 1 - (this.name.length / 25);
 			if(size < 0.3) size = 0.3;
 			return size.toString() + 'em';
 		}
@@ -66,20 +71,21 @@ module.exports = {
 </script>
 
 <template>
-<main>
+<main class="sticker-pack-page">
 
 	<header-bar :userId="userId"></header-bar>
+
+	<header class="pack-header" :class="{transparent: !pageLoaded}">
+		<img :src="iconURL ? iconURL : '/images/default-discord-icon.png'" :alt="name">
+		<h1 :style="`font-size: ${nameFontSize}`">{{name}}</h1>
+		<a class="btn hollow" @click="showPackSubscriberList = true">Get This Pack</a>	
+	</header>
 	
-	<div class="container sticker-pack-page" :class="{transparent: !pageLoaded}">
-		
-		<header>
-			<img :src="iconURL ? iconURL : '/images/default-discord-icon.png'" :alt="name">
-			<h1 :style="`font-size: ${nameFontSize}`">{{name}}</h1>	
-		</header>
+	<div class="container" :class="{transparent: !pageLoaded}">
 
 		<stickerCollection
 			v-on:reload="loadPageData"
-			:name="name"
+			name="Stickers in this pack"
 			:stickerPrefix="key"
 			:emojiNamesAllowed="true"
 			:stickers="stickers"
@@ -91,6 +97,17 @@ module.exports = {
 
 	</div>
 
+	<modal
+		v-show="showPackSubscriberList"
+		@close="showPackSubscriberList = false"
+	>
+		<component
+			is="packSubscriberList"
+			:userId="userId"
+			:packKey="key"
+		/>
+	</modal>
+
 </main>
 </template>
 
@@ -99,22 +116,29 @@ module.exports = {
 	.sticker-pack-page
 		margin-bottom: 90px
 		transition: .2s
-		> header
-			margin-top: 40px
-			margin-bottom: 40px
+		header.pack-header
+			background-color: rgba(0,0,0,0.3)
+			padding-top: 25px
+			padding-bottom: 40px
+			margin-bottom: 25px
 			display: flex
-			align-items: center
+			flex-direction: column
+			justify-content: center
+			align-items: center	
 			font-size: 90px
 			> img
+				display: block
 				border-radius: 100%
-				height: 100px
-				width: 100px
+				height: 90px
+				width: 90px
 				color: transparent
 				font-size: 10px
+				margin-bottom: 15px
 				border: 5px solid rgba(255, 255, 255, 0.1)
-		h1
-			display: inline-block
-			margin-left: 15px
+			.btn
+				margin-top: 20px
+				font-size: 18px
+				padding: 10px 20px
 
 	@media screen and (max-width: 650px)
 		.sticker-pack-page > header

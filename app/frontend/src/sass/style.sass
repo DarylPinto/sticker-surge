@@ -2,12 +2,16 @@
 //@import _mixins
 @import url(https://fonts.googleapis.com/css?family=Material+Icons|Rubik:300,400,500,700) //Righteous
 
+$brand-red: #fc6262
+$brand-darkred: #c54d4d
+$discord-gray: #2a2d2f
+
 *
 	font-family: 'Rubik', sans-serif
 	color: white
 
 body
-	background-color: #2a2d2f
+	background-color: $discord-gray
 
 h1
 	font-family: 'Rubik', sans-serif
@@ -34,7 +38,7 @@ input
 	opacity: 0
 
 .btn
-	background-color: #60b0b9
+	background-color: $brand-red
 	display: inline-block
 	font-size: 17px
 	text-decoration: none
@@ -47,8 +51,16 @@ input
 	text-decoration: none
 	user-select: none
 	transition: .2s
+	box-sizing: border-box
 	&:hover
-		background-color: #61a2a9
+		background-color: $brand-darkred
+	&.hollow
+		background-color: transparent
+		color: $brand-red
+		border: 1px solid $brand-red
+		&:hover
+			background-color: $brand-red
+			color: white
 
 .section-options
 	display: flex

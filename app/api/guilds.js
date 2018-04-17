@@ -5,6 +5,7 @@ const verifyUserAjax = require('../middleware/verify-user.js')({ajax: true});
 const verifyBot = require('../middleware/verify-bot.js');
 const setGuildsCookie = require('../middleware/set-guilds-cookie.js');
 const Guild = require('./models/guild-model.js');
+const StickerPack = require('./models/sticker-pack-model.js');
 const util = require('./utilities/utilities.js');
 const imageToCdn = require('./utilities/image-to-cdn.js');
 const deleteCdnImage = require('./utilities/delete-cdn-image.js');
@@ -266,6 +267,43 @@ router.patch('/:id/sticker-manager-role', verifyUserAjax, (req, res) => {
 
 });
 
+//Subscribe to a sticker pack
+router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
+
+	if(!req.body.packKey) return res.status(400).send('Invalid body data');
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');
+
+	try{
+
+		let guild = await Guild.findOne({id: req.params.id});
+		let pack = await StickerPack.findOne({key: req.body.packKey});
+
+		if(!util.userIsGuildManager(guild, req, res) && !util.userIsStickerManager(guild, req, res)){
+			res.status(401).send('Unauthorized');
+			return null;
+		}
+
+		if(!guild) return res.status(404).send('Guild not found');
+		if(!pack) return res.status(404).send('Sticker Pack not found');
+		
+		if(!guild.stickerPacks.includes(req.body.packKey)){
+			guild.stickerPacks.push(req.body.packKey);
+			pack.subscribers += 1;
+		}else{
+			return res.status(400).send('Guild already has that Sticker Pack');
+		}
+
+		pack.save(); //async
+		await guild.save();
+		return res.status(201).json(guild.stickerPacks);
+
+	}catch(err){
+		console.error("Error updating stickerpacks for guild\n", err.message);
+		return res.status(500).send('Internal server error');
+	}
+
+});
+
 //////////
 //DELETE//
 //////////
@@ -314,6 +352,43 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 		res.status(500).send('Internal server error');
 
 	});
+
+});
+
+//Unsubscribe from a sticker pack
+router.delete('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
+
+	if(!req.body.packKey) return res.status(400).send('Invalid body data');
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');	
+
+	try{
+
+		let guild = await Guild.findOne({id: req.params.id});
+		let pack = await StickerPack.findOne({key: req.body.packKey});	
+
+		if(!util.userIsGuildManager(guild, req, res) && !util.userIsStickerManager(guild, req, res)){
+			res.status(401).send('Unauthorized');
+			return null;
+		}
+
+		if(!guild) return res.status(404).send('Guild not found');
+		if(!guild.stickerPacks.includes(req.body.packKey)){
+			return res.status(400).send('Guild does not have a Sticker Pack with that key');
+		}
+
+		let deletion_request_index = guild.stickerPacks.indexOf(req.body.packKey);	
+		guild.stickerPacks.splice(deletion_request_index, 1);
+		pack.subscribers -= 1;
+		if(pack.subscribers < 0) pack.subscribers = 0;
+
+		pack.save(); //async
+		await guild.save();
+		return res.json(guild.stickerPacks);
+
+	}catch(err){
+		console.error("Error updating stickerpacks for guild\n", err.message);
+		return res.status(500).send('Internal server error');
+	}
 
 });
 
