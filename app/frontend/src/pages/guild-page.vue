@@ -60,6 +60,7 @@ module.exports = {
 
 			axios.get(`/api/${this.pageType}/${this.$route.params.id}?nocache=${(new Date()).getTime()}`)
 			.then(res => {
+				if(!res.data.isActive) return window.location.replace('/');
 				this.guildId = res.data.id;
 				this.guildName = res.data.guildName;
 				this.iconURL = res.data.icon ? `https://cdn.discordapp.com/icons/${res.data.id}/${res.data.icon}.png` : null;

@@ -33,8 +33,11 @@ client.on('guildCreate', guild => {
 
 //Set isActive flag to false in db when bot leaves guild, update Discord Bot List guild count
 client.on('guildDelete', guild => {
-	deactivateGuild(guild, bot_auth);
-	updateDblStats(client);
+	//SetTimeout prevents race condition between guildDelete and guildUpdate
+	setTimeout(() => {
+		deactivateGuild(guild, bot_auth);
+		updateDblStats(client);
+	}, 1500);
 });
 
 //Update guild info (specifically guild name/icon) when a guild is updated

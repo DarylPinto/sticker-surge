@@ -60,8 +60,8 @@ function userIsGuildManager(guild, req, res){
 router.get('/:id', (req, res) => {
 	Guild.findOne({id: req.params.id}, removedFields)
 	.then(guild => {	
-		if(!guild || !guild.isActive) return res.status(404).send('Guild not found');
-		res.json(util.removeProps(guild._doc, ['isActive']));	
+		if(!guild) return res.status(404).send('Guild not found');
+		res.json(guild);	
 	})
 	.catch(err => res.status(500).send('Internal server error'));
 });
@@ -70,8 +70,8 @@ router.get('/:id', (req, res) => {
 router.get('/:id/stickers', (req, res) => {
 	Guild.findOne({id: req.params.id}, removedFields)
 	.then(guild => {	
-		if(!guild || !guild.isActive) return res.status(404).send('Guild not found');
-		res.json(guild.customStickers);	
+		if(!guild) return res.status(404).send('Guild not found');
+		res.json(guild.customStickers);
 	})
 	.catch(err => res.status(500).send('Internal server error'));
 });
@@ -80,7 +80,7 @@ router.get('/:id/stickers', (req, res) => {
 router.get('/:id/stickers/:stickername', (req, res) => {
 	Guild.findOne({id: req.params.id}, removedFields)
 	.then(guild => {
-		if(!guild || !guild.isActive) return res.status(404).send('Guild not found');
+		if(!guild) return res.status(404).send('Guild not found');
 		let sticker = guild._doc.customStickers.find(s => s.name === req.params.stickername);
 
 		if(!sticker) return res.status(404).send('Guild does not have a custom sticker with that name');
@@ -305,7 +305,7 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 
 	Guild.findOne({id: req.params.id})
 	.then(guild => {
-		if(!guild || !guild.isActive){
+		if(!guild){
 			res.status(404).send('Guild not found');
 			return null;
 		}
