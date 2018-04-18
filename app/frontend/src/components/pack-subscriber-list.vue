@@ -23,7 +23,7 @@ module.exports = {
 		//Determine if user can manage stickers in guild - duh
 		userCanManageStickersInGuild(guild){
 			if(guild.stickerManagerRole === '@everyone') return true;
-			if(guild.managerIds.indexOf(this.userId) > -1) return true;
+			if(guild.guildManagerIds.indexOf(this.userId) > -1) return true;
 			if(guild.stickerManagerIds.indexOf(this.userId) > -1) return true;
 			return false;
 		}
@@ -69,7 +69,7 @@ module.exports = {
 
 <template>
 <div class="pack-subscriber-list">
-	<h1>Where do you want to use this pack?</h1>
+	<h1>Where do you want to add this pack?</h1>
 	<ul>	
 		<packSubscriberListItem
 			v-for="item in packItemData"	
@@ -98,6 +98,9 @@ module.exports = {
 			background-color: rgba(0,0,0,0.2)
 			margin-top: 20px
 			margin-bottom: 20px
+			max-height: 330px
+			overflow: hidden
+			overflow-y: auto
 		.btn
 			font-size: 18px
 

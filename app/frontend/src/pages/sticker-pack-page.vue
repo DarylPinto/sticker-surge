@@ -78,7 +78,7 @@ module.exports = {
 	<header class="pack-header" :class="{transparent: !pageLoaded}">
 		<img :src="iconURL ? iconURL : '/images/default-discord-icon.png'" :alt="name">
 		<h1 :style="`font-size: ${nameFontSize}`">{{name}}</h1>
-		<a class="btn hollow" @click="showPackSubscriberList = true">Get This Pack</a>	
+		<a class="btn hollow" @click="showPackSubscriberList = true">Add This Pack</a>	
 	</header>
 	
 	<div class="container" :class="{transparent: !pageLoaded}">

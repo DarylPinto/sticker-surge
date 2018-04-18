@@ -22,6 +22,7 @@ module.exports = {
 			guildName: '',
 			iconURL: '',
 			customStickers: [],
+			stickerPacks: [],
 			guildManagerIds: [],
 			stickerManagerIds: [],
 			stickerManagerRole: '',
@@ -30,7 +31,8 @@ module.exports = {
 			stickerCreationError: '',
 			pageLoaded: false,
 			userId: this.$cookie.get('id') || null,
-			userGuilds: JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || []
+			userGuilds: JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || [],
+			stickerPackData: []
 		}
 	},
 
@@ -66,13 +68,21 @@ module.exports = {
 				this.guildId = res.data.id;
 				this.guildName = res.data.guildName;
 				this.iconURL = res.data.icon ? `https://cdn.discordapp.com/icons/${res.data.id}/${res.data.icon}.png` : null;
-				this.customStickers = res.data.customStickers;	
+				this.customStickers = res.data.customStickers;
+				this.stickerPacks = res.data.stickerPacks;
 				this.guildManagerIds = res.data.guildManagerIds;
 				this.stickerManagerIds = res.data.stickerManagerIds;
 				this.stickerManagerRole = res.data.stickerManagerRole;
 				document.title = `${res.data.guildName} - Stickers for Discord`;	
 				this.pageLoaded = true;
-			}).catch(err => {
+			})
+			.then(() => {
+				this.stickerPacks.forEach(key => {
+					this.stickerPackData = [];
+					axios.get(`/api/sticker-packs/${key}`).then(res => this.stickerPackData.push(res.data));
+				});
+			})
+			.catch(err => {
 				if(err.response.status === 404) window.location.replace('/');
 			});
 		}
@@ -116,7 +126,22 @@ module.exports = {
 			:pageType="pageType"
 			:userId="userId"
 			:userIsGuildManager="userIsGuildManager"
-			:isEditable="userCanEdit">
+			:isEditable="userCanEdit"
+		>
+		</stickerCollection>
+
+		<stickerCollection
+			v-for="pack in stickerPackData"
+			:id="pack.key"
+			:name="pack.name"
+			:stickerPrefix="pack.key"
+			:emojiNamesAllowed="false"
+			:stickers="pack.stickers"
+			:maxStickers="400"
+			pageType="sticker-packs"
+			:userId="userId"	
+			:isEditable="false"
+		>
 		</stickerCollection>
 
 	</div>
@@ -144,6 +169,9 @@ module.exports = {
 		h1
 			display: inline-block
 			margin-left: 15px
+
+		.sticker-collection
+			margin-bottom: 70px
 
 	@media screen and (max-width: 650px)
 		.guild-page > header

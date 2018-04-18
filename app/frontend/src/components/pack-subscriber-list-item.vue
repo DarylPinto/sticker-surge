@@ -58,9 +58,7 @@ module.exports = {
 		@click="toggleSubscribe"
 		@mouseenter="hovered = true"
 		@mouseleave="hovered = false"
-	>
-		{{subButtonText}}
-	</a>
+	>{{subButtonText}}</a>
 </li>
 </template>
 
