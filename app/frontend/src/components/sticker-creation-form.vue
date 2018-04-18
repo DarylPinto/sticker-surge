@@ -123,8 +123,11 @@ module.exports = {
 
 <style lang="sass">
 
-	.sticker-creation-form	
-		text-align: center	
+	.sticker-creation-form
+		display: flex
+		flex-direction: column
+		align-items: center
+		text-align: center
 		img
 			display: block
 			margin: 0 auto
