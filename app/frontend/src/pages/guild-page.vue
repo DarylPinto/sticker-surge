@@ -77,14 +77,28 @@ module.exports = {
 				this.pageLoaded = true;
 			})
 			.then(() => {
+				this.stickerPackData = [];
 				this.stickerPacks.forEach(key => {
-					this.stickerPackData = [];
-					axios.get(`/api/sticker-packs/${key}`).then(res => this.stickerPackData.push(res.data));
+					axios.get(`/api/sticker-packs/${key}`).then(res => {
+						this.stickerPackData.push(res.data);
+
+						//Scroll to pack in url hash once all loaded
+						if(this.stickerPackData.length === this.stickerPacks.length){
+							setTimeout(this.scrollToUrlHash, 500);
+						}
+
+					});
 				});
 			})
 			.catch(err => {
 				if(err.response.status === 404) window.location.replace('/');
 			});
+		},
+		scrollToUrlHash(){
+			if(window.location.hash.length < 1) return;
+			const hash = window.location.hash;
+			const el = document.querySelector(hash);
+			if(el) el.scrollIntoView({behavior: "smooth"});
 		}
 
 	},
