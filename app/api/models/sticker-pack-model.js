@@ -5,6 +5,7 @@ const stickerPackSchema = Schema({
 	name: {type: String, required: true, maxlength: 60},
 	key: {type: String, unique: true, required: true, maxlength: 8},
 	icon: {type: String, default: null},
+	published: {type: Boolean, default: false},
 	subscribers: {type: Number, default: 0},
 	createdAt: {type: Date, default: Date.now},
 	creatorId: {type: String, required: true},

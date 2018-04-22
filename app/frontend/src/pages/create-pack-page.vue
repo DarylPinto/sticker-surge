@@ -10,9 +10,10 @@ module.exports = {
 	data: function(){
 		return {
 			pageLoaded: false,
+			packIcon: null,
 			packTitle: '',
 			packKey: '',
-			packKeyValid: false,
+			packKeyValid: true,
 			packKeyFocused: false,
 			termsAccepted: false,
 			dblSupportRequired: true,
@@ -22,10 +23,46 @@ module.exports = {
 	},	
 	methods: {
 		sanitizePackKey: function(){
+			if(this.packKey.length === 0){
+				this.packKeyValid = true;
+				return;
+			}
 			this.packKey = this.packKey.toLowerCase().replace(/[^a-z0-9]/g, '');
-		},	
+			this.debouncedCheckValidPackKey();
+		},
+		debouncedCheckValidPackKey: debounce(function(){	
+			axios.get(`/api/sticker-packs/${this.packKey}/info`)
+			.then(res => this.packKeyValid = false)
+			.catch(err => this.packKeyValid = true);
+		}, 150),
+		showPackIconPreview: function(e){
+			let file = e.target.files[0];
+			if(!file){
+				this.packIcon = null;
+				return false;
+			}
+			
+			let reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.addEventListener('load', () => {
+				this.packIcon = reader.result;
+				reader = null; //de-reference
+			});
+		},
 		createPack: function(){
-			alert('Not implemented yet xd');
+			if(!this.packKeyValid) return alert('Pack prefix invalid');
+			if(!this.termsAccepted) return alert('You must accept the Terms and Conditions');
+			if(this.dblSupportRequired && !this.dblSupported) return alert('You must vote for the bot on Discord Bot List');
+
+			let formData = new FormData(document.querySelector('.create-pack-page form'));
+
+			axios.post('/api/sticker-packs', formData, {'Content-Type': 'multipart/form-data'})
+			.then(res => {
+				if(res.status === 201) return window.location.replace(`/pack/${this.packKey}`);
+			})
+			.catch(err => {
+				console.error(err.message);
+			});
 		}
 	},
 	mounted: function(){
@@ -48,22 +85,37 @@ module.exports = {
 		</header>
 		
 		<form @submit.prevent="createPack">	
-			<div class="pack-icon"></div>	
-			<input type="text" class="pack-title" placeholder="Title" maxlength="60" v-model="packTitle">
+			<div class="pack-icon" :class="{'icon-submitted': packIcon}" :style="'background-image: url('+packIcon+')'"	>
+				<input type="file" name="icon" @change="showPackIconPreview" accept="image/png, image/jpeg, image/webp" required>
+				<span v-if="!packIcon">Choose an<br>Icon</span>
+			</div>	
+			<input type="text" name="name" class="pack-title" placeholder="Title" maxlength="60" v-model="packTitle" required>
 			<div class="pack-key">
-				<p class="tooltip left" :class="{transparent: !(packKeyFocused && packKey.length === 0)}">
-					Keep it short, sweet and to the point! All sticker names in this pack will begin with this prefix.
-				</p>
+				<div class="tooltip left" :class="{transparent: !(packKeyFocused && packKey.length === 0)}">
+					<p>Keep it short, sweet and to the point! All sticker names in your pack will begin with this prefix.</p>
+					<p>This CANNOT be changed in the future.</p>
+				</div>
 				<input
 					type="text"
+					name="key"
 					@input="sanitizePackKey"
 					placeholder="Unique Prefix"
 					maxlength="8"
 					v-model="packKey"
 					@focus="packKeyFocused = true"
 					@blur="packKeyFocused = false"
+					required
 				>
-				<i class="material-icons" v-show="packKey.length > 0">{{packKeyValid ? 'check_circle' : 'error'}}</i>	
+				<i
+					class="material-icons"
+					:class="{error: !packKeyValid}"
+					v-show="packKey.length > 0"
+				>
+					{{packKeyValid ? 'check_circle' : 'error'}}
+				</i>
+				<div class="tooltip right" :class="{transparent: packKeyValid}">
+					<p>This prefix is unavailable</p>
+				</div>	
 			</div>
 			<div class="confirmations">
 				<p @click="termsAccepted = !termsAccepted">
@@ -110,16 +162,41 @@ module.exports = {
 			width: 50%
 			margin: 45px auto
 			.pack-icon
-				display: inline-block
+				display: inline-flex
+				justify-content: center
+				align-items: center
 				height: 100px
 				width: 100px
 				border-radius: 100%
-				color: transparent
-				background-color: rgba(0,0,0,0.2)
-				font-size: 10px
-				border: 5px solid rgba(255, 255, 255, 0.1)
+				background-color: rgba(0,0,0,0.35)
+				border: 5px solid gray
 				cursor: pointer
 				margin-bottom: 18px
+				overflow: hidden
+				background-size: cover
+				background-position: center center
+				background-repeat: no-repeat
+				&.icon-submitted
+					border-color: rgba(255,255,255,0.2)
+				input[type="file"]
+					position: absolute
+					height: 100px
+					width: 100px
+					padding: 0
+					margin: 0
+					border-radius: 100%
+					opacity: 0
+					cursor: pointer
+				span
+					font-size: 12px
+					text-transform: uppercase
+					color: gray 
+					text-align: center
+					line-height: 1.2em
+					margin-top: 5px	
+					transition: .2s
+				&:hover span
+					color: white
 			input, p, .pack-key
 				width: 480px
 			.pack-key	
@@ -131,11 +208,21 @@ module.exports = {
 					position: absolute
 					top: 10px
 					right: -10px
-					opacity: 0.3
-			.tooltip	
-				width: 180px
-				left: -220px
-				top: -15px
+					color: gray
+					&.error
+						color: red
+			.tooltip
+				&.left
+					width: 180px
+					left: -220px
+					top: -15px
+				&.right
+					width: 150px
+					right: -197px
+					top: 2px
+
+					&:after
+						top: 10px
 
 			input
 				border-radius: 0
@@ -153,12 +240,15 @@ module.exports = {
 			.confirmations
 				margin-top: 40px
 				margin-bottom: 20px
-				margin-left: -12px
+				margin-left: -22px
 				input[type="checkbox"]
 					position: absolute	
 					left: 0
 					opacity: 0
 					pointer-events: none
+					user-select: none
+					-moz-user-select: none
+					-webkit-user-select: none
 				p	
 					color: gray
 					vertical-align: middle

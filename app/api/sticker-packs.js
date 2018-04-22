@@ -63,7 +63,9 @@ router.get('/', async (req, res) =>{
 	try{
 
 		const packs = await StickerPack.find(search, removedFields).sort(sortType).skip(skipAmount).limit(packsPerPage);
-		return res.send(packs);
+		let packInfo = packs.map(p => p._doc);
+		packInfo.forEach(p => delete p.stickers);
+		return res.send(packInfo);
 
 	}catch(err){
 		console.log(err.message);
@@ -79,6 +81,20 @@ router.get('/:key', async (req, res) => {
 		const pack = await StickerPack.findOne({key: req.params.key}, removedFields);
 		if(!pack) return res.status(404).send('Sticker Pack not found');
 		res.json(pack);
+	}catch(err){
+		res.status(500).send('Internal server error');
+	}	
+
+});
+
+//GET Sticker Pack info (all data except stickers themselves)
+router.get('/:key/info', async (req, res) => {
+
+	try{
+		const pack = await StickerPack.findOne({key: req.params.key}, removedFields);
+		if(!pack) return res.status(404).send('Sticker Pack not found');
+		delete pack._doc.stickers;
+		res.json(pack._doc);
 	}catch(err){
 		res.status(500).send('Internal server error');
 	}	
@@ -118,13 +134,13 @@ router.get('/:key/stickers/:stickername', async (req, res) => {
 ////////
 
 //POST new sticker pack
-router.post('/', /*verifyUserAjax,*/ async (req, res) => {
+router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async (req, res) => {
 
 	if(!req.body.name || !req.body.key) return res.status(400).send('Invalid body data');
 	if(!req.body.key.match(/^[a-z0-9]+$/g)) return res.status(400).send('Sticker Pack key must contain lowercase letters and numbers only');
 	if(req.body.key.length > 8) return res.status(400).send('Sticker Pack key cannot be longer than 8 characters');
 	if(req.body.name.length > 60) return res.status(400).send('Sticker Pack name cannot be longer than 60 characters');
-	//if(!res.locals.userId) return res.status(401).send('Unauthorized');
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
 	//Check if Sticker Pack key is already used
 	const keyAlreadyUsed = await StickerPack.findOne({key: req.body.key});
@@ -132,7 +148,8 @@ router.post('/', /*verifyUserAjax,*/ async (req, res) => {
 
 	//Create Sticker Pack
 	let data = Object.assign({}, req.body);
-	data.creatorId = 'test-id';//res.locals.userId;
+	data.creatorId = res.locals.userId;
+	data.icon = await imageToCdn(req.file.buffer, `${data.key}-ICON-${(new Date()).getTime()}`);
 	
 	try{
 		await new StickerPack(data).save();

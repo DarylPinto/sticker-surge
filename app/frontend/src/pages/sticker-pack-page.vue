@@ -75,38 +75,42 @@ module.exports = {
 
 	<header-bar :userId="userId"></header-bar>
 
-	<header class="pack-header" :class="{transparent: !pageLoaded}">
-		<img :src="iconURL ? iconURL : '/images/default-discord-icon.png'" :alt="name">
-		<h1 :style="`font-size: ${nameFontSize}`">{{name}}</h1>
-		<a class="btn hollow" @click="showPackSubscriberList = true">Add This Pack</a>	
-	</header>
-	
-	<div class="container" :class="{transparent: !pageLoaded}">
+	<div :class="{transparent: !pageLoaded}">
 
-		<stickerCollection
-			v-on:reload="loadPageData"
-			name="Stickers in this pack"
-			:stickerPrefix="key"
-			:emojiNamesAllowed="true"
-			:stickers="stickers"
-			:maxStickers="400"
-			:pageType="pageType"
-			:userId="userId"
-			:isEditable="isUsersPack">
-		</stickerCollection>
+		<header class="pack-header">
+			<img :src="iconURL ? iconURL : '/images/default-discord-icon.png'" :alt="name">
+			<h1 :style="`font-size: ${nameFontSize}`">{{name}}</h1>
+			<a class="btn hollow" @click="showPackSubscriberList = true">Add This Pack</a>	
+		</header>
+		
+		<div class="container" :class="{transparent: !pageLoaded}">
+
+			<stickerCollection
+				v-on:reload="loadPageData"
+				name="Stickers in this pack"
+				:stickerPrefix="key"
+				:emojiNamesAllowed="true"
+				:stickers="stickers"
+				:maxStickers="400"
+				:pageType="pageType"
+				:userId="userId"
+				:isEditable="isUsersPack">
+			</stickerCollection>
+
+		</div>
+
+		<modal
+			v-show="showPackSubscriberList"
+			@close="showPackSubscriberList = false"
+		>
+			<component
+				is="packSubscriberList"
+				:userId="userId"
+				:packKey="key"
+			/>
+		</modal>
 
 	</div>
-
-	<modal
-		v-show="showPackSubscriberList"
-		@close="showPackSubscriberList = false"
-	>
-		<component
-			is="packSubscriberList"
-			:userId="userId"
-			:packKey="key"
-		/>
-	</modal>
 
 </main>
 </template>
@@ -115,7 +119,8 @@ module.exports = {
 
 	.sticker-pack-page
 		margin-bottom: 90px
-		transition: .2s
+		> div
+			transition: .2s
 		header.pack-header
 			background-color: rgba(0,0,0,0.3)
 			padding-top: 25px
