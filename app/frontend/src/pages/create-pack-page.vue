@@ -12,14 +12,18 @@ module.exports = {
 			pageLoaded: false,
 			packTitle: '',
 			packKey: '',
-			packKeyValid: true,
+			packKeyValid: false,
+			packKeyFocused: false,
+			termsAccepted: false,
+			dblSupportRequired: true,
+			dblSupported: false,
 			userId: this.$cookie.get('id') || null,
 		}
-	},
+	},	
 	methods: {
 		sanitizePackKey: function(){
 			this.packKey = this.packKey.toLowerCase().replace(/[^a-z0-9]/g, '');
-		},
+		},	
 		createPack: function(){
 			alert('Not implemented yet xd');
 		}
@@ -47,22 +51,31 @@ module.exports = {
 			<div class="pack-icon"></div>	
 			<input type="text" class="pack-title" placeholder="Title" maxlength="60" v-model="packTitle">
 			<div class="pack-key">
+				<p class="tooltip left" :class="{transparent: !(packKeyFocused && packKey.length === 0)}">
+					Keep it short, sweet and to the point! All sticker names in this pack will begin with this prefix.
+				</p>
 				<input
 					type="text"
 					@input="sanitizePackKey"
 					placeholder="Unique Prefix"
 					maxlength="8"
 					v-model="packKey"
+					@focus="packKeyFocused = true"
+					@blur="packKeyFocused = false"
 				>
 				<i class="material-icons" v-show="packKey.length > 0">{{packKeyValid ? 'check_circle' : 'error'}}</i>	
 			</div>
 			<div class="confirmations">
-				<p>
-					<i class="material-icons">check_box_outline_blank</i>
+				<p @click="termsAccepted = !termsAccepted">
+					<!-- Standard checkboxes used for keyboard controls -->
+					<input type="checkbox" v-model="termsAccepted">
+					<i class="material-icons">{{termsAccepted ? 'check_box' : 'check_box_outline_blank'}}</i>
 					I have read and agree to the <a href="#" target="_blank">Terms and Conditions</a>
 				</p>
-				<p>
-					<i class="material-icons">check_box_outline_blank</i>
+				<p v-if="dblSupportRequired" @click="dblSupported = !dblSupported">
+					<!-- Standard checkboxes used for keyboard controls -->
+					<input type="checkbox" v-model="dblSupported">
+					<i class="material-icons">{{dblSupported ? 'check_box' : 'check_box_outline_blank'}}</i>
 					I have voted for the bot on <a href="https://discordbots.org/bot/224415693393625088" target="_blank">Discord Bot List</a> within the last 24 hours
 				</p>	
 			</div>
@@ -119,6 +132,11 @@ module.exports = {
 					top: 10px
 					right: -10px
 					opacity: 0.3
+			.tooltip	
+				width: 180px
+				left: -220px
+				top: -15px
+
 			input
 				border-radius: 0
 				border: none
@@ -133,14 +151,21 @@ module.exports = {
 					vertical-align: middle	
 					margin-bottom: 50px
 			.confirmations
-				margin-top: 20px
+				margin-top: 40px
+				margin-bottom: 20px
 				margin-left: -12px
+				input[type="checkbox"]
+					position: absolute	
+					left: 0
+					opacity: 0
+					pointer-events: none
 				p	
 					color: gray
 					vertical-align: middle
 					margin-bottom: 20px
 					text-indent: -16px
-					margin-left: 60px
+					margin-left: 75px
+					font-size: 14px
 					a
 						color: gray
 						transition: .1s
@@ -159,8 +184,7 @@ module.exports = {
 				height: 45px
 				align-items: center
 				margin: 0 auto
-				width: 40%
-				margin-top: 15px
+				width: 40%	
 
 
 </style>

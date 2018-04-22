@@ -37,6 +37,24 @@ input
 .transparent
 	opacity: 0
 
+.tooltip
+	position: absolute	
+	background-color: #000
+	color: #fff
+	line-height: 1.5em	
+	font-size: 12.5px	
+	padding: 10px
+	border-radius: 5px
+	pointer-events: none
+	transition: .2s
+	&.left::after
+		content: ""
+		position: absolute
+		right: -20px
+		top: 27px
+		border: 10px solid transparent
+		border-left-color: #000
+		
 .btn
 	background-color: $brand-red
 	display: inline-block
