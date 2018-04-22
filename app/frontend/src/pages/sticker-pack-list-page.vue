@@ -69,7 +69,7 @@ module.exports = {
 					<option value="newest">Sort by: Newest</option>
 					<option value="oldest">Sort by: Oldest</option>
 				</select>
-				<button class="btn" v-if="userId">Create a Sticker Pack</button>	
+				<router-link to="/sticker-packs/new" class="btn" v-if="userId">Create a Sticker Pack</router-link>	
 			</div>	
 		</header>	
 
@@ -103,6 +103,9 @@ module.exports = {
 			border-bottom: 2px solid rgba(255, 255, 255, 0.45)
 			justify-content: space-between
 			align-items: baseline
+			.btn
+				display: flex
+				align-items: center
 
 		.sticker-pack
 			display: inline-block

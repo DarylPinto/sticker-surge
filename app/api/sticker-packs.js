@@ -122,7 +122,7 @@ router.post('/', /*verifyUserAjax,*/ async (req, res) => {
 
 	if(!req.body.name || !req.body.key) return res.status(400).send('Invalid body data');
 	if(!req.body.key.match(/^[a-z0-9]+$/g)) return res.status(400).send('Sticker Pack key must contain lowercase letters and numbers only');
-	if(req.body.key.length > 6) return res.status(400).send('Sticker Pack key cannot be longer than 6 characters');
+	if(req.body.key.length > 8) return res.status(400).send('Sticker Pack key cannot be longer than 8 characters');
 	if(req.body.name.length > 60) return res.status(400).send('Sticker Pack name cannot be longer than 60 characters');
 	//if(!res.locals.userId) return res.status(401).send('Unauthorized');
 

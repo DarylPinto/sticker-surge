@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const stickerPackSchema = Schema({
-	name: String,
-	key: {type: String, unique: true},
+	name: {type: String, required: true, maxlength: 60},
+	key: {type: String, unique: true, required: true, maxlength: 8},
 	icon: {type: String, default: null},
 	subscribers: {type: Number, default: 0},
 	createdAt: {type: Date, default: Date.now},
