@@ -18,6 +18,7 @@ module.exports = {
 			termsAccepted: false,
 			dblSupportRequired: true,
 			dblSupported: false,
+			packSubmissionLoading: false,
 			userId: this.$cookie.get('id') || null,
 		}
 	},	
@@ -34,7 +35,7 @@ module.exports = {
 			axios.get(`/api/sticker-packs/${this.packKey}/info`)
 			.then(res => this.packKeyValid = false)
 			.catch(err => this.packKeyValid = true);
-		}, 150),
+		}, 200),
 		showPackIconPreview: function(e){
 			let file = e.target.files[0];
 			if(!file){
@@ -54,6 +55,8 @@ module.exports = {
 			if(!this.termsAccepted) return alert('You must accept the Terms and Conditions');
 			if(this.dblSupportRequired && !this.dblSupported) return alert('You must vote for the bot on Discord Bot List');
 
+			this.packSubmissionLoading = true;
+
 			let formData = new FormData(document.querySelector('.create-pack-page form'));
 
 			axios.post('/api/sticker-packs', formData, {'Content-Type': 'multipart/form-data'})
@@ -61,7 +64,13 @@ module.exports = {
 				if(res.status === 201) return window.location.replace(`/pack/${this.packKey}`);
 			})
 			.catch(err => {
-				console.error(err.message);
+				this.packSubmissionLoading = false;
+				if(err.response.data.indexOf('does not support on DBL') > -1){
+					this.dblSupported = false;
+					alert('You must vote for the bot on Discord Bot List');
+				}else{
+					console.log(err.response);
+				}
 			});
 		}
 	},
@@ -87,7 +96,8 @@ module.exports = {
 		<form @submit.prevent="createPack">	
 			<div class="pack-icon" :class="{'icon-submitted': packIcon}" :style="'background-image: url('+packIcon+')'"	>
 				<input type="file" name="icon" @change="showPackIconPreview" accept="image/png, image/jpeg, image/webp" required>
-				<span v-if="!packIcon">Choose an<br>Icon</span>
+				<span v-if="!packIcon">Choose&nbsp;an<br>Icon</span>
+				<span v-if="packIcon">Change<br>Icon</span>
 			</div>	
 			<input type="text" name="name" class="pack-title" placeholder="Title" maxlength="60" v-model="packTitle" required>
 			<div class="pack-key">
@@ -131,7 +141,7 @@ module.exports = {
 					I have voted for the bot on <a href="https://discordbots.org/bot/224415693393625088" target="_blank">Discord Bot List</a> within the last 24 hours
 				</p>	
 			</div>
-			<button class="btn">Continue</button>
+			<button class="btn">{{packSubmissionLoading ? 'Loading...' : 'Continue'}}</button>
 		</form>
 
 	</div>
@@ -168,8 +178,8 @@ module.exports = {
 				height: 100px
 				width: 100px
 				border-radius: 100%
-				background-color: rgba(0,0,0,0.35)
-				border: 5px solid gray
+				background-color: #1f1f1f
+				border: 5px solid gray 
 				cursor: pointer
 				margin-bottom: 18px
 				overflow: hidden
@@ -177,7 +187,11 @@ module.exports = {
 				background-position: center center
 				background-repeat: no-repeat
 				&.icon-submitted
-					border-color: rgba(255,255,255,0.2)
+					border-color: #484848
+					span
+						opacity: 0
+					&:hover span
+						opacity: 1
 				input[type="file"]
 					position: absolute
 					height: 100px
@@ -193,7 +207,9 @@ module.exports = {
 					color: gray 
 					text-align: center
 					line-height: 1.2em
-					margin-top: 5px	
+					margin-top: 5px
+					background-color: rgba(0, 0, 0, 0.5);
+					padding: 45px
 					transition: .2s
 				&:hover span
 					color: white

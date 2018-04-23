@@ -52,7 +52,7 @@ router.get('/', async (req, res) =>{
 	else sortType = '-createdAt';
 
 	//Search
-	let search = {};
+	let search = {};//{published: true};
 
 	if(req.query.search){
 		let s = decodeURIComponent(req.query.search).trim();
@@ -134,7 +134,7 @@ router.get('/:key/stickers/:stickername', async (req, res) => {
 ////////
 
 //POST new sticker pack
-router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async (req, res) => {
+router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async (req, res) => {	
 
 	if(!req.body.name || !req.body.key) return res.status(400).send('Invalid body data');
 	if(!req.body.key.match(/^[a-z0-9]+$/g)) return res.status(400).send('Sticker Pack key must contain lowercase letters and numbers only');
@@ -145,6 +145,17 @@ router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async
 	//Check if Sticker Pack key is already used
 	const keyAlreadyUsed = await StickerPack.findOne({key: req.body.key});
 	if(keyAlreadyUsed) return res.status(400).send('There is already a Sticker Pack with that key');	
+
+	//Ensure DBL supporter status before continuing (only works if DBL api key is in config)
+	if(covert.discord_bot_list.api_key){
+		let dbl_supporters = await rp({
+			uri: 'https://discordbots.org/api/bots/224415693393625088/votes',
+			headers: {Authorization: covert.discord_bot_list.api_key},
+			json: true
+		});
+
+		if(!dbl_supporters.map(s => s.id).includes(res.locals.userId)) return res.status(401).send('User does not support on DBL');
+	}
 
 	//Create Sticker Pack
 	let data = Object.assign({}, req.body);

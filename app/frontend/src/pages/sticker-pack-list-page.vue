@@ -79,7 +79,7 @@ module.exports = {
 
 		<div v-if="packsLoaded" v-for="pack in packs" :key="pack.key" class="sticker-pack">
 			<router-link :to="`/pack/${pack.key}`">
-				<img :src="pack.icon ? pack.icon : '/images/default-discord-icon.png'" :alt="pack.name">
+				<div class="pack-icon" :style="'background-image: url('+pack.icon+')'"></div>
 				<h2>{{pack.name}}</h2>	
 			</router-link>
 		</div>
@@ -136,12 +136,17 @@ module.exports = {
 				margin-bottom: 10px
 				font-weight: 100
 				line-height: 1.3em
-			img
+			.pack-icon
+				display: inline-block
 				border-radius: 200px
-				border: 5px solid rgba(255, 255, 255, 0.1)
+				border: 5px solid #484848
 				margin-top: 25px
 				height: 128px
 				width: 128px
+				background-color: #1f1f1f
+				background-size: cover
+				background-position: center center
+				background-repeat: no-repeat
 
 		.loading-packs img
 			display: block

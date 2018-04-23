@@ -50,7 +50,7 @@ module.exports = {
 				document.title = `${res.data.name} - Stickers for Discord`;	
 				this.pageLoaded = true;
 			}).catch(err => {
-				if(err.response.status === 404) window.location.replace('/');
+				if(err.response.status === 404) window.location.replace('/sticker-packs');
 			});
 		}
 
@@ -78,7 +78,7 @@ module.exports = {
 	<div :class="{transparent: !pageLoaded}">
 
 		<header class="pack-header">
-			<img :src="iconURL ? iconURL : '/images/default-discord-icon.png'" :alt="name">
+			<div class="pack-icon" :style="'background-image: url('+iconURL+')'"></div>
 			<h1 :style="`font-size: ${nameFontSize}`">{{name}}</h1>
 			<a class="btn hollow" @click="showPackSubscriberList = true">Add This Pack</a>	
 		</header>
@@ -131,7 +131,7 @@ module.exports = {
 			justify-content: center
 			align-items: center	
 			font-size: 90px
-			> img
+			.pack-icon
 				display: block
 				border-radius: 100%
 				height: 90px
@@ -139,7 +139,11 @@ module.exports = {
 				color: transparent
 				font-size: 10px
 				margin-bottom: 15px
-				border: 5px solid rgba(255, 255, 255, 0.1)
+				border: 5px solid #484848
+				background-color: #1f1f1f
+				background-size: cover
+				background-position: center center
+				background-repeat: no-repeat
 			.btn
 				margin-top: 20px
 				font-size: 18px
