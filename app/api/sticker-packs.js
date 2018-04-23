@@ -11,6 +11,7 @@ const imageToCdn = require('./utilities/image-to-cdn.js');
 const deleteCdnImage = require('./utilities/delete-cdn-image.js');
 const emojis = require('./utilities/emojis.json');
 const multer = require('multer');
+const covert = require('../../covert.js');
 
 let storage = multer.memoryStorage();
 let upload = multer({
@@ -146,15 +147,15 @@ router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async
 	const keyAlreadyUsed = await StickerPack.findOne({key: req.body.key});
 	if(keyAlreadyUsed) return res.status(400).send('There is already a Sticker Pack with that key');	
 
-	//Ensure DBL supporter status before continuing (only works if DBL integrated)
-	if(covert.discord_bot_list.integrated){
-		let dbl_supporters = await rp({
-			uri: 'https://discordbots.org/api/bots/224415693393625088/votes',
+	//Ensure user has voted on DBL within the last 24hrs before continuing (only works if DBL integrated)
+	if(covert.discord_bot_list.integrated){	
+		let dbl_vote_check = await rp({
+			uri: `https://discordbots.org/api/bots/${covert.discord.app_id}/check?userId=${res.locals.userId}`,
 			headers: {Authorization: covert.discord_bot_list.api_key},
 			json: true
 		});
 
-		if(!dbl_supporters.map(s => s.id).includes(res.locals.userId)) return res.status(401).send('User does not support on DBL');
+		if(dbl_vote_check.voted === 0) return res.status(401).send('User has not voted on DBL today');
 	}
 
 	//Create Sticker Pack

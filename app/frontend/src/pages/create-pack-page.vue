@@ -65,9 +65,9 @@ module.exports = {
 			})
 			.catch(err => {
 				this.packSubmissionLoading = false;
-				if(err.response.data.indexOf('does not support on DBL') > -1){
+				if(err.response.data.indexOf('User has not voted on DBL today') > -1){
 					this.dblSupported = false;
-					alert('You must vote for the bot on Discord Bot List');
+					alert('You must vote for the bot on Discord Bot List. If you have JUST voted, you may have to wait 5 minutes for your vote to register.');
 				}else{
 					console.log(err.response);
 				}
