@@ -146,8 +146,8 @@ router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async
 	const keyAlreadyUsed = await StickerPack.findOne({key: req.body.key});
 	if(keyAlreadyUsed) return res.status(400).send('There is already a Sticker Pack with that key');	
 
-	//Ensure DBL supporter status before continuing (only works if DBL api key is in config)
-	if(covert.discord_bot_list.api_key){
+	//Ensure DBL supporter status before continuing (only works if DBL integrated)
+	if(covert.discord_bot_list.integrated){
 		let dbl_supporters = await rp({
 			uri: 'https://discordbots.org/api/bots/224415693393625088/votes',
 			headers: {Authorization: covert.discord_bot_list.api_key},

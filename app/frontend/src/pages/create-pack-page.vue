@@ -16,7 +16,7 @@ module.exports = {
 			packKeyValid: true,
 			packKeyFocused: false,
 			termsAccepted: false,
-			dblSupportRequired: true,
+			dblSupportRequired: false,
 			dblSupported: false,
 			packSubmissionLoading: false,
 			userId: this.$cookie.get('id') || null,
@@ -78,6 +78,7 @@ module.exports = {
 		if(!this.userId) return window.location.replace('/sticker-packs'); //redirect if user not logged in
 		this.pageLoaded = true;
 		document.title = 'Create a Sticker Pack - Stickers for Discord';
+		axios.get('/api/dbl-integrated').then(res => this.dblSupportRequired = res.data.dbl_integrated);
 	}
 }	
 </script>
@@ -116,11 +117,7 @@ module.exports = {
 					@blur="packKeyFocused = false"
 					required
 				>
-				<i
-					class="material-icons"
-					:class="{error: !packKeyValid}"
-					v-show="packKey.length > 0"
-				>
+				<i class="material-icons" :class="{error: !packKeyValid}" v-show="packKey.length > 0">
 					{{packKeyValid ? 'check_circle' : 'error'}}
 				</i>
 				<div class="tooltip right" :class="{transparent: packKeyValid}">

@@ -146,6 +146,7 @@ module.exports = {
 
 		<stickerCollection
 			v-for="pack in stickerPackData"
+			:key="pack.key"
 			:id="pack.key"
 			:name="pack.name"
 			:stickerPrefix="pack.key"

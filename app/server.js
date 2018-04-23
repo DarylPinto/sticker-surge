@@ -54,6 +54,9 @@ app.get('/api/invalidate-token', (req, res) => {
 	req.session.token = 'invalidated';
 	res.send('Token invalidated');
 });
+app.get('/api/dbl-integrated', (req, res) => {
+	res.send({dbl_integrated: covert.discord_bot_list.integrated});
+});
 
 //Redirect all other traffic to app root
 app.get('*', (req, res) => {
