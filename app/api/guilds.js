@@ -211,7 +211,7 @@ router.patch('/:id', verifyBot, (req, res) => {
 	.then(guild => {
 		if(guild) res.json(guild);
 	})
-	.catch(err => {	
+	.catch(err => {
 		res.status(500).send('Internal server error');
 	});
 
@@ -288,7 +288,7 @@ router.patch('/:id/sticker-manager-role', verifyUserAjax, (req, res) => {
 	.then(guild => {
 		if(guild) res.json(guild);
 	})
-	.catch(err => {	
+	.catch(err => {
 		res.status(500).send('Internal server error');
 	});
 

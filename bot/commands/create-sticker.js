@@ -1,9 +1,10 @@
 const rp = require('request-promise');
 const covert = require('../../covert.js');
 
-module.exports = function(message, bot_auth, prefix, sticker_manager_role){
+module.exports = function(message, bot_auth, prefix, guild_info){
 
-	let message_words = message.content.trim().split(/\s+/);	
+	let message_words = message.content.trim().split(/\s+/);
+	let sticker_manager_role = guild_info.stickerManagerRole;	
 	let attachments = message.attachments.array();
 	let invalid_syntax_message;
 	let uri;

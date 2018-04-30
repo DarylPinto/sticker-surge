@@ -17,7 +17,9 @@ const guildSchema = Schema({
 		groupId: {type: String, required: true, default: 'unknown'}
 
 	}],
-	recentStickers: [String],
+	list_mode: {type: String, required: true, default: 'whitelist'},
+	whitelist: {type: String, default: '@everyone'},
+	blacklist: {type: String, default: null},
 	stickerPacks: [String],
 	guildManagerIds: [String],
 	stickerManagerRole: {type: String, required: true, default: '@everyone'},

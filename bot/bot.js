@@ -121,6 +121,9 @@ client.on('message', message => {
 			let guild_manager_ids = guild.guildManagerIds;
 			let sticker_manager_role = guild.stickerManagerRole;
 			let custom_stickers = guild.customStickers;
+			let list_mode = guild.list_mode;
+			let whitelist = guild.whitelist;
+			let blacklist = guild.blacklist;
 
 			const usedGuildCommand = command => {
 				if(first_word === `${prefix}${command}`) return true;
@@ -131,12 +134,12 @@ client.on('message', message => {
 			}
 
 			if(usedGuildCommand('stickers')) commands.stickers(message)
-			else if(usedGuildCommand('createsticker')) commands.createsticker(message, bot_auth, prefix, sticker_manager_role)
-			else if(usedGuildCommand('deletesticker')) commands.deletesticker(message, bot_auth, prefix, sticker_manager_role)
+			else if(usedGuildCommand('createsticker')) commands.createsticker(message, bot_auth, prefix, guild)
+			else if(usedGuildCommand('deletesticker')) commands.deletesticker(message, bot_auth, prefix, guild)
 			else if(usedGuildCommand('setprefix')) commands.setprefix(message, bot_auth, prefix)
-			else if(usedGuildCommand('setrole')) commands.setrole(message, bot_auth, prefix)		
-			else if(usedGuildCommand('commands')) commands.commands(message, prefix, custom_stickers, sticker_manager_role, guild_manager_ids)
-			else if(usedGuildCommand('help')) commands.help(message, prefix, custom_stickers, sticker_manager_role)
+			else if(usedGuildCommand('setrole')) commands.setrole(message, bot_auth, prefix)
+			else if(usedGuildCommand('commands')) commands.commands(message, prefix, guild)
+			else if(usedGuildCommand('help')) commands.help(message, prefix, guild)
 
 		});
 

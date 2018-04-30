@@ -1,12 +1,18 @@
 const rp = require('request-promise');
 
-module.exports = function(message, prefix, custom_stickers, sticker_manager_role){
+module.exports = function(message, prefix, guild_info){
 
 	const embed_color = 16540258;
 	const lib_version = "11.2.1";
 	const discord_link = "https://discord.gg/HNFmKsE";
 	const add_bot_link = "https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536879104";
-	const bot_vote_link = "https://discordbots.org/bot/224415693393625088/vote";
+	const bot_vote_link = "https://discordbots.org/bot/224415693393625088";
+
+	let sticker_manager_role = guild_info.stickerManagerRole;
+	let custom_stickers = guild_info.customStickers;
+	let list_mode = guild_info.list_mode;
+	let whitelist_role = guild_info.whitelist;
+	let blacklist_role = guild_info.blacklist;
 
 	//Escape prefix to avoid issues with Discord formatting
 	const escaped_prefix = (prefix) ? prefix.replace(/[^a-zA-Z0-9]/g, '\\$&') : null;
@@ -17,12 +23,18 @@ module.exports = function(message, prefix, custom_stickers, sticker_manager_role
 		const guild = message.channel.guild;	
 		let sticker_manager_role_name;
 
-		if(sticker_manager_role === '@everyone'){
-			sticker_manager_role_name = 'everyone';
-		}else{
-			let role = guild.roles.find(r => r.id === sticker_manager_role);
-			sticker_manager_role_name = role.name.replace(/[^a-zA-Zа-яёА-ЯЁ0-9\s]/g, '\\$&');
+		const getRoleNameFromId = id => {
+			if(id === '@everyone') return 'everyone';
+			else if(id === null) return 'N/A';
+			else{
+				let role = guild.roles.find(r => r.id === id);
+				return role.name.replace(/[^a-zA-Zа-яёА-ЯЁ0-9\s]/g, '\\$&');
+			}
 		}
+
+		sticker_manager_role_name = getRoleNameFromId(sticker_manager_role);
+		whitelist_role_name = getRoleNameFromId(whitelist_role);
+		blacklist_role_name = getRoleNameFromId(blacklist_role);	
 
 		message.channel.send({embed: {
 			color: embed_color,
@@ -38,9 +50,11 @@ module.exports = function(message, prefix, custom_stickers, sticker_manager_role
 					name: message.guild.name,
 					value: `
 						Command Prefix: ${escaped_prefix}
-						Required Role: ${sticker_manager_role_name}
-						Custom Stickers: ${sticker_amount}
+						Custom Sticker Count: ${sticker_amount}
 						[View Stickers](https://stickersfordiscord.com/server/${message.guild.id})
+						Sticker Manager Role: ${sticker_manager_role_name}
+						Sticker User Permission Type: ${list_mode}
+						${list_mode === 'whitelist' ? 'Whitelisted': 'Blacklisted'} Role: ${list_mode === 'whitelist' ? whitelist_role_name : blacklist_role_name}
 						.
 					`.replace(/\t/g, '')
 				},

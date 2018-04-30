@@ -1,10 +1,14 @@
 const rp = require('request-promise');
 
-module.exports = function(message, prefix, custom_stickers, sticker_manager_role, guild_manager_ids){
+module.exports = function(message, prefix, guild_info){
 
 	const embed_color = 16540258;
 
 	if(message.channel.type === 'text'){
+
+		let sticker_manager_role = guild_info.stickerManagerRole;
+		let guild_manager_ids = guild_info.guildManagerIds;
+		let custom_stickers = guild_info.customStickers;
 
 		let is_sticker_manager = message.member.roles.map(r => r.id).includes(sticker_manager_role) || sticker_manager_role === '@everyone';
 		let is_guild_manager = guild_manager_ids.includes(message.author.id);
