@@ -13,6 +13,7 @@ module.exports = function(message, prefix, guild_info){
 	let list_mode = guild_info.list_mode;
 	let whitelist_role = guild_info.whitelist;
 	let blacklist_role = guild_info.blacklist;
+	let who_can_send;
 
 	//Escape prefix to avoid issues with Discord formatting
 	const escaped_prefix = (prefix) ? prefix.replace(/[^a-zA-Z0-9]/g, '\\$&') : null;
@@ -36,6 +37,13 @@ module.exports = function(message, prefix, guild_info){
 		whitelist_role_name = getRoleNameFromId(whitelist_role);
 		blacklist_role_name = getRoleNameFromId(blacklist_role);	
 
+		if(list_mode === 'whitelist'){
+			if(whitelist_role_name === 'everyone') who_can_send = 'everyone';
+			else who_can_send = `Everyone __with__ the role *${whitelist_role_name}*`;
+		}else{
+			who_can_send = `Everyone __without__ the role *${blacklist_role_name}*`;
+		}
+
 		message.channel.send({embed: {
 			color: embed_color,
 			fields: [
@@ -50,11 +58,10 @@ module.exports = function(message, prefix, guild_info){
 					name: message.guild.name,
 					value: `
 						Command Prefix: ${escaped_prefix}
+						Sticker Manager Role: ${sticker_manager_role_name}
+						Who can use stickers? ${who_can_send}
 						Custom Sticker Count: ${sticker_amount}
 						[View Stickers](https://stickersfordiscord.com/server/${message.guild.id})
-						Sticker Manager Role: ${sticker_manager_role_name}
-						Sticker User Permission Type: ${list_mode}
-						${list_mode === 'whitelist' ? 'Whitelisted': 'Blacklisted'} Role: ${list_mode === 'whitelist' ? whitelist_role_name : blacklist_role_name}
 						.
 					`.replace(/\t/g, '')
 				},

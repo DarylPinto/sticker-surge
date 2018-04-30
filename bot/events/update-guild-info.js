@@ -6,6 +6,9 @@ module.exports = function(guild, bot_auth){
 	let guild_manager_ids = guild.members.filter(m => m.hasPermission('MANAGE_GUILD')).map(m => m.id);
 	let sticker_manager_role;
 	let sticker_manager_ids;
+	let whitelisted_role;
+	let blacklisted_role;
+	let list_mode;
 
 	rp({uri: `${covert.app_url}/api/guilds/${guild.id}`, json: true})
 	.then(res => {
@@ -16,6 +19,9 @@ module.exports = function(guild, bot_auth){
 		//In either case, we want to update the guild to have '@everyone' as it's stickerManagerRole
 		//And empty the 'stickerManagerIds' array
 		let role_obj = guild.roles.find(r => r.id === res.stickerManagerRole);
+		let whitelist_role_obj = guild.roles.find(r => r.id === res.whitelist);
+		let blacklist_role_obj = guild.roles.find(r => r.id === res.blacklist);
+		list_mode = res.list_mode;
 
 		if(!role_obj){
 			sticker_manager_role = '@everyone';
@@ -25,6 +31,13 @@ module.exports = function(guild, bot_auth){
 		else{	
 			sticker_manager_role = res.stickerManagerRole;
 			sticker_manager_ids = role_obj.members.map(m => m.id);
+		}
+
+		if(!whitelist_role_obj) whitelisted_role = '@everyone';
+		if(!blacklist_role_obj){
+			blacklisted_role = null;
+			whitelisted_role = '@everyone';
+			list_mode = 'whitelist';
 		}
 
 	})
@@ -37,6 +50,9 @@ module.exports = function(guild, bot_auth){
 				isActive: true,
 				guildName: guild.name,
 				icon: guild.icon || null,
+				list_mode: list_mode,
+				whitelist: whitelisted_role,
+				blacklist: blacklisted_role,
 				guildManagerIds: guild_manager_ids,
 				stickerManagerRole: sticker_manager_role,
 				stickerManagerIds: sticker_manager_ids
