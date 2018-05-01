@@ -22,6 +22,10 @@ module.exports = {
 			guildName: '',
 			iconURL: '',
 			customStickers: [],
+			listMode: 'whitelist',
+			whitelistRole: '',
+			whitelistIds: [],
+			blacklistIds: [],
 			guildManagerIds: [],
 			stickerManagerIds: [],
 			stickerManagerRole: '',
@@ -34,9 +38,12 @@ module.exports = {
 	computed: {
 		userCanEdit: function(){
 			if(!this.userId) return false; //User must be logged in
-			if(!this.userGuilds.includes(this.guildId)) return false; //User must be part of guild
-			if(this.stickerManagerIds.includes(this.userId) || this.guildManagerIds.includes(this.userId)) return true; //User must have content role or manager role
-			if(this.stickerManagerRole === '@everyone') return true //User can edit if content role is set to @everyone
+			else if(!this.userGuilds.includes(this.guildId)) return false; //User must be part of guild
+			else if(this.guildManagerIds.includes(this.userId)) return true; //User can edit if guildManager
+			else if(this.listMode === 'blacklist' && this.blacklistIds.includes(this.userId)) return false; //User cannot edit if blacklisted
+			else if(this.listMode === 'whitelist' && this.whitelistRole != '@everyone' && !this.whitelistIds.includes(this.userId)) return false; //User cannot edit if not whitelisted
+			else if(this.stickerManagerIds.includes(this.userId)) return true; //User can edit if stickerManager
+			else if(this.stickerManagerRole === '@everyone') return true //User can edit if stickerManager role is set to @everyone
 			return false;
 		},
 		userIsGuildManager: function(){
@@ -64,10 +71,14 @@ module.exports = {
 				this.guildId = res.data.id;
 				this.guildName = res.data.guildName;
 				this.iconURL = res.data.icon ? `https://cdn.discordapp.com/icons/${res.data.id}/${res.data.icon}.png` : null;
-				this.customStickers = res.data.customStickers;	
+				this.customStickers = res.data.customStickers;
+				this.listMode = res.data.listMode;
+				this.whitelistRole = res.data.whitelist.roleId;
+				this.whitelistIds = res.data.whitelist.userIds;
+				this.blacklistIds = res.data.blacklist.userIds;
 				this.guildManagerIds = res.data.guildManagerIds;
-				this.stickerManagerIds = res.data.stickerManagerIds;
-				this.stickerManagerRole = res.data.stickerManagerRole;
+				this.stickerManagerIds = res.data.stickerManagers.userIds;
+				this.stickerManagerRole = res.data.stickerManagers.roleId;
 				document.title = `${res.data.guildName} - Stickers for Discord`;	
 				this.pageLoaded = true;
 			}).catch(err => {

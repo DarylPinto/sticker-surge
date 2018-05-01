@@ -52,14 +52,14 @@ module.exports = function(message, bot_auth, prefix){
 		json: true
 	})
 	.then(res => {	
-		if(res.whitelistRole === '@everyone') message.channel.send(`Everyone can now send stickers on this server.`)
+		if(res.whitelist.roleId === '@everyone') message.channel.send(`Everyone can now send stickers on this server.`)
 		else message.channel.send(`
 			**${escaped_new_whitelist_role_name}** is now the role required to send stickers on this server.
 			To restore default behavior, use **${prefix}whitelist everyone**
-		`.replace(/\t/g, ''))
+		`.replace(/\t/g, ''));
 
-			//When whitelist role is updated with setrole, call updateGuildInfo to update ids
-			updateGuildInfo(guild, bot_auth);
+		//When whitelist role is updated with setrole, call updateGuildInfo to update ids
+		updateGuildInfo(guild, bot_auth);
 	})
 	.catch(err => {
 

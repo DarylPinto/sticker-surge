@@ -8,11 +8,11 @@ module.exports = function(message, prefix, guild_info){
 	const add_bot_link = "https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536879104";
 	const bot_vote_link = "https://discordbots.org/bot/224415693393625088";
 
-	let sticker_manager_role = guild_info.stickerManagerRole;
+	let sticker_manager_role = guild_info.stickerManagers.roleId;
 	let custom_stickers = guild_info.customStickers;
 	let list_mode = guild_info.listMode;
-	let whitelist_role = guild_info.whitelistRole;
-	let blacklist_role = guild_info.blacklistRole;
+	let whitelist_role = guild_info.whitelist.roleId;
+	let blacklist_role = guild_info.blacklist.roleId;
 	let who_can_send;
 
 	//Escape prefix to avoid issues with Discord formatting
@@ -38,10 +38,10 @@ module.exports = function(message, prefix, guild_info){
 		blacklist_role_name = getRoleNameFromId(blacklist_role);	
 
 		if(list_mode === 'whitelist'){
-			if(whitelist_role_name === 'everyone') who_can_send = 'everyone';
-			else who_can_send = `Everyone __with__ the role *${whitelist_role_name}*`;
+			if(whitelist_role_name === 'everyone') who_can_send = 'Anyone';
+			else who_can_send = `Anyone with the role *${whitelist_role_name}*`;
 		}else{
-			who_can_send = `Everyone __without__ the role *${blacklist_role_name}*`;
+			who_can_send = `Anyone __without__ the role *${blacklist_role_name}*`;
 		}
 
 		message.channel.send({embed: {

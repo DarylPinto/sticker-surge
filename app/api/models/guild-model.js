@@ -18,14 +18,20 @@ const guildSchema = Schema({
 
 	}],
 	listMode: {type: String, required: true, default: 'whitelist'},
-	whitelistRole: {type: String, default: '@everyone'},
-	whitelistIds: [String],
-	blacklistRole: {type: String, default: null},
-	blacklistIds: [String],
-	stickerManagerRole: {type: String, required: true, default: '@everyone'},
-	stickerManagerIds: [String],
-	stickerPacks: [String],
+	whitelist: {
+		roleId: {type: String, default: '@everyone'},
+		userIds: [String]
+	},
+	blacklist: {
+		roleId: {type: String, default: null},
+		userIds: [String]
+	},
+	stickerManagers: {
+		roleId: {type: String, default: '@everyone'},
+		userIds: [String]	
+	},
 	guildManagerIds: [String],
+	stickerPacks: [String],	
 	isActive: {type: Boolean, default: true}
 });
 

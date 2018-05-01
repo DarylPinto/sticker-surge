@@ -2,18 +2,41 @@ const Discord = require('discord.js');
 const rp = require('request-promise');
 const covert = require('../../covert.js');
 
-module.exports = function(message, bot_auth){
+module.exports = async function(message, bot_auth){
 
 	let command = message.content.toLowerCase().replace(/(:|;)/g, '');
 	let user = message.author;
 	let is_guild_message = message.channel.type === 'text';
+	let guild_info = null;
 	let author_name = message.author.username;
 
 	if(is_guild_message && message.member.nickname) author_name = message.member.nickname;
 
 	async function useSticker(sticker){
+
+		//Ensure user has proper permissions to send a sticker
+		if(is_guild_message){
+			guild_info = await rp({
+				method: 'GET',
+				uri: `${covert.app_url}/api/guilds/${message.channel.guild.id}`,
+				json: true,
+				headers: {Authorization: bot_auth}
+			});
+
+			if(!guild_info.guildManagerIds.includes(message.author.id)){
+				if(
+					(guild_info.listMode === 'whitelist' && guild_info.whitelist.roleId != '@everyone' && !guild_info.whitelist.userIds.includes(message.author.id)) ||
+					(guild_info.listMode === 'blacklist' && guild_info.blacklist.userIds.includes(message.author.id))
+				){
+					return message.channel.send('You do not have permission to send stickers on this server.');
+				}
+			}
+		}
+
+		//Delete original message
 		if(message.channel.type === 'text' && message.channel.guild.me.hasPermission('MANAGE_MESSAGES')) message.delete();
 
+		//Respond with sticker
 		let message_options = {
 			files: [{
 				attachment: sticker.url,

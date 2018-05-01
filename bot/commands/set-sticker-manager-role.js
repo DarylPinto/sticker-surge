@@ -14,7 +14,7 @@ module.exports = function(message, bot_auth, prefix){
 	let escaped_prefix = prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
 
 	if(message_words.length < 2){
-		message.channel.send(`Invalid Syntax. Use **${escaped_prefix}setRole [ROLE NAME]**`);
+		message.channel.send(`Invalid Syntax. Use **${escaped_prefix}setManagerRole [ROLE NAME]**`);
 		return;
 	}
 
@@ -50,10 +50,10 @@ module.exports = function(message, bot_auth, prefix){
 		json: true
 	})
 	.then(res => {
-		if(res.stickerManagerRole === '@everyone') message.channel.send(`Everyone can now create stickers on this server.`)
+		if(res.stickerManagers.roleId === '@everyone') message.channel.send(`Everyone can now create stickers on this server.`)
 		else message.channel.send(`**${escaped_new_sticker_manager_role_name}** is now the role required to create stickers on this server.`)
 
-		//When sticker manager role is updated with setrole, call updateGuildInfo to update ids
+		//When sticker manager role is updated with setManagerRole, call updateGuildInfo to update ids
 		updateGuildInfo(guild, bot_auth);
 	})
 	.catch(err => {

@@ -4,7 +4,7 @@ const covert = require('../../covert.js');
 module.exports = function(message, bot_auth, prefix, guild_info){
 
 	let message_words = message.content.trim().split(/\s+/);
-	let sticker_manager_role = guild_info.stickerManagerRole;
+	let sticker_manager_role = guild_info.stickerManagers.roleId;
 
 	//Remove first word from message_words if command was invoked with an @ mention
 	if(/<@!?\d+>/.test(message_words[0]))	message_words.shift();

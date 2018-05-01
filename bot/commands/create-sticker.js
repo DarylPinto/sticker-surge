@@ -4,10 +4,12 @@ const covert = require('../../covert.js');
 module.exports = function(message, bot_auth, prefix, guild_info){
 
 	let message_words = message.content.trim().split(/\s+/);
-	let sticker_manager_role = guild_info.stickerManagerRole;	
+	let sticker_manager_role = null;
 	let attachments = message.attachments.array();
 	let invalid_syntax_message;
 	let uri;
+
+	if(guild_info) guild_info.stickerManagers.roleId;
 
 	//Remove first word from message_words if command was invoked with an @ mention
 	if(/<@!?\d+>/.test(message_words[0]))	message_words.shift();
@@ -75,7 +77,7 @@ module.exports = function(message, bot_auth, prefix, guild_info){
 			let role = message.channel.guild.roles.find(r => r.id === sticker_manager_role);
 			sticker_manager_role_name = role.name.replace(/[^a-zA-Zа-яёА-ЯЁ0-9\s]/g, '\\$&');
 
-			message.channel.send(`You must have the role **${sticker_manager_role_name}** to create stickers for everyone on this server.\nIf you want to create your own stickers (which will still be usable here), private message this bot.`);
+			message.channel.send(`You do not have permission to create stickers for everyone on this server.\nIf you want to create your own stickers (which will still be usable here), private message this bot.`);
 		}
 
 		else if(err.message.includes('Sticker name already in use by an emoji')){

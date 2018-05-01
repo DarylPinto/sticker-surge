@@ -30,7 +30,8 @@ const removedFields = {
 /**
 * Check if user is sticker manager
 *
-* First, we check if guild's stickerManagerIds includes user's id
+* First we check if user is blacklisted. If so, return false.
+* Then, we check if guild's stickerManagerIds includes user's id
 * If stickerManagerRole is set to @everyone, then there's no stickerManagerIds,
 * in this case we have to make sure that either:
 * A) the command came from the bot, and therefore the user is guaranteed to be in the guild
@@ -38,9 +39,11 @@ const removedFields = {
 */
 function userIsStickerManager(guild, req, res){
 
-	if(guild.stickerManagerIds.includes(res.locals.userId)) return true;
+	if(guild.listMode === 'blacklist' && guild.blacklist.userIds.includes(res.locals.userId)) return false;
 
-	if(guild.stickerManagerRole === '@everyone'){
+	if(guild.stickerManagers.userIds.includes(res.locals.userId)) return true;
+
+	if(guild.stickerManagers.roleId === '@everyone'){
 		if(!req.session.guilds) return true;
 		if(req.session.guilds.includes(guild.id)) return true;
 	}
@@ -283,7 +286,7 @@ router.patch('/:id/sticker-manager-role', verifyUserAjax, (req, res) => {
 			return null;
 		}
 
-		guild.stickerManagerRole = req.body.stickerManagerRole;
+		guild.stickerManagers.roleId = req.body.stickerManagerRole;
 		return guild.save();
 
 	})
@@ -311,8 +314,8 @@ router.patch('/:id/sticker-user-role', verifyUserAjax, async (req, res) => {
 		if(!userIsGuildManager(guild, req, res)) return res.status(401).send('Unauthorized');
 
 		guild.listMode = req.body.listMode;
-		guild.whitelistRole = req.body.whitelistRole;
-		guild.blacklistRole = req.body.blacklistRole;
+		guild.whitelist.roleId = req.body.whitelistRole;
+		guild.blacklist.roleId = req.body.blacklistRole;
 		await guild.save();
 
 		return res.json(guild);

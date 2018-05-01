@@ -50,9 +50,9 @@ module.exports = function(message, bot_auth, prefix){
 	})
 	.then(res => {	
 		message.channel.send(`
-			Users with the role **${escaped_new_blacklist_role_name}** are now unable to send stickers on this server.
+			All users without the role **${escaped_new_blacklist_role_name}** are now able to send stickers on this server.
 			To restore default behavior, use **${prefix}whitelist everyone**
-		`.replace(/\t/g, ''))
+		`.replace(/\t/g, ''));
 
 		//When blacklist role is updated with setrole, call updateGuildInfo to update ids
 		updateGuildInfo(guild, bot_auth);

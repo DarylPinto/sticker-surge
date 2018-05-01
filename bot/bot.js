@@ -72,7 +72,7 @@ const commands = {
 	'whitelist': require('./commands/set-whitelist-role.js'),
 	'blacklist': require('./commands/set-blacklist-role.js'),
 	'setprefix': require('./commands/set-command-prefix.js'),
-	'setrole': require('./commands/set-sticker-manager-role.js'),
+	'setmanagerrole': require('./commands/set-sticker-manager-role.js'),
 	'commands': require('./commands/commands.js'),
 	'help': require('./commands/help.js')
 }
@@ -119,13 +119,7 @@ client.on('message', message => {
 		rp({uri: `${covert.app_url}/api/guilds/${message.channel.guild.id}`, json: true})
 		.then(guild => {
 
-			let prefix = guild.commandPrefix.toLowerCase();
-			let guild_manager_ids = guild.guildManagerIds;
-			let sticker_manager_role = guild.stickerManagerRole;
-			let custom_stickers = guild.customStickers;
-			let list_mode = guild.list_mode;
-			let whitelist = guild.whitelist;
-			let blacklist = guild.blacklist;
+			let prefix = guild.commandPrefix.toLowerCase();	
 
 			const usedGuildCommand = command => {
 				if(first_word === `${prefix}${command}`) return true;
@@ -141,7 +135,7 @@ client.on('message', message => {
 			else if(usedGuildCommand('whitelist')) commands.whitelist(message, bot_auth, prefix)
 			else if(usedGuildCommand('blacklist')) commands.blacklist(message, bot_auth, prefix)
 			else if(usedGuildCommand('setprefix')) commands.setprefix(message, bot_auth, prefix)
-			else if(usedGuildCommand('setrole')) commands.setrole(message, bot_auth, prefix)
+			else if(usedGuildCommand('setmanagerrole')) commands.setmanagerrole(message, bot_auth, prefix)
 			else if(usedGuildCommand('commands')) commands.commands(message, prefix, guild)
 			else if(usedGuildCommand('help')) commands.help(message, prefix, guild)
 

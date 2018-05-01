@@ -6,12 +6,20 @@ module.exports = function(message, prefix, guild_info){
 
 	if(message.channel.type === 'text'){
 
-		let sticker_manager_role = guild_info.stickerManagerRole;
+		let listMode = guild_info.listMode;
+		let sticker_manager_role = guild_info.stickerManagers.roleId;
+		let blacklist_role = guild_info.blacklist.roleId;
 		let guild_manager_ids = guild_info.guildManagerIds;
 		let custom_stickers = guild_info.customStickers;
 
-		let is_sticker_manager = message.member.roles.map(r => r.id).includes(sticker_manager_role) || sticker_manager_role === '@everyone';
+		let user_roles = message.member.roles.map(r => r.id);
 		let is_guild_manager = guild_manager_ids.includes(message.author.id);
+
+		let is_sticker_manager = user_roles.includes(sticker_manager_role) || sticker_manager_role === '@everyone';
+		if(!is_guild_manager && listMode === 'blacklist' && user_roles.includes(blacklist_role)){
+			is_sticker_manager = false;
+		}
+
 		const escaped_prefix = prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
 		const custom_sticker_creator_ids = custom_stickers.map(s => s.creatorId);
 
@@ -53,11 +61,19 @@ module.exports = function(message, prefix, guild_info){
 					value: 'Delete a custom sticker from this server.'
 				},
 				{
+					name: `${escaped_prefix}whitelist`,
+					value: 'Set the role required to use stickers on this server.'
+				},
+				{
+					name: `${escaped_prefix}blacklist`,
+					value: 'Set a role to be blocked from using stickers on this server.'
+				},
+				{
 					name: `${escaped_prefix}setPrefix`,
 					value: 'Set the prefix used to invoke these commands.'
 				},
 				{
-					name: `${escaped_prefix}setRole`,
+					name: `${escaped_prefix}setManagerRole`,
 					value: 'Set the role required to create stickers on this server.'
 				}
 			]);	
