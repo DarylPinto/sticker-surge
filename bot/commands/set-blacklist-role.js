@@ -14,19 +14,16 @@ module.exports = function(message, bot_auth, prefix){
 	let escaped_prefix = prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
 
 	if(message_words.length < 2){
-		message.channel.send(`Invalid Syntax. Use **${escaped_prefix}blacklist [ROLE NAME]**`);
-		return;
+		return message.channel.send(`Invalid Syntax. Use **${escaped_prefix}blacklist [ROLE NAME]**`);	
 	}
 
 	let new_blacklist_role;
 	let new_blacklist_role_name = message_words.slice(1).join(" ");
 	if(new_blacklist_role_name === 'everyone' || new_blacklist_role_name === '@everyone'){
-		message.channel.send('You cannot blacklist everyone.');
-		return;	
+		return message.channel.send('You cannot blacklist everyone.');	
 	}
-	else if(!guild.roles.array().map(r => r.name.toLowerCase()).includes(new_blacklist_role_name.toLowerCase())){
-		message.channel.send('That role does not exist.');
-		return;
+	else if(!guild.roles.array().map(r => r.name.toLowerCase()).includes(new_blacklist_role_name.toLowerCase())){	
+		return message.channel.send('That role does not exist.');
 	}
 	else{
 		let role = guild.roles.array().find(r => r.name.toLowerCase() === new_blacklist_role_name.toLowerCase());
@@ -39,10 +36,11 @@ module.exports = function(message, bot_auth, prefix){
 
 	return rp({
 		method: 'PATCH',
-		uri: `${covert.app_url}/api/guilds/${guild.id}`,
+		uri: `${covert.app_url}/api/guilds/${guild.id}/sticker-user-role`,
 		body: {
-			blacklist: new_blacklist_role,
-			list_mode: 'blacklist'
+			listMode: 'blacklist',
+			blacklistRole: new_blacklist_role,
+			whitelistRole: null	
 		},
 		headers: {
 			Authorization: bot_auth,
@@ -50,20 +48,18 @@ module.exports = function(message, bot_auth, prefix){
 		},
 		json: true
 	})
-	.then(res => {
+	.then(res => {	
 		message.channel.send(`
-			Users with the role **${escaped_new_blacklist_role_name}** are now unable to send stickers on this server (unless they're admins).
+			Users with the role **${escaped_new_blacklist_role_name}** are now unable to send stickers on this server.
 			To restore default behavior, use **${prefix}whitelist everyone**
 		`.replace(/\t/g, ''))
 
+		//When blacklist role is updated with setrole, call updateGuildInfo to update ids
+		updateGuildInfo(guild, bot_auth);
 	})
 	.catch(err => {
 
-		if(err.message.includes('Role name must be less than 30 characters')){
-			message.channel.send(`Role name must be less than 30 characters.`);
-		}
-
-		else if(err.message.includes('Unauthorized')){
+		if(err.message.includes('Unauthorized')){
 			message.channel.send(`You must have permission to manage the server in order to use this command.`);
 		}
 

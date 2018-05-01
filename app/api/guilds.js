@@ -220,6 +220,7 @@ router.patch('/:id', verifyBot, (req, res) => {
 //Update guild prefix specifically (bot or auth'd user)
 router.patch('/:id/command-prefix', verifyUserAjax, (req, res) => {
 
+	if(!req.body.commandPrefix) return res.status(400).send('Invalid body data');
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
 	Guild.findOne({id: req.params.id})
@@ -261,6 +262,7 @@ router.patch('/:id/command-prefix', verifyUserAjax, (req, res) => {
 //Update guild stickerManagerRole specifically (bot or auth'd user)
 router.patch('/:id/sticker-manager-role', verifyUserAjax, (req, res) => {
 
+	if(!req.body.stickerManagerRole) return res.status(400).send('Invalid body data');
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
 	Guild.findOne({id: req.params.id})
@@ -291,6 +293,34 @@ router.patch('/:id/sticker-manager-role', verifyUserAjax, (req, res) => {
 	.catch(err => {
 		res.status(500).send('Internal server error');
 	});
+
+});
+
+//Update guild whitelist/blacklist specifically (bot or auth'd user)
+router.patch('/:id/sticker-user-role', verifyUserAjax, async (req, res) => {
+
+	if([req.body.listMode, req.body.whitelistRole, req.body.blacklistRole].includes(undefined)){
+		return res.status(400).send('Invalid body data');
+	}
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');
+
+	try{
+		let guild = await Guild.findOne({id: req.params.id});
+
+		if(!guild) return res.status(404).send('Guild not found');
+		if(!userIsGuildManager(guild, req, res)) return res.status(401).send('Unauthorized');
+
+		guild.listMode = req.body.listMode;
+		guild.whitelistRole = req.body.whitelistRole;
+		guild.blacklistRole = req.body.blacklistRole;
+		await guild.save();
+
+		return res.json(guild);
+
+	}catch(err){
+		console.error('Error updating blacklist/whitelist: ' + err.message);
+		return res.status(500).send('Internal server error');
+	}
 
 });
 

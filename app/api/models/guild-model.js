@@ -17,13 +17,15 @@ const guildSchema = Schema({
 		groupId: {type: String, required: true, default: 'unknown'}
 
 	}],
-	list_mode: {type: String, required: true, default: 'whitelist'},
-	whitelist: {type: String, default: '@everyone'},
-	blacklist: {type: String, default: null},
-	stickerPacks: [String],
-	guildManagerIds: [String],
+	listMode: {type: String, required: true, default: 'whitelist'},
+	whitelistRole: {type: String, default: '@everyone'},
+	whitelistIds: [String],
+	blacklistRole: {type: String, default: null},
+	blacklistIds: [String],
 	stickerManagerRole: {type: String, required: true, default: '@everyone'},
 	stickerManagerIds: [String],
+	stickerPacks: [String],
+	guildManagerIds: [String],
 	isActive: {type: Boolean, default: true}
 });
 

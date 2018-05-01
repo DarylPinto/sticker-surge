@@ -10,9 +10,9 @@ module.exports = function(message, prefix, guild_info){
 
 	let sticker_manager_role = guild_info.stickerManagerRole;
 	let custom_stickers = guild_info.customStickers;
-	let list_mode = guild_info.list_mode;
-	let whitelist_role = guild_info.whitelist;
-	let blacklist_role = guild_info.blacklist;
+	let list_mode = guild_info.listMode;
+	let whitelist_role = guild_info.whitelistRole;
+	let blacklist_role = guild_info.blacklistRole;
 	let who_can_send;
 
 	//Escape prefix to avoid issues with Discord formatting

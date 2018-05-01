@@ -39,10 +39,11 @@ module.exports = function(message, bot_auth, prefix){
 
 	return rp({
 		method: 'PATCH',
-		uri: `${covert.app_url}/api/guilds/${guild.id}`,
+		uri: `${covert.app_url}/api/guilds/${guild.id}/sticker-user-role`,
 		body: {
-			whitelist: new_whitelist_role,
-			list_mode: 'whitelist'
+			listMode: 'whitelist',
+			whitelistRole: new_whitelist_role,
+			blacklistRole: null 
 		},
 		headers: {
 			Authorization: bot_auth,
@@ -50,21 +51,19 @@ module.exports = function(message, bot_auth, prefix){
 		},
 		json: true
 	})
-	.then(res => {
-		if(res.whitelist === '@everyone') message.channel.send(`Everyone can now send stickers on this server.`)
+	.then(res => {	
+		if(res.whitelistRole === '@everyone') message.channel.send(`Everyone can now send stickers on this server.`)
 		else message.channel.send(`
 			**${escaped_new_whitelist_role_name}** is now the role required to send stickers on this server.
 			To restore default behavior, use **${prefix}whitelist everyone**
 		`.replace(/\t/g, ''))
 
+			//When whitelist role is updated with setrole, call updateGuildInfo to update ids
+			updateGuildInfo(guild, bot_auth);
 	})
 	.catch(err => {
 
-		if(err.message.includes('Role name must be less than 30 characters')){
-			message.channel.send(`Role name must be less than 30 characters.`);
-		}
-
-		else if(err.message.includes('Unauthorized')){
+		if(err.message.includes('Unauthorized')){
 			message.channel.send(`You must have permission to manage the server in order to use this command.`);
 		}
 

@@ -18,19 +18,19 @@ module.exports = function(guild, bot_auth){
 		//then either the role has been deleted, or the role is '@everyone' (not an id)
 		//In either case, we want to update the guild to have '@everyone' as it's stickerManagerRole
 		//And empty the 'stickerManagerIds' array
-		let role_obj = guild.roles.find(r => r.id === res.stickerManagerRole);
-		let whitelist_role_obj = guild.roles.find(r => r.id === res.whitelist);
-		let blacklist_role_obj = guild.roles.find(r => r.id === res.blacklist);
+		let sticker_manager_role_obj = guild.roles.find(r => r.id === res.stickerManagerRole);
+		let whitelist_role_obj = guild.roles.find(r => r.id === res.whitelistRole);
+		let blacklist_role_obj = guild.roles.find(r => r.id === res.blacklistRole);
 		list_mode = res.list_mode;
 
-		if(!role_obj){
+		if(!sticker_manager_role_obj){
 			sticker_manager_role = '@everyone';
 			sticker_manager_ids = [];
 		}
 		//Otherwise, the role exists and we update the stickerManagerIds array like normal
 		else{	
 			sticker_manager_role = res.stickerManagerRole;
-			sticker_manager_ids = role_obj.members.map(m => m.id);
+			sticker_manager_ids = sticker_manager_role_obj.members.map(m => m.id);
 		}
 
 		if(!whitelist_role_obj) whitelisted_role = '@everyone';
@@ -50,12 +50,14 @@ module.exports = function(guild, bot_auth){
 				isActive: true,
 				guildName: guild.name,
 				icon: guild.icon || null,
-				list_mode: list_mode,
-				whitelist: whitelisted_role,
-				blacklist: blacklisted_role,
-				guildManagerIds: guild_manager_ids,
+				listMode: list_mode,
+				whitelistRole: whitelisted_role,
+				whitelistIds: whitelist_ids,
+				blacklistRole: blacklisted_role,
+				blacklistIds: blacklist_ids,
 				stickerManagerRole: sticker_manager_role,
-				stickerManagerIds: sticker_manager_ids
+				stickerManagerIds: sticker_manager_ids,
+				guildManagerIds: guild_manager_ids	
 			},
 			headers: {Authorization: bot_auth},
 			json: true
