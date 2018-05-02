@@ -163,7 +163,7 @@ client.on('message', message => {
 			else if(usedDmCommand('createsticker')) commands.createsticker(message, bot_auth)
 			else if(usedDmCommand('deletesticker')) commands.deletesticker(message, bot_auth)
 			else if(usedDmCommand('commands')) commands.commands(message)
-			else if(usedDmCommand('help')) commands.help(message, null, custom_stickers)
+			else if(usedDmCommand('help')) commands.help(message, null, user)
 			else{
 				message.channel.send('Unrecognized command. Here is a list of commands:');
 				commands.commands(message);	

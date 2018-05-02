@@ -1,6 +1,6 @@
 const rp = require('request-promise');
 
-module.exports = function(message, prefix, guild_info){
+module.exports = function(message, prefix, resource_info){
 
 	const embed_color = 16540258;
 	const lib_version = "11.2.1";
@@ -8,20 +8,19 @@ module.exports = function(message, prefix, guild_info){
 	const add_bot_link = "https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536879104";
 	const bot_vote_link = "https://discordbots.org/bot/224415693393625088";
 
-	let sticker_manager_role = guild_info.stickerManagers.roleId;
-	let custom_stickers = guild_info.customStickers;
-	let list_mode = guild_info.listMode;
-	let whitelist_role = guild_info.whitelist.roleId;
-	let blacklist_role = guild_info.blacklist.roleId;
-	let who_can_send;
-
 	//Escape prefix to avoid issues with Discord formatting
 	const escaped_prefix = (prefix) ? prefix.replace(/[^a-zA-Z0-9]/g, '\\$&') : null;
-	const sticker_amount = custom_stickers.length;
+	const sticker_amount = resource_info.customStickers.length;
 
 	if(message.channel.type === 'text'){
 
-		const guild = message.channel.guild;	
+		let sticker_manager_role = resource_info.stickerManagers.roleId;
+		let custom_stickers = resource_info.customStickers;
+		let list_mode = resource_info.listMode;
+		let whitelist_role = resource_info.whitelist.roleId;
+		let blacklist_role = resource_info.blacklist.roleId;
+		let who_can_send;
+		let guild = message.channel.guild;	
 		let sticker_manager_role_name;
 
 		const getRoleNameFromId = id => {
