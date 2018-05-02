@@ -1,13 +1,13 @@
 const Discord = require('discord.js');
 const rp = require('request-promise');
+const userStickerPerms = require('../utilities/user-sticker-perms.js');
 const covert = require('../../covert.js');
 
 module.exports = async function(message, bot_auth){
 
 	let command = message.content.toLowerCase().replace(/(:|;)/g, '');
 	let user = message.author;
-	let is_guild_message = message.channel.type === 'text';
-	let guild_info = null;
+	let is_guild_message = message.channel.type === 'text';	
 	let author_name = message.author.username;
 
 	if(is_guild_message && message.member.nickname) author_name = message.member.nickname;
@@ -16,21 +16,25 @@ module.exports = async function(message, bot_auth){
 
 		//Ensure user has proper permissions to send a sticker
 		if(is_guild_message){
-			guild_info = await rp({
+			let user_perms;
+			const guild_info = await rp({
 				method: 'GET',
-				uri: `${covert.app_url}/api/guilds/${message.channel.guild.id}`,
+				uri: `${covert.app_url}/api/guilds/${message.channel.guild.id}/info`,
 				json: true,
 				headers: {Authorization: bot_auth}
 			});
 
-			if(!guild_info.guildManagerIds.includes(message.author.id)){
-				if(
-					(guild_info.listMode === 'whitelist' && guild_info.whitelist.roleId != '@everyone' && !guild_info.whitelist.userIds.includes(message.author.id)) ||
-					(guild_info.listMode === 'blacklist' && guild_info.blacklist.userIds.includes(message.author.id))
-				){
-					return message.channel.send('You do not have permission to send stickers on this server.');
-				}
-			}
+			user_perms = userStickerPerms({
+				userId: message.author.id,
+				guildManagerIds: guild_info.guildManagerIds,
+				stickerManagerIds: guild_info.stickerManagers.userIds,
+				listMode: guild_info.listMode,
+				whitelistRole: guild_info.whitelist.roleId,
+				whitelistIds: guild_info.whitelist.userIds,
+				blacklistIds: guild_info.blacklist.userIds
+			});
+
+			if(!user_perms.canSend) return message.channel.send('You do not have permission to send stickers on this server.');
 		}
 
 		//Delete original message

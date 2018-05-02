@@ -41,9 +41,10 @@ module.exports = {
 			else if(!this.userGuilds.includes(this.guildId)) return false; //User must be part of guild
 			else if(this.guildManagerIds.includes(this.userId)) return true; //User can edit if guildManager
 			else if(this.listMode === 'blacklist' && this.blacklistIds.includes(this.userId)) return false; //User cannot edit if blacklisted
-			else if(this.listMode === 'whitelist' && this.whitelistRole != '@everyone' && !this.whitelistIds.includes(this.userId)) return false; //User cannot edit if not whitelisted
-			else if(this.stickerManagerIds.includes(this.userId)) return true; //User can edit if stickerManager
-			else if(this.stickerManagerRole === '@everyone') return true //User can edit if stickerManager role is set to @everyone
+			else if(this.listMode === 'whitelist'){
+				if(this.whitelistRole === '@everyone' || this.whitelistIds.includes(this.userId) || this.stickerManagerIds.includes(this.userId)) return true;
+				else if(this.whitelistRole != '@everyone' && !this.whitelistIds.includes(this.userId)) return false;
+			}
 			return false;
 		},
 		userIsGuildManager: function(){

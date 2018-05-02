@@ -130,8 +130,8 @@ client.on('message', message => {
 			}
 
 			if(usedGuildCommand('stickers')) commands.stickers(message)
-			else if(usedGuildCommand('createsticker')) commands.createsticker(message, bot_auth, prefix, guild)
-			else if(usedGuildCommand('deletesticker')) commands.deletesticker(message, bot_auth, prefix, guild)
+			else if(usedGuildCommand('createsticker')) commands.createsticker(message, bot_auth, prefix)
+			else if(usedGuildCommand('deletesticker')) commands.deletesticker(message, bot_auth, prefix)
 			else if(usedGuildCommand('whitelist')) commands.whitelist(message, bot_auth, prefix)
 			else if(usedGuildCommand('blacklist')) commands.blacklist(message, bot_auth, prefix)
 			else if(usedGuildCommand('setprefix')) commands.setprefix(message, bot_auth, prefix)

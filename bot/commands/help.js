@@ -38,7 +38,7 @@ module.exports = function(message, prefix, guild_info){
 		blacklist_role_name = getRoleNameFromId(blacklist_role);	
 
 		if(list_mode === 'whitelist'){
-			if(whitelist_role_name === 'everyone') who_can_send = 'Anyone';
+			if(whitelist_role_name === 'everyone') who_can_send = 'everyone';
 			else who_can_send = `Anyone with the role *${whitelist_role_name}*`;
 		}else{
 			who_can_send = `Anyone __without__ the role *${blacklist_role_name}*`;
@@ -58,9 +58,9 @@ module.exports = function(message, prefix, guild_info){
 					name: message.guild.name,
 					value: `
 						Command Prefix: ${escaped_prefix}
+						Who can use stickers: ${who_can_send}
 						Sticker Manager Role: ${sticker_manager_role_name}
-						Who can use stickers? ${who_can_send}
-						Custom Sticker Count: ${sticker_amount}
+						Custom Stickers: ${sticker_amount}
 						[View Stickers](https://stickersfordiscord.com/server/${message.guild.id})
 						.
 					`.replace(/\t/g, '')

@@ -38,7 +38,7 @@ module.exports = {
 
 			//Load data for each guild in `guilds` cookie
 			this.userGuilds.forEach(id => {
-				axios.get(`/api/guilds/${id}?nocache=${(new Date()).getTime()}`)
+				axios.get(`/api/guilds/${id}/info?nocache=${(new Date()).getTime()}`)
 				.then(res => {
 
 					this.userGuildData.push({id: id, name: res.data.guildName, icon: res.data.icon});

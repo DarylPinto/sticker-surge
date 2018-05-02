@@ -1,4 +1,5 @@
 const rp = require('request-promise');
+const userStickerPerms = require('../utilities/user-sticker-perms.js');
 
 module.exports = function(message, prefix, guild_info){
 
@@ -6,22 +7,19 @@ module.exports = function(message, prefix, guild_info){
 
 	if(message.channel.type === 'text'){
 
-		let listMode = guild_info.listMode;
-		let sticker_manager_role = guild_info.stickerManagers.roleId;
-		let blacklist_role = guild_info.blacklist.roleId;
-		let guild_manager_ids = guild_info.guildManagerIds;
-		let custom_stickers = guild_info.customStickers;
-
-		let user_roles = message.member.roles.map(r => r.id);
-		let is_guild_manager = guild_manager_ids.includes(message.author.id);
-
-		let is_sticker_manager = user_roles.includes(sticker_manager_role) || sticker_manager_role === '@everyone';
-		if(!is_guild_manager && listMode === 'blacklist' && user_roles.includes(blacklist_role)){
-			is_sticker_manager = false;
-		}
+		const is_guild_manager = guild_info.guildManagerIds.includes(message.author.id);
+		const user_perms = userStickerPerms({
+			userId: message.author.id,
+			guildManagerIds: guild_info.guildManagerIds,
+			stickerManagerIds: guild_info.stickerManagers.userIds,
+			listMode: guild_info.listMode,
+			whitelistRole: guild_info.whitelist.roleId,
+			whitelistIds: guild_info.whitelist.userIds,
+			blacklistIds: guild_info.blacklist.userIds
+		});
 
 		const escaped_prefix = prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
-		const custom_sticker_creator_ids = custom_stickers.map(s => s.creatorId);
+		const custom_sticker_creator_ids = guild_info.customStickers.map(s => s.creatorId);
 
 		const help_message = (is_guild_manager) ? "Here is a list of commands" : "Here is a list of commands you have permission to use:";
 
@@ -35,7 +33,7 @@ module.exports = function(message, prefix, guild_info){
 			]
 		}
 
-		if(is_sticker_manager || is_guild_manager){
+		if(user_perms.canManage){
 			command_list.fields.push({
 				name: `${escaped_prefix}createSticker`,
 				value: 'Create a custom sticker for anyone on this server to use.'
@@ -44,10 +42,7 @@ module.exports = function(message, prefix, guild_info){
 
 		//delete sticker is listed twice, Note the difference in verbiage ("one of your stickers" for regular users and
 		//"a sticker" for guild managers - implying they can delete any sticker)
-		if(
-			(!is_guild_manager && is_sticker_manager) ||
-			!is_guild_manager && custom_sticker_creator_ids.includes(message.author.id)
-		){
+		if(!is_guild_manager && (user_perms.canManage || custom_sticker_creator_ids.includes(message.author.id))){
 			command_list.fields.push({
 				name: `${escaped_prefix}deleteSticker`,
 				value: 'Delete one of the custom stickers that you\'ve created for this server.'

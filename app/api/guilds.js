@@ -28,7 +28,7 @@ const removedFields = {
 }
 
 /**
-* Check if user is sticker manager
+* Check if user can manage stickers
 *
 * First we check if user is blacklisted. If so, return false.
 * Then, we check if guild's stickerManagerIds includes user's id
@@ -37,10 +37,10 @@ const removedFields = {
 * A) the command came from the bot, and therefore the user is guaranteed to be in the guild
 * B) the command came from the user, and the user's guilds includes the current guild id
 */
-function userIsStickerManager(guild, req, res){
+function userCanManageStickers(guild, req, res){
 
+	if(guild.guildManagerIds.includes(res.locals.userId)) return true;
 	if(guild.listMode === 'blacklist' && guild.blacklist.userIds.includes(res.locals.userId)) return false;
-
 	if(guild.stickerManagers.userIds.includes(res.locals.userId)) return true;
 
 	if(guild.stickerManagers.roleId === '@everyone'){
@@ -65,6 +65,17 @@ router.get('/:id', (req, res) => {
 	.then(guild => {	
 		if(!guild) return res.status(404).send('Guild not found');
 		res.json(guild);	
+	})
+	.catch(err => res.status(500).send('Internal server error'));
+});
+
+//GET guild info (everything except stickers) by id
+router.get('/:id/info', (req, res) => {
+	Guild.findOne({id: req.params.id}, removedFields)
+	.then(guild => {	
+		if(!guild) return res.status(404).send('Guild not found');
+		delete guild._doc.customStickers;
+		res.json(guild._doc);	
 	})
 	.catch(err => res.status(500).send('Internal server error'));
 });
@@ -124,7 +135,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 		createdVia: (req.file) ? 'website' : 'discord',
 		groupId: req.params.id,
 		creatorId: res.locals.userId
-	}	
+	}
 
 	let imageIsLocal = (req.file) ? true : false;
 
@@ -132,7 +143,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 	.then(guild => {
 		if(!guild) return res.status(404).send('Guild not found');
 
-		if(!userIsGuildManager(guild, req, res) && !userIsStickerManager(guild, req, res)){
+		if(!userCanManageStickers(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
