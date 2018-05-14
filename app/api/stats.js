@@ -2,24 +2,36 @@ const router = require('express').Router();
 const Guild = require('./models/guild-model.js');
 const User = require('./models/user-model.js');
 
+//Aggregate settings for sticker count
+const count_settings = [
+	{$unwind: "$customStickers"},
+	{$group: {_id: null, stickerNames: {$push: "$customStickers.name"}}},
+	{$project: {_id: false, amount: {$size: "$stickerNames"}}}
+];
+
+//Aggregate settings for top `amount` stickers by `field` prop
+const topSettings = (field, amount) => [
+	{$unwind: "$customStickers"},
+	{$sort: {[`customStickers.${field}`]: -1}},
+	{$group: {_id: null, stickers: {$push: "$customStickers"}}},
+	{$project: {_id: null, stickers: {$slice: ["$stickers", amount]}}}
+];
+
+//Convert query result into usable json
+const parseTopResult = sticker_set => {
+	sticker_set = sticker_set[0] ? sticker_set[0].stickers : [];
+	sticker_set.forEach(s => delete s._id);
+	return sticker_set;
+}
+
 //Live stats count
 router.get('/', async (req, res) => {
 
 	try{
 
-		//Total Guild Stickers
-		let guild_sticker_count = await Guild.aggregate([
-			{$unwind: "$customStickers"},
-			{$group: {_id: null, stickerNames: {$push: "$customStickers.name"}}},
-			{$project: {_id: false, amount: {$size: "$stickerNames"}}}
-		]);
-
-		//Total User Stickers
-		let user_sticker_count = await User.aggregate([
-			{$unwind: "$customStickers"},
-			{$group: {_id: null, stickerNames: {$push: "$customStickers.name"}}},
-			{$project: {_id: false, amount: {$size: "$stickerNames"}}}
-		]);
+		//Get totals
+		let guild_sticker_count = await Guild.aggregate(count_settings);
+		let user_sticker_count = await User.aggregate(count_settings);
 
 		//Convert queries to numbers
 		guild_sticker_count = (guild_sticker_count.length > 0) ? guild_sticker_count[0].amount : 0;
@@ -44,27 +56,14 @@ router.get('/recent-stickers', async (req, res) => {
 
 	try{
 
-		let guild_stickers = await Guild.aggregate([
-			{$unwind: "$customStickers"},
-			{$sort: {"customStickers.createdAt": -1}},
-			{$group: {_id: null, stickers: {$push: "$customStickers"}}},
-			{$project: {_id: null, stickers: {$slice: ["$stickers", 25]}}}
-		]);
+		//Get top 25 newest
+		let guild_stickers = await Guild.aggregate(topSettings('createdAt', 25));
+		let user_stickers = await User.aggregate(topSettings('createdAt', 25));
 
-		let user_stickers = await User.aggregate([
-			{$unwind: "$customStickers"},
-			{$sort: {"customStickers.createdAt": -1}},
-			{$group: {_id: null, stickers: {$push: "$customStickers"}}},
-			{$project: {_id: null, stickers: {$slice: ["$stickers", 25]}}}
-		]);
-
-		guild_stickers = guild_stickers[0] ? guild_stickers[0].stickers : [];
-		user_stickers = user_stickers[0] ? user_stickers[0].stickers : [];
-
-		guild_stickers.forEach(s => delete s._id);
-		user_stickers.forEach(s => delete s._id);
-
-		return res.json({guild_stickers, user_stickers});
+		return res.json({
+			guild_stickers: parseTopResult(guild_stickers),
+			user_stickers: parseTopResult(user_stickers)
+		});
 
 	}catch(err){
 		console.error("Error fetching stats: " + err.message);
@@ -78,27 +77,14 @@ router.get('/most-used-stickers', async (req, res) => {
 
 	try{
 
-		let guild_stickers = await Guild.aggregate([
-			{$unwind: "$customStickers"},
-			{$sort: {"customStickers.uses": -1}},
-			{$group: {_id: null, stickers: {$push: "$customStickers"}}},
-			{$project: {_id: null, stickers: {$slice: ["$stickers", 25]}}}
-		]);
+		//Get top 25 used
+		let guild_stickers = await Guild.aggregate(topSettings('uses', 25));
+		let user_stickers = await User.aggregate(topSettings('uses', 25));
 
-		let user_stickers = await User.aggregate([
-			{$unwind: "$customStickers"},
-			{$sort: {"customStickers.uses": -1}},
-			{$group: {_id: null, stickers: {$push: "$customStickers"}}},
-			{$project: {_id: null, stickers: {$slice: ["$stickers", 25]}}}
-		]);
-
-		guild_stickers = guild_stickers[0] ? guild_stickers[0].stickers : [];
-		user_stickers = user_stickers[0] ? user_stickers[0].stickers : [];
-
-		guild_stickers.forEach(s => delete s._id);
-		user_stickers.forEach(s => delete s._id);
-
-		return res.json({guild_stickers, user_stickers});
+		return res.json({
+			guild_stickers: parseTopResult(guild_stickers),
+			user_stickers: parseTopResult(user_stickers)
+		});
 
 	}catch(err){
 		console.error("Error fetching stats: " + err.message);
