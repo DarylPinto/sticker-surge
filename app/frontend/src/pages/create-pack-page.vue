@@ -13,6 +13,7 @@ module.exports = {
 			packIcon: null,
 			packTitle: '',
 			packKey: '',
+			packDescription: '',
 			packKeyValid: true,
 			packKeyFocused: false,
 			termsAccepted: false,
@@ -100,7 +101,8 @@ module.exports = {
 				<span v-if="!packIcon">Choose&nbsp;an<br>Icon</span>
 				<span v-if="packIcon">Change<br>Icon</span>
 			</div>	
-			<input type="text" name="name" class="pack-title" placeholder="Title" maxlength="60" v-model="packTitle" required>
+			<input type="text" name="name" class="pack-title" placeholder="Title" maxlength="30" v-model="packTitle" required>
+			<input type="text" name="description" placeholder="Description" maxlength="100" v-model="packDescription" required>
 			<div class="pack-key">
 				<div class="tooltip left" :class="{transparent: !(packKeyFocused && packKey.length === 0)}">
 					<p>Keep it short, sweet and to the point! All sticker names in your pack will begin with this prefix.</p>

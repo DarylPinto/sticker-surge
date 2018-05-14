@@ -3,8 +3,10 @@ import Vue from 'vue';
 import axios from 'axios';
 import debounce from 'debounce';
 import header from '../components/header.vue';
+import stickerPackListItem from '../components/sticker-pack-list-item.vue';
 
 Vue.component('header-bar', header);
+Vue.component('stickerPackListItem', stickerPackListItem);
 
 module.exports = {
 
@@ -77,12 +79,16 @@ module.exports = {
 			<img src="/images/loading-spin.svg">
 		</div>
 
-		<div v-if="packsLoaded" v-for="pack in packs" :key="pack.key" class="sticker-pack">
-			<router-link :to="`/pack/${pack.key}`">
-				<div class="pack-icon" :style="'background-image: url('+pack.icon+')'"></div>
-				<h2>{{pack.name}}</h2>	
-			</router-link>
-		</div>
+		<stickerPackListItem
+			v-if="packsLoaded"
+			v-for="pack in packs"
+			:key="pack.key"
+			:link="`/pack/${pack.key}`"
+			:name="pack.name"
+			:icon="pack.icon"
+			:description="pack.description"
+			:subscribers="pack.subscribers"
+		/>
 
 	</div>
 
