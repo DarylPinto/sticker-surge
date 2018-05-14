@@ -92,7 +92,7 @@ module.exports = {
 	<div :class="{transparent: !pageLoaded}">
 
 		<header class="create-pack-header">
-			<h1>Create a Sticker Pack</h1>		
+			<h1>Create a Sticker Pack</h1>
 		</header>
 		
 		<form @submit.prevent="createPack">	
@@ -102,7 +102,7 @@ module.exports = {
 				<span v-if="packIcon">Change<br>Icon</span>
 			</div>	
 			<input type="text" name="name" class="pack-title" placeholder="Title" maxlength="30" v-model="packTitle" required>
-			<input type="text" name="description" placeholder="Description" maxlength="100" v-model="packDescription" required>
+			<input type="text" name="description" placeholder="Description" maxlength="110" v-model="packDescription" required>
 			<div class="pack-key">
 				<div class="tooltip left" :class="{transparent: !(packKeyFocused && packKey.length === 0)}">
 					<p>Keep it short, sweet and to the point! All sticker names in your pack will begin with this prefix.</p>
@@ -157,7 +157,7 @@ module.exports = {
 			background-color: rgba(0,0,0,0.3)
 			padding-top: 65px
 			padding-bottom: 65px
-			margin-bottom: 25px
+			margin-bottom: 35px
 			display: flex
 			flex-direction: column
 			justify-content: center

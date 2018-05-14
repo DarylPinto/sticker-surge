@@ -2,12 +2,7 @@
 import Vue from 'vue';
 
 module.exports = {
-	props: ['link', 'name', 'icon', 'description', 'subscribers'],
-	data: function(){
-		return {
-
-		}
-	}
+	props: ['link', 'name', 'icon', 'description', 'subscribers']
 }
 
 </script>
@@ -28,7 +23,7 @@ module.exports = {
 	.sticker-pack-list-item
 		display: inline-flex
 		width: calc(33.45% - 11.5px)
-		height: 280px
+		height: 260px
 		border: 1px solid rgba(0, 0, 0, 0.4)
 		box-sizing: border-box
 		position: relative
@@ -44,7 +39,6 @@ module.exports = {
 		&:nth-of-type(3n)
 			margin-right: 0
 		&:hover
-			//box-shadow: 0 0 60px #ffffff59
 			transform: scale(1.04)
 		.icon
 			position: absolute
@@ -62,8 +56,8 @@ module.exports = {
 		.title
 			display: flex
 			flex-direction: column-reverse
-			height: 110px
-			background-color: rgba(0,0,0,0.4)
+			height: 110px	
+			background: repeating-linear-gradient(-45deg, rgba(23,23,23,0.65), rgba(23,23,23,0.65) 20px, rgba(16,16,16,0.65) 0, rgba(16,16,16,0.65) 40px)
 			h2
 				margin-left: 160px
 				font-weight: 400

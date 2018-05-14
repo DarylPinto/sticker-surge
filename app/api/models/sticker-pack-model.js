@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const stickerPackSchema = Schema({
 	name: {type: String, required: true, maxlength: 30},
 	key: {type: String, unique: true, required: true, maxlength: 8},
-	description: {type: String, required: true, maxlength: 100, default: "N/A"},
+	description: {type: String, required: true, maxlength: 110},
 	icon: {type: String, default: null},
 	published: {type: Boolean, default: false},
 	subscribers: {type: Number, default: 0},

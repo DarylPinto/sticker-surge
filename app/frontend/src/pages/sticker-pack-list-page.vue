@@ -54,13 +54,18 @@ module.exports = {
 </script>
 
 <template>
-<main>
+<main class="sticker-pack-list-page">
 
 	<header-bar :userId="userId"></header-bar>
-	<div class="container sticker-pack-list" :class="{transparent: !pageLoaded}">
 
-		<header>
-			<h1>Sticker Packs</h1>
+	<header class="sticker-pack-list-header">
+		<h1>Sticker Packs</h1>
+	</header>
+
+	<div class="container" :class="{transparent: !pageLoaded}">
+
+		<div class="sort-wrap">
+			<h2>{{sortMethod}} packs</h2>
 			<div class="section-options">
 				<span class="search-box">
 					<i class="material-icons">search</i>
@@ -73,7 +78,7 @@ module.exports = {
 				</select>
 				<router-link to="/sticker-packs/new" class="btn" v-if="userId">Create a Sticker Pack</router-link>	
 			</div>	
-		</header>	
+		</div>	
 
 		<div v-if="!packsLoaded" class="loading-packs">
 			<img src="/images/loading-spin.svg">
@@ -97,62 +102,34 @@ module.exports = {
 
 <style lang="sass">
 
-	.sticker-pack-list	
-		margin-top: 40px	
+	.sticker-pack-list-page	
 		transition: .2s
-		h1
-			font-size: 85px
-		header
+		div.sort-wrap
 			display: flex
+			margin-top: 55px
 			padding-bottom: 15px	
 			margin-bottom: 30px
 			border-bottom: 2px solid rgba(255, 255, 255, 0.45)
 			justify-content: space-between
 			align-items: baseline
+			h2
+				text-transform: capitalize
+				font-size: 30px
+				font-weight: 400
 			.btn
 				display: flex
 				align-items: center
-
-		.sticker-pack
-			display: inline-block
-			width: calc(25% - 11.5px)
-			margin-right: 15px
-			vertical-align: top
-			border-radius: 5px
-			height: 280px
-			margin-bottom: 15px
-			background-color: rgba(255,255,255,0.05)
-			a
-				text-decoration: none
-				display: inline-block	
-				text-align: center
-				border-radius: 5px
-				height: inherit
-				padding: 20px
-				width: 100%
-				box-sizing: border-box
-				transition: .2s
-				&:hover
-					background-color: rgba(255,255,255,0.05)
-			&:nth-of-type(4n)
-				margin-right: 0
-			h2
-				font-size: 20px
-				margin-top: 10px
-				margin-bottom: 10px
-				font-weight: 100
-				line-height: 1.3em
-			.pack-icon
-				display: inline-block
-				border-radius: 200px
-				border: 5px solid #484848
-				margin-top: 25px
-				height: 128px
-				width: 128px
-				background-color: #1f1f1f
-				background-size: cover
-				background-position: center center
-				background-repeat: no-repeat
+	
+		header.sticker-pack-list-header
+			background-color: rgba(0,0,0,0.3)
+			padding-top: 65px
+			padding-bottom: 65px
+			margin-bottom: 25px
+			display: flex
+			flex-direction: column
+			justify-content: center
+			align-items: center	
+			font-size: 50px	
 
 		.loading-packs img
 			display: block
