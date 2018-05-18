@@ -5,6 +5,8 @@
 $brand-red: #fc6262
 $brand-darkred: #c54d4d
 $discord-gray: #2a2d2f
+$mention-color: #7289da
+$mention-bg: rgba(115,139,215,.1)
 
 *
 	font-family: 'Rubik', sans-serif
@@ -13,9 +15,21 @@ $discord-gray: #2a2d2f
 body
 	background-color: $discord-gray
 
+ol
+	list-style-type: decimal
+
 h1
 	font-family: 'Rubik', sans-serif
 	font-weight: 300
+
+.mention
+	padding: 3px
+	color: $mention-color
+	background-color: $mention-bg
+
+pre, pre .mention
+	font-family: "Monaco", "Consolas", "Courier New", monospace;
+	font-weight: 100
 
 .container
 	width: calc(100% - 25px)

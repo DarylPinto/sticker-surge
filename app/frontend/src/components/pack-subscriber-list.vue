@@ -69,7 +69,7 @@ module.exports = {
 
 <template>
 <div class="pack-subscriber-list">
-	<h1>Where do you want to add this pack?</h1>
+	<h1>Choose where to use this pack</h1>
 	<ul>	
 		<packSubscriberListItem
 			v-for="item in packItemData"	
@@ -94,8 +94,9 @@ module.exports = {
 			opacity: 0.8
 		ul
 			width: 100%
-			box-shadow: inset 0 0 7px rgba(0,0,0,0.3)
+			border: 1px solid rgba(0,0,0,0.4)
 			background-color: rgba(0,0,0,0.2)
+			border-radius: 4px
 			margin-top: 20px
 			margin-bottom: 20px
 			max-height: 330px

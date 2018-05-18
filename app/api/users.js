@@ -178,8 +178,8 @@ router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 			return res.status(400).send('User already has that Sticker Pack');
 		}
 
-		pack.save(); //async
 		await user.save();
+		pack.save(); //async
 		return res.status(201).json(user.stickerPacks);
 
 	}catch(err){
@@ -254,8 +254,8 @@ router.delete('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 		pack.subscribers -= 1;
 		if(pack.subscribers < 0) pack.subscribers = 0;
 
-		pack.save(); //async
 		await user.save();
+		pack.save(); //async
 		return res.json(user.stickerPacks);
 
 	}catch(err){

@@ -80,7 +80,7 @@ module.exports = {
 		<header class="pack-header">
 			<div class="pack-icon" :style="'background-image: url('+iconURL+')'"></div>
 			<h1 :style="`font-size: ${nameFontSize}`">{{name}}</h1>
-			<a class="btn hollow" @click="showPackSubscriberList = true">Add This Pack</a>	
+			<a class="btn hollow" @click="showPackSubscriberList = true">Use This Pack</a>	
 		</header>
 		
 		<div class="container" :class="{transparent: !pageLoaded}">
@@ -103,11 +103,24 @@ module.exports = {
 			v-show="showPackSubscriberList"
 			@close="showPackSubscriberList = false"
 		>
+			<!-- If Logged In -->
 			<component
+				v-if="userId"
 				is="packSubscriberList"
 				:userId="userId"
 				:packKey="key"
 			/>
+			<!-- If Not Logged In	 -->
+			<div v-if="!userId" class="use-pack-instructions">
+				<h1>How to use this pack</h1>
+				<ol>
+					<li>
+						Add the bot to your server:
+						<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=8192" class="btn" target="_blank">Add to Discord</a>
+					</li>	
+					<li>In your server, type: <pre><span class="mention">@Stickers for Discord</span> addPack {{key}}</pre></li>	
+				</ol>	
+			</div>
 		</modal>
 
 	</div>
@@ -148,6 +161,35 @@ module.exports = {
 				margin-top: 20px
 				font-size: 18px
 				padding: 10px 20px
+
+	.use-pack-instructions
+		h1
+			font-size: 32px
+			text-align: center
+			opacity: 0.8
+			margin-bottom: 30px
+		ol
+			padding-top: 20px
+			border-top: 1px solid rgba(255,255,255,0.2)
+		li
+			margin-left: 20px
+			font-size: 20px
+			margin-bottom: 15px
+			.btn
+				display: inline-block
+				margin-left: 10px
+		pre
+			margin-left: -20px
+			font-family: "Helvetica", "Arial", sans-serif
+			font-size: 18px
+			border: 1px solid rgba(0,0,0,0.4)
+			border-radius: 4px
+			background-color: rgba(0,0,0,0.2) 
+			padding: 15px
+			margin-top: 12px
+			.mention
+				font-family: inherit 
+
 
 	@media screen and (max-width: 650px)
 		.sticker-pack-page > header

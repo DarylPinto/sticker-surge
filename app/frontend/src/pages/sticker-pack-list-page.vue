@@ -115,7 +115,7 @@ module.exports = {
 			h2
 				text-transform: capitalize
 				font-size: 30px
-				font-weight: 400
+				font-weight: 300
 			.btn
 				display: flex
 				align-items: center

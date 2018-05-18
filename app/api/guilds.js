@@ -293,8 +293,8 @@ router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 			return res.status(400).send('Guild already has that Sticker Pack');
 		}
 
-		pack.save(); //async
 		await guild.save();
+		pack.save(); //async
 		return res.status(201).json(guild.stickerPacks);
 
 	}catch(err){
@@ -381,8 +381,8 @@ router.delete('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 		pack.subscribers -= 1;
 		if(pack.subscribers < 0) pack.subscribers = 0;
 
-		pack.save(); //async
 		await guild.save();
+		pack.save(); //async
 		return res.json(guild.stickerPacks);
 
 	}catch(err){
