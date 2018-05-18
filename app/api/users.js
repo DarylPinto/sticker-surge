@@ -179,7 +179,7 @@ router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 		}
 
 		await user.save();
-		pack.save(); //async
+		await pack.save(); //async
 		return res.status(201).json(user.stickerPacks);
 
 	}catch(err){
@@ -255,7 +255,7 @@ router.delete('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 		if(pack.subscribers < 0) pack.subscribers = 0;
 
 		await user.save();
-		pack.save(); //async
+		await pack.save(); //async
 		return res.json(user.stickerPacks);
 
 	}catch(err){

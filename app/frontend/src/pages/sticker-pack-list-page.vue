@@ -14,6 +14,7 @@ module.exports = {
 		return {
 			packs: [],
 			pageNum: 1,
+			isLastPage: false,
 			sortMethod: 'popular',
 			search: '',
 			pageLoaded: false,
@@ -33,14 +34,25 @@ module.exports = {
 
 			axios.get(endpoint)
 			.then(res => {
-				this.packs = res.data;
+				this.packs = res.data.packs;
+				this.isLastPage = res.data.isLastPage;
 				this.packsLoaded = true;
 			});
 		},
 
 		debouncedLoad: debounce(function(){
 			this.loadPacks();
-		}, 400)
+		}, 400),
+
+		nextPage(){
+			this.pageNum++;
+			this.loadPacks();
+		},
+
+		prevPage(){
+			this.pageNum--;
+			this.loadPacks();
+		}
 	},
 
 	mounted: function(){
@@ -69,8 +81,8 @@ module.exports = {
 			<div class="section-options">
 				<span class="search-box">
 					<i class="material-icons">search</i>
-					<input type="text" placeholder="Search" v-model="search" @input="debouncedLoad()">	
-				</span>	
+					<input type="text" placeholder="Search" v-model="search" @input="debouncedLoad()">
+				</span>
 				<select class="sort-stickers" v-model="sortMethod" @change="loadPacks()">
 					<option value="popular">Sort by: Popular</option>
 					<option value="newest">Sort by: Newest</option>
@@ -95,12 +107,19 @@ module.exports = {
 			:subscribers="pack.subscribers"
 		/>
 
+		<div v-show="packsLoaded" class="pagination">
+			<span v-if="pageNum > 1" @click="prevPage()">Prev</span>
+			<span v-if="!isLastPage" @click="nextPage()">Next</span>
+		</div>
+
 	</div>
 
 </main>
 </template>
 
 <style lang="sass">
+
+	$brand-red: #fc6262
 
 	.sticker-pack-list-page	
 		transition: .2s
@@ -136,5 +155,31 @@ module.exports = {
 			width: 150px
 			margin: 0 auto
 			margin-top: 90px
+
+	.pagination	
+		display: block
+		margin-top: 30px
+		margin-bottom: 45px	
+		text-align: right
+		span
+			display: inline-block
+			text-align: center
+			min-width: 90px
+			margin-left: 10px
+			margin-right: 10px	
+			padding: 10px
+			border: 1px solid gray
+			color: gray
+			border-radius: 4px
+			cursor: pointer
+			transition: .2s
+			&:hover
+				background-color: $brand-red
+				border-color: $brand-red
+				color: white
+			&:first-child
+				margin-left: 0
+			&:last-child
+				margin-right: 0
 
 </style>
