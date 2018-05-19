@@ -3,8 +3,10 @@ import Vue from 'vue';
 import axios from 'axios';
 import debounce from 'debounce';
 import header from '../components/header.vue';
+import footer from '../components/footer.vue';
 
 Vue.component('header-bar', header);
+Vue.component('footer-bar', footer);
 
 module.exports = {	
 	data: function(){
@@ -144,6 +146,8 @@ module.exports = {
 		</form>
 
 	</div>
+
+	<footer-bar></footer-bar>
 
 </main>
 </template>

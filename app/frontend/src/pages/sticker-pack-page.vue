@@ -2,11 +2,13 @@
 import Vue from 'vue';
 import axios from 'axios';
 import header from '../components/header.vue';
+import footer from '../components/footer.vue';
 import stickerCollection from '../components/sticker-collection.vue';
 import modal from '../components/modal.vue';
 import packSubscriberList from '../components/pack-subscriber-list.vue';
 
 Vue.component('header-bar', header);
+Vue.component('footer-bar', footer);
 Vue.component('stickerCollection', stickerCollection);
 Vue.component('modal', modal);
 Vue.component('packSubscriberList', packSubscriberList);
@@ -125,13 +127,14 @@ module.exports = {
 
 	</div>
 
+	<footer-bar></footer-bar>
+
 </main>
 </template>
 
 <style lang="sass">
 
-	.sticker-pack-page
-		margin-bottom: 90px
+	.sticker-pack-page	
 		> div
 			transition: .2s
 		header.pack-header
@@ -167,26 +170,27 @@ module.exports = {
 			font-size: 32px
 			text-align: center
 			opacity: 0.8
-			margin-bottom: 30px
+			margin-bottom: 40px
 		ol
 			padding-top: 20px
 			border-top: 1px solid rgba(255,255,255,0.2)
 		li
-			margin-left: 20px
+			margin-left: 30px
 			font-size: 20px
 			margin-bottom: 15px
 			.btn
 				display: inline-block
 				margin-left: 10px
-		pre
-			margin-left: -20px
+		pre	
 			font-family: "Helvetica", "Arial", sans-serif
-			font-size: 18px
+			font-size: 16px
 			border: 1px solid rgba(0,0,0,0.4)
 			border-radius: 4px
 			background-color: rgba(0,0,0,0.2) 
-			padding: 15px
+			padding: 10px
 			margin-top: 12px
+			display: inline-block
+			margin-left: 5px
 			.mention
 				font-family: inherit 
 

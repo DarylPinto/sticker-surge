@@ -1,4 +1,5 @@
 <script>
+	import Vue from 'vue';
 	import swipeEvents from '../scripts/swipe-events.js';
 	swipeEvents.init();
 

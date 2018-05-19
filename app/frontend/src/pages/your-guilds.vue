@@ -2,8 +2,10 @@
 import Vue from 'vue';
 import axios from 'axios';
 import header from '../components/header.vue';
+import footer from '../components/footer.vue';
 
 Vue.component('header-bar', header);
+Vue.component('footer-bar', footer);
 
 if(!Array.prototype.includes){
 	Array.prototype.includes = function(item){
@@ -118,6 +120,8 @@ module.exports = {
 		</div>
 
 	</div>
+
+	<footer-bar></footer-bar>
 
 </main>
 </template>
