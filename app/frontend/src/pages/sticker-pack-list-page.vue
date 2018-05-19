@@ -162,8 +162,8 @@ module.exports = {
 
 	.pagination	
 		display: block
-		margin-top: 30px
-		margin-bottom: 45px	
+		margin-top: 15px
+		//margin-bottom: 25px	
 		text-align: right
 		span
 			display: inline-block

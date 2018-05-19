@@ -1,24 +1,5 @@
-<script>
-import Vue from 'vue';
-
-module.exports = {
-	data: function(){
-		return {
-			isSticky: false
-		}
-	},
-	mounted: function(){
-		console.log(this.$el.offsetTop);
-		console.log(window.innerHeight);
-		setTimeout(() => {
-			this.isSticky = this.$el.offsetTop < window.innerHeight;
-		}, 250);
-	}
-}
-</script>
-
 <template>
-<footer id="main-footer" :class="{sticky: isSticky}">
+<footer id="main-footer">
 	<div class="container">
 		<p>Made with <i class="material-icons">favorite</i> by DRL</p>
 		<div>
