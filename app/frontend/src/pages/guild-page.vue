@@ -170,8 +170,7 @@ module.exports = {
 
 <style lang="sass">
 
-	.guild-page
-		margin-bottom: 120px
+	.guild-page	
 		transition: .2s
 		> header
 			margin-top: 40px
@@ -191,6 +190,8 @@ module.exports = {
 
 		.sticker-collection
 			margin-bottom: 70px
+			&:last-of-type
+				margin-bottom: 0
 
 	@media screen and (max-width: 650px)
 		.guild-page > header

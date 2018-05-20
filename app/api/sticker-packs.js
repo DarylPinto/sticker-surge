@@ -35,8 +35,7 @@ const removedFields = {
 
 router.get('/', async (req, res) =>{
 
-	const packsPerPage = 12;
-	let isLastPage = false;
+	const packsPerPage = 3;
 
 	//Page #
 	let requestedPage = parseInt(req.query.page);
@@ -67,12 +66,8 @@ router.get('/', async (req, res) =>{
 		const totalPackCount = await StickerPack.count(search);
 		const packs = await StickerPack.find(search, removedFields).sort(sortType).skip(skipAmount).limit(packsPerPage);
 		let packInfo = packs.map(p => p._doc);
-		packInfo.forEach(p => delete p.stickers);
-		isLastPage = Math.ceil(totalPackCount / packsPerPage) === requestedPage;
-		return res.send({
-			packs: packInfo,
-			isLastPage
-		});
+		packInfo.forEach(p => delete p.stickers);	
+		return res.send({packs: packInfo});
 
 	}catch(err){
 		console.log(err.message);

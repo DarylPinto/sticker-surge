@@ -16,51 +16,59 @@ module.exports = {
 		return {
 			packs: [],
 			pageNum: 1,
-			isLastPage: false,
+			allContentLoaded: false,
 			sortMethod: 'popular',
 			search: '',
 			pageLoaded: false,
-			packsLoaded: false,
+			currentlyLoadingPacks: false,
 			userId: this.$cookie.get('id') || null
 		}
 	},
 
 	methods: {
-		loadPacks: function(){
+		loadPacks: function(isInitialLoad){
+
+			if(isInitialLoad){	
+				this.packs = [];
+				this.pageNum = 1;
+				this.allContentLoaded = false;
+			}else{
+				this.pageNum++;
+			}
 
 			let endpoint = `/api/sticker-packs/?sort=${this.sortMethod}&page=${this.pageNum}`;
 			(this.search.trim().length > 0) ? endpoint += `&search=${encodeURIComponent(this.search)}` : null;
 			endpoint += `&nocache=${(new Date()).getTime()}`;
 
-			this.packsLoaded = false;
+			this.currentlyLoadingPacks = true;
 
 			axios.get(endpoint)
 			.then(res => {
-				this.packs = res.data.packs;
-				this.isLastPage = res.data.isLastPage;
-				this.packsLoaded = true;
+				if(res.data.packs.length === 0) this.allContentLoaded = true;
+				this.currentlyLoadingPacks = false;
+				this.packs = this.packs.concat(res.data.packs);
 			});
 		},
 
 		debouncedLoad: debounce(function(){
-			this.loadPacks();
-		}, 400),
+			this.currentlyLoadingPacks = true;
+			this.loadPacks(true);
+		}, 400)
 
-		nextPage(){
-			this.pageNum++;
-			this.loadPacks();
-		},
-
-		prevPage(){
-			this.pageNum--;
-			this.loadPacks();
-		}
 	},
 
 	mounted: function(){
 		document.title = 'Sticker Packs - Stickers for Discord';
 		this.pageLoaded = true;
-		this.loadPacks();
+		this.loadPacks(true);
+
+		//Scroll to bottom to load more
+		window.addEventListener('scroll', () => {
+			if((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight){
+				if(!this.currentlyLoadingPacks && !this.allContentLoaded) this.loadPacks(false);
+			}
+		});
+
 	}
 
 }
@@ -83,23 +91,18 @@ module.exports = {
 			<div class="section-options">
 				<span class="search-box">
 					<i class="material-icons">search</i>
-					<input type="text" placeholder="Search" v-model="search" @input="debouncedLoad()">
+					<input type="text" placeholder="Search" v-model="search" @input="debouncedLoad(true)">
 				</span>
-				<select class="sort-stickers" v-model="sortMethod" @change="loadPacks()">
+				<select class="sort-stickers" v-model="sortMethod" @change="loadPacks(true)">
 					<option value="popular">Sort by: Popular</option>
 					<option value="newest">Sort by: Newest</option>
 					<option value="oldest">Sort by: Oldest</option>
 				</select>
 				<router-link to="/sticker-packs/new" class="btn" v-if="userId">Create a Sticker Pack</router-link>	
 			</div>	
-		</div>	
-
-		<div v-if="!packsLoaded" class="loading-packs">
-			<img src="/images/loading-spin.svg">
 		</div>
 
 		<stickerPackListItem
-			v-if="packsLoaded"
 			v-for="pack in packs"
 			:key="pack.key"
 			:link="`/pack/${pack.key}`"
@@ -109,9 +112,8 @@ module.exports = {
 			:subscribers="pack.subscribers"
 		/>
 
-		<div v-show="packsLoaded" class="pagination">
-			<span v-if="pageNum > 1" @click="prevPage()">Prev</span>
-			<span v-if="!isLastPage" @click="nextPage()">Next</span>
+		<div v-if="currentlyLoadingPacks" class="loading-packs">
+			<img src="/images/loading-spin.svg">
 		</div>
 
 	</div>
@@ -156,34 +158,8 @@ module.exports = {
 
 		.loading-packs img
 			display: block
-			width: 150px
+			width: 90px
 			margin: 0 auto
-			margin-top: 90px
-
-	.pagination	
-		display: block
-		margin-top: 15px
-		//margin-bottom: 25px	
-		text-align: right
-		span
-			display: inline-block
-			text-align: center
-			min-width: 90px
-			margin-left: 10px
-			margin-right: 10px	
-			padding: 10px
-			border: 1px solid gray
-			color: gray
-			border-radius: 4px
-			cursor: pointer
-			transition: .2s
-			&:hover
-				background-color: $brand-red
-				border-color: $brand-red
-				color: white
-			&:first-child
-				margin-left: 0
-			&:last-child
-				margin-right: 0
+			margin-top: 20px
 
 </style>

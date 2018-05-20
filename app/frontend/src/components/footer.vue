@@ -29,9 +29,12 @@
 			bottom: 0
 		p, a, i
 			color: rgba(255,255,255,0.35)
+		p
+			position: relative
+			top: -5px
 		i
 			position: relative
-			top: 5px
+			top: 6px
 		a
 			margin-left: 8px
 			font-size: 14px

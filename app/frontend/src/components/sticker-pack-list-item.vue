@@ -22,8 +22,8 @@ module.exports = {
 
 	.sticker-pack-list-item
 		display: inline-flex
-		width: calc(33.45% - 11.5px)
-		height: 260px
+		width: calc(33.45% - 11.5px)//100%
+		height: 260px//700px
 		border: 1px solid rgba(0, 0, 0, 0.4)
 		box-sizing: border-box
 		position: relative
