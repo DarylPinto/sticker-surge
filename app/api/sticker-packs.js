@@ -142,6 +142,7 @@ router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async
 	if(!req.body.key.match(/^[a-z0-9]+$/g)) return res.status(400).send('Sticker Pack key must contain lowercase letters and numbers only');
 	if(req.body.key.length > 8) return res.status(400).send('Sticker Pack key cannot be longer than 8 characters');
 	if(req.body.name.length > 60) return res.status(400).send('Sticker Pack name cannot be longer than 60 characters');
+	if(req.body.description.length > 110) return res.status(400).send('Sticker Pack key cannot be longer than 110 characters');
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
 	//Check if Sticker Pack key is already used
@@ -179,6 +180,7 @@ router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async
 router.post('/:key/stickers', verifyUserAjax, upload.single('sticker'), handleMulterError, async (req, res) => {
 
 	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
+	if(req.body.name.trim().length === 0 || !req.body.description.trim().length === 0) return res.status(400).send('Invalid body data'); 
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
 	if(req.body.name.length > 20) return res.status(400).send('Sticker name cannot be longer than 20 characters');	
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
@@ -232,6 +234,39 @@ router.post('/:key/stickers/:stickername/uses', /*verifyBot,*/ async (req, res) 
 
 	return res.json(util.removeProps(sticker._doc, ['_id']));
 
+});
+
+/////////
+//PATCH//
+/////////
+
+//Update Sticker Pack
+router.patch('/:key', verifyUserAjax, async (req, res) => {
+
+	if(!req.body.name || !req.body.description) return res.status(400).send('Invalid body data');
+	if(req.body.name.trim().length === 0 || !req.body.description.trim().length === 0) return res.status(400).send('Invalid body data'); 
+	if(req.body.name.length > 60) return res.status(400).send('Sticker Pack name cannot be longer than 60 characters');
+	if(req.body.description.length > 110) return res.status(400).send('Sticker Pack key cannot be longer than 110 characters');
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');
+
+	try{
+		let pack = await StickerPack.findOne({key: req.params.key});
+		if(!pack) return res.status(404).send('Sticker Pack not found');
+
+		Object.assign(pack, {
+			name: req.body.name,
+			description: req.body.description
+		});
+
+		await pack.save();
+		delete pack._doc.stickers;
+		return res.json(pack._doc);	
+
+	}catch(err){
+		console.error(err);
+		return res.status(500).send('Internal server error');
+	}
+	
 });
 
 //////////

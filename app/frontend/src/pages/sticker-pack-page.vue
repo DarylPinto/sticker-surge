@@ -1,6 +1,7 @@
 <script>
 import Vue from 'vue';
 import axios from 'axios';
+import debounce from 'debounce';
 import header from '../components/header.vue';
 import footer from '../components/footer.vue';
 import stickerCollection from '../components/sticker-collection.vue';
@@ -20,6 +21,7 @@ module.exports = {
 		return {
 			name: '',
 			key: '',
+			description: '',
 			iconURL: '',
 			creatorId: '',
 			stickers: [],
@@ -39,13 +41,14 @@ module.exports = {
 	},
 
 	methods: {
-		loadPageData(){	
+		loadPackData: function(){	
 			this.pageLoaded = false;
 				
-			axios.get(`/api/${this.pageType}/${this.$route.params.id}?nocache=${(new Date()).getTime()}`)
+			axios.get(`/api/sticker-packs/${this.$route.params.id}?nocache=${(new Date()).getTime()}`)
 			.then(res => {	
 				this.name = res.data.name;
 				this.key = res.data.key;
+				this.description = res.data.description;
 				this.stickers = res.data.stickers;
 				this.iconURL = res.data.icon ? res.data.icon : null;
 				this.creatorId = res.data.creatorId;
@@ -54,18 +57,31 @@ module.exports = {
 			}).catch(err => {
 				if(err.response.status === 404) window.location.replace('/sticker-packs');
 			});
-		}
+		},
+
+		updatePackData: debounce(function(){
+			axios.patch(`/api/sticker-packs/${this.$route.params.id}`, {
+				name: this.name,
+				description: this.description
+			})
+			.then(res => {
+				console.log(res);
+			})
+			.catch(err => {
+				console.error(err.message);
+			});
+		}, 400)
 
 	},
 
 	watch: {
 		'$route': function(){	
-			this.loadPageData();
+			this.loadPackData();
 		}
 	},
 
 	mounted: function(){
-		this.loadPageData();
+		this.loadPackData();
 	}
 
 }
@@ -81,14 +97,16 @@ module.exports = {
 
 		<header class="pack-header">
 			<div class="pack-icon" :style="'background-image: url('+iconURL+')'"></div>
-			<h1 :style="`font-size: ${nameFontSize}`">{{name}}</h1>
+			<input v-model="name" class="pack-title" maxlength="30" :style="`font-size: ${nameFontSize}`" :disabled="!isUsersPack" @input="updatePackData" />
+			<textarea class="pack-desc" v-model="description" maxlength="110" :disabled="!isUsersPack" @input="updatePackData">
+			</textarea>
 			<a class="btn hollow" @click="showPackSubscriberList = true">Use This Pack</a>	
 		</header>
 		
 		<div class="container" :class="{transparent: !pageLoaded}">
 
 			<stickerCollection
-				v-on:reload="loadPageData"
+				v-on:reload="loadPackData"
 				name="Stickers in this pack"
 				:stickerPrefix="key"
 				:emojiNamesAllowed="true"
@@ -160,6 +178,29 @@ module.exports = {
 				background-size: cover
 				background-position: center center
 				background-repeat: no-repeat
+			.pack-title
+				display: block
+				width: 100%
+				max-width: 650px
+				padding: 0
+				border: none	
+			.pack-desc
+				display: block
+				width: 100%
+				max-width: 650px
+				margin-top: 25px
+				margin-bottom: 5px
+				padding: 0
+				font-size: 20px	
+				color: gray
+				font-weight: 100	
+				text-align: center
+				line-height: 1.4em
+				background-color: transparent
+				border: none	
+				outline: 0
+				min-height: 30px
+				resize: none
 			.btn
 				margin-top: 20px
 				font-size: 18px
