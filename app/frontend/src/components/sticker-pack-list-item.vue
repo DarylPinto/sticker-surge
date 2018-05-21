@@ -8,14 +8,14 @@ module.exports = {
 </script>
 
 <template>
-<router-link :to="link" class="sticker-pack-list-item">
+<a :href="link" target="_blank" class="sticker-pack-list-item">
 	<div class="icon" :style="'background-image: url('+icon+')'"></div>
 	<div class="title"><h2>{{name}}</h2></div>
 	<p class="desc">{{description}}</p>
 	<footer>
 		<span>{{subscribers.toLocaleString()}} {{subscribers === 1 ? 'subscriber' : 'subscribers'}}</span>
 	</footer>
-</router-link>
+</a>
 </template>
 
 <style lang="sass">	

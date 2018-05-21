@@ -44,9 +44,12 @@ module.exports = {
 
 			axios.get(endpoint)
 			.then(res => {
+				let new_packs;
 				if(res.data.packs.length === 0) this.allContentLoaded = true;
 				this.currentlyLoadingPacks = false;
-				this.packs = this.packs.concat(res.data.packs);
+				//Remove potential duplicates before appending
+				new_packs = res.data.packs.filter(pack => !this.packs.map(p => p.key).includes(pack.key));
+				this.packs = this.packs.concat(new_packs);
 			});
 		},
 
@@ -64,7 +67,8 @@ module.exports = {
 
 		//Scroll to bottom to load more
 		window.addEventListener('scroll', () => {
-			if((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight){
+			let distance_from_bottom = 80;
+			if((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - distance_from_bottom){
 				if(!this.currentlyLoadingPacks && !this.allContentLoaded) this.loadPacks(false);
 			}
 		});

@@ -35,7 +35,7 @@ const removedFields = {
 
 router.get('/', async (req, res) =>{
 
-	const packsPerPage = 3;
+	const packsPerPage = 18;
 
 	//Page #
 	let requestedPage = parseInt(req.query.page);
@@ -138,15 +138,24 @@ router.get('/:key/stickers/:stickername', async (req, res) => {
 //POST new sticker pack
 router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async (req, res) => {	
 
-	if(!req.body.name || !req.body.key || !req.body.description) return res.status(400).send('Invalid body data');
-	if(!req.body.key.match(/^[a-z0-9]+$/g)) return res.status(400).send('Sticker Pack key must contain lowercase letters and numbers only');
-	if(req.body.key.length > 8) return res.status(400).send('Sticker Pack key cannot be longer than 8 characters');
-	if(req.body.name.length > 60) return res.status(400).send('Sticker Pack name cannot be longer than 60 characters');
-	if(req.body.description.length > 110) return res.status(400).send('Sticker Pack key cannot be longer than 110 characters');
+	if(!req.body.name || !req.body.key || !req.body.description || !req.file){
+		return res.status(400).send('Invalid body data');
+	}
+
+	let {name, key, description} = req.body;
+	name = name.trim().replace(/\s+/g, ' ');	
+	key = key.trim().replace(/\s+/g, ' ');	
+	description = description.trim().replace(/\s+/g, ' ');
+	
+	if(name.length === 0 || key.length === 0 || description.length === 0) return res.status(400).send('Invalid body data'); 
+	if(!key.match(/^[a-z0-9]+$/g)) return res.status(400).send('Sticker Pack key must contain lowercase letters and numbers only');
+	if(name.length > 60) return res.status(400).send('Sticker Pack name cannot be longer than 60 characters');
+	if(key.length > 8) return res.status(400).send('Sticker Pack key cannot be longer than 8 characters');	
+	if(description.length > 110) return res.status(400).send('Sticker Pack key cannot be longer than 110 characters');
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
 	//Check if Sticker Pack key is already used
-	const keyAlreadyUsed = await StickerPack.findOne({key: req.body.key});
+	const keyAlreadyUsed = await StickerPack.findOne({key});
 	if(keyAlreadyUsed) return res.status(400).send('There is already a Sticker Pack with that key');	
 
 	//Ensure user has voted on DBL within the last 24hrs before continuing (only works if DBL integrated)
@@ -161,13 +170,13 @@ router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async
 	}
 
 	//Create Sticker Pack
-	let data = Object.assign({}, req.body);
+	let data = Object.assign({}, {name, key, description});
 	data.creatorId = res.locals.userId;
 	data.icon = await imageToCdn(req.file.buffer, `${data.key}-ICON-${(new Date()).getTime()}`);
 	
 	try{
 		await new StickerPack(data).save();
-		const pack = await StickerPack.findOne({key: req.body.key}, removedFields);
+		const pack = await StickerPack.findOne({key}, removedFields);
 		res.status(201).json(pack);
 	}catch(err){
 		console.error(err);
@@ -180,7 +189,6 @@ router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async
 router.post('/:key/stickers', verifyUserAjax, upload.single('sticker'), handleMulterError, async (req, res) => {
 
 	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
-	if(req.body.name.trim().length === 0 || !req.body.description.trim().length === 0) return res.status(400).send('Invalid body data'); 
 	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
 	if(req.body.name.length > 20) return res.status(400).send('Sticker name cannot be longer than 20 characters');	
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
@@ -242,25 +250,27 @@ router.post('/:key/stickers/:stickername/uses', /*verifyBot,*/ async (req, res) 
 
 //Update Sticker Pack
 router.patch('/:key', verifyUserAjax, async (req, res) => {
-
+	
 	if(!req.body.name || !req.body.description) return res.status(400).send('Invalid body data');
-	if(req.body.name.trim().length === 0 || !req.body.description.trim().length === 0) return res.status(400).send('Invalid body data'); 
-	if(req.body.name.length > 60) return res.status(400).send('Sticker Pack name cannot be longer than 60 characters');
-	if(req.body.description.length > 110) return res.status(400).send('Sticker Pack key cannot be longer than 110 characters');
+
+	let {name, description} = req.body;
+	name = name.trim().replace(/\s+/g, ' ');	
+	description = description.trim().replace(/\s+/g, ' ');
+
+	if(name.length === 0 || !description.length === 0) return res.status(400).send('Invalid body data'); 
+	if(name.length > 60) return res.status(400).send('Sticker Pack name cannot be longer than 60 characters');
+	if(description.length > 110) return res.status(400).send('Sticker Pack key cannot be longer than 110 characters');
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
 	try{
 		let pack = await StickerPack.findOne({key: req.params.key});
 		if(!pack) return res.status(404).send('Sticker Pack not found');
 
-		Object.assign(pack, {
-			name: req.body.name,
-			description: req.body.description
-		});
+		Object.assign(pack, {name, description});
 
 		await pack.save();
 		delete pack._doc.stickers;
-		return res.json(pack._doc);	
+		return res.json(pack._doc);
 
 	}catch(err){
 		console.error(err);

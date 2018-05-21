@@ -35,7 +35,7 @@ module.exports = {
 		isUsersPack: function(){return this.userId === this.creatorId},
 		nameFontSize: function(){
 			let size = 1 - (this.name.length / 25);
-			if(size < 0.3) size = 0.3;
+			if(size < 0.4) size = 0.4;
 			return size.toString() + 'em';
 		}
 	},
@@ -54,6 +54,7 @@ module.exports = {
 				this.creatorId = res.data.creatorId;
 				document.title = `${res.data.name} - Stickers for Discord`;	
 				this.pageLoaded = true;
+				setTimeout(this.adjustDescHeight, 100);
 			}).catch(err => {
 				if(err.response.status === 404) window.location.replace('/sticker-packs');
 			});
@@ -65,12 +66,20 @@ module.exports = {
 				description: this.description
 			})
 			.then(res => {
+				document.title = `${res.data.name} - Stickers for Discord`;
 				console.log(res);
 			})
 			.catch(err => {
 				console.error(err.message);
 			});
-		}, 400)
+		}, 400),
+
+		//stackoverflow.com/a/995374
+		adjustDescHeight: function(){	
+			let textarea = this.$el.querySelector('.pack-desc');
+			textarea.style.height = "1px";
+			textarea.style.height = textarea.scrollHeight+"px";
+		}
 
 	},
 
@@ -98,7 +107,7 @@ module.exports = {
 		<header class="pack-header">
 			<div class="pack-icon" :style="'background-image: url('+iconURL+')'"></div>
 			<input v-model="name" class="pack-title" maxlength="30" :style="`font-size: ${nameFontSize}`" :disabled="!isUsersPack" @input="updatePackData" />
-			<textarea class="pack-desc" v-model="description" maxlength="110" :disabled="!isUsersPack" @input="updatePackData">
+			<textarea class="pack-desc" v-model="description" maxlength="110" :disabled="!isUsersPack" @input="updatePackData" @keydown="adjustDescHeight">
 			</textarea>
 			<a class="btn hollow" @click="showPackSubscriberList = true">Use This Pack</a>	
 		</header>
@@ -181,13 +190,13 @@ module.exports = {
 			.pack-title
 				display: block
 				width: 100%
-				max-width: 650px
+				max-width: 660px
 				padding: 0
 				border: none	
 			.pack-desc
 				display: block
 				width: 100%
-				max-width: 650px
+				max-width: 660px
 				margin-top: 25px
 				margin-bottom: 5px
 				padding: 0
