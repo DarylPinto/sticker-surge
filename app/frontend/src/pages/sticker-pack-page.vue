@@ -25,6 +25,7 @@ module.exports = {
 			iconURL: '',
 			creatorId: '',
 			stickers: [],
+			published: false,
 			pageLoaded: false,
 			userId: this.$cookie.get('id') || null,
 			showPackSubscriberList: false
@@ -45,11 +46,16 @@ module.exports = {
 			this.pageLoaded = false;
 				
 			axios.get(`/api/sticker-packs/${this.$route.params.id}?nocache=${(new Date()).getTime()}`)
-			.then(res => {	
+			.then(res => {
+				if(!res.data.published && res.data.creatorId !== this.userId){
+					return window.location.replace('/sticker-packs');
+				}
+
 				this.name = res.data.name;
 				this.key = res.data.key;
 				this.description = res.data.description;
 				this.stickers = res.data.stickers;
+				this.published = res.data.published;
 				this.iconURL = res.data.icon ? res.data.icon : null;
 				this.creatorId = res.data.creatorId;
 				document.title = `${res.data.name} - Stickers for Discord`;	
@@ -79,6 +85,14 @@ module.exports = {
 			let textarea = this.$el.querySelector('.pack-desc');
 			textarea.style.height = "1px";
 			textarea.style.height = textarea.scrollHeight+"px";
+		},
+
+		publishPack: function(){
+			axios.post(`/api/sticker-packs/${this.$route.params.id}/publish`)
+			.then(res => {
+				this.published = res.data.published;
+				console.log(res);
+			});
 		}
 
 	},
@@ -109,7 +123,13 @@ module.exports = {
 			<input v-model="name" class="pack-title" maxlength="30" :style="`font-size: ${nameFontSize}`" :disabled="!isUsersPack" @input="updatePackData" />
 			<textarea class="pack-desc" v-model="description" maxlength="110" :disabled="!isUsersPack" @input="updatePackData" @keydown="adjustDescHeight">
 			</textarea>
-			<a class="btn hollow" @click="showPackSubscriberList = true">Use This Pack</a>	
+			<a v-if="published" class="btn hollow" @click="showPackSubscriberList = true">Use This Pack</a>	
+			<a v-if="!published" class="btn hollow publish" :class="{disabled: stickers.length < 4}" @click="publishPack">
+				{{stickers.length < 4 ?
+					"Add "+(4-stickers.length)+" More "+(4-stickers.length===1?"Sticker":"Stickers")+" Before Publishing This Pack" :
+					"Publish This Pack!"
+				}}
+			</a>	
 		</header>
 		
 		<div class="container" :class="{transparent: !pageLoaded}">
@@ -168,7 +188,7 @@ module.exports = {
 			background-color: rgba(0,0,0,0.3)
 			padding-top: 25px
 			padding-bottom: 40px
-			margin-bottom: 25px
+			margin-bottom: 45px
 			display: flex
 			flex-direction: column
 			justify-content: center
@@ -214,6 +234,13 @@ module.exports = {
 				margin-top: 20px
 				font-size: 18px
 				padding: 10px 20px
+				&.publish:not(.disabled)
+					animation: glow 1.5s ease-in 0s infinite alternate
+				&.disabled
+					font-size: 15px
+					pointer-events: none
+					color: gray
+					border-color: gray
 
 	.use-pack-instructions
 		h1

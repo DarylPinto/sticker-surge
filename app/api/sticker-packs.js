@@ -53,7 +53,7 @@ router.get('/', async (req, res) =>{
 	else sortType = '-createdAt';
 
 	//Search
-	let search = {};//{published: true};
+	let search = {published: true};
 
 	if(req.query.search){
 		let s = decodeURIComponent(req.query.search).trim();
@@ -185,6 +185,26 @@ router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async
 
 });
 
+//Publish a Sticker Pack
+router.post('/:key/publish', verifyUserAjax, async (req, res) => {
+
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');
+
+	try{
+		let pack = await StickerPack.findOne({key: req.params.key});
+		if(!pack) return res.status(404).send('Sticker Pack not found');
+		if(res.locals.userId != pack.creatorId) return res.status(401).send('Unauthorized');	
+		pack.published = true;	
+		await pack.save();	
+
+		return res.json(util.removeProps(pack._doc, Object.keys(removedFields)));	
+	}catch(err){
+		console.error(err);
+		res.status(500).send('Internal server error');		
+	}
+	
+});
+
 //POST new sticker to sticker pack
 router.post('/:key/stickers', verifyUserAjax, upload.single('sticker'), handleMulterError, async (req, res) => {
 
@@ -230,7 +250,7 @@ router.post('/:key/stickers', verifyUserAjax, upload.single('sticker'), handleMu
 });
 
 //Increment `uses` property on a sticker
-router.post('/:key/stickers/:stickername/uses', /*verifyBot,*/ async (req, res) => {
+router.post('/:key/stickers/:stickername/uses', verifyBot, async (req, res) => {
 
 	let pack = await StickerPack.findOne({key: req.params.key});
 	if(!pack) return res.status(404).send('Sticker Pack not found');
