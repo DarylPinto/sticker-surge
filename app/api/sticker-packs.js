@@ -58,7 +58,7 @@ router.get('/', async (req, res) =>{
 	if(req.query.search){
 		let s = decodeURIComponent(req.query.search).trim();
 		let regex = new RegExp(s, 'i');
-		search.$or = [{name: regex}, {key: regex}];
+		search.$or = [{name: regex}, {key: regex}, {description: regex}];
 	}
 
 	try{
@@ -193,7 +193,8 @@ router.post('/:key/publish', verifyUserAjax, async (req, res) => {
 	try{
 		let pack = await StickerPack.findOne({key: req.params.key});
 		if(!pack) return res.status(404).send('Sticker Pack not found');
-		if(res.locals.userId != pack.creatorId) return res.status(401).send('Unauthorized');	
+		if(res.locals.userId != pack.creatorId) return res.status(401).send('Unauthorized');
+		if(pack.stickers.length < 4) return res.status(400).send('At least 4 stickers must be in this pack before publishing');
 		pack.published = true;	
 		await pack.save();	
 

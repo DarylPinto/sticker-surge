@@ -60,9 +60,11 @@ module.exports = {
 			background: repeating-linear-gradient(-45deg, rgba(23,23,23,0.65), rgba(23,23,23,0.65) 20px, rgba(16,16,16,0.65) 0, rgba(16,16,16,0.65) 40px)
 			h2
 				margin-left: 160px
+				margin-right: 13px
 				font-weight: 400
 				font-size: 25px
-				margin-bottom: 7px
+				margin-bottom: 5px
+				line-height: 1.2em
 		.desc
 			margin-left: 160px
 			margin-top: 12px

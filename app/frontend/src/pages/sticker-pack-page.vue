@@ -28,21 +28,31 @@ module.exports = {
 			published: false,
 			pageLoaded: false,
 			userId: this.$cookie.get('id') || null,
-			showPackSubscriberList: false
+			showPackSubscriberList: false,
+			showPackHelperDialog: false
 		}
 	},
 
 	computed: {
 		isUsersPack: function(){return this.userId === this.creatorId},
 		nameFontSize: function(){
-			let size = 1 - (this.name.length / 25);
+			let size = 0.9 - (this.name.length / 25);
 			if(size < 0.4) size = 0.4;
 			return size.toString() + 'em';
+		},
+		//Check if pack is able to be published
+		publishCheck: function(){
+			let remaining = (4 - this.stickers.length < 0) ? 0 : 4 - this.stickers.length;	
+			let item = (remaining === 1) ? "Sticker" : "Stickers";
+			return {
+				valid: remaining === 0,
+				invalidMessage: `Add ${remaining} More ${item} Before Publishing This Pack`
+			}	
 		}
-	},
+	},	
 
 	methods: {
-		loadPackData: function(){	
+		loadPackData: function(isInitialLoad){	
 			this.pageLoaded = false;
 				
 			axios.get(`/api/sticker-packs/${this.$route.params.id}?nocache=${(new Date()).getTime()}`)
@@ -61,6 +71,11 @@ module.exports = {
 				document.title = `${res.data.name} - Stickers for Discord`;	
 				this.pageLoaded = true;
 				setTimeout(this.adjustDescHeight, 100);
+
+				//Show helper dialog
+				if(isInitialLoad && this.isUsersPack && !this.published){
+					this.showPackHelperDialog = true;
+				}
 			}).catch(err => {
 				if(err.response.status === 404) window.location.replace('/sticker-packs');
 			});
@@ -73,7 +88,6 @@ module.exports = {
 			})
 			.then(res => {
 				document.title = `${res.data.name} - Stickers for Discord`;
-				console.log(res);
 			})
 			.catch(err => {
 				console.error(err.message);
@@ -91,20 +105,23 @@ module.exports = {
 			axios.post(`/api/sticker-packs/${this.$route.params.id}/publish`)
 			.then(res => {
 				this.published = res.data.published;
-				console.log(res);
-			});
+				this.showPackHelperDialog = true;	
+			})
+			.catch(err => {
+				console.error(err.message);
+			})
 		}
 
 	},
 
 	watch: {
 		'$route': function(){	
-			this.loadPackData();
+			this.loadPackData(true);
 		}
 	},
 
 	mounted: function(){
-		this.loadPackData();
+		this.loadPackData(true);
 	}
 
 }
@@ -120,13 +137,13 @@ module.exports = {
 
 		<header class="pack-header">
 			<div class="pack-icon" :style="'background-image: url('+iconURL+')'"></div>
-			<input v-model="name" class="pack-title" maxlength="30" :style="`font-size: ${nameFontSize}`" :disabled="!isUsersPack" @input="updatePackData" />
-			<textarea class="pack-desc" v-model="description" maxlength="110" :disabled="!isUsersPack" @input="updatePackData" @keydown="adjustDescHeight">
+			<input v-model="name" class="pack-title" spellcheck="false" maxlength="30" :style="`font-size: ${nameFontSize}`" :disabled="!isUsersPack" @input="updatePackData" />
+			<textarea v-model="description" class="pack-desc" spellcheck="false" maxlength="110" :disabled="!isUsersPack" @input="updatePackData" @keydown="adjustDescHeight">
 			</textarea>
 			<a v-if="published" class="btn hollow" @click="showPackSubscriberList = true">Use This Pack</a>	
 			<a v-if="!published" class="btn hollow publish" :class="{disabled: stickers.length < 4}" @click="publishPack">
-				{{stickers.length < 4 ?
-					"Add "+(4-stickers.length)+" More "+(4-stickers.length===1?"Sticker":"Stickers")+" Before Publishing This Pack" :
+				{{!publishCheck.valid ?
+					publishCheck.invalidMessage :
 					"Publish This Pack!"
 				}}
 			</a>	
@@ -135,7 +152,7 @@ module.exports = {
 		<div class="container" :class="{transparent: !pageLoaded}">
 
 			<stickerCollection
-				v-on:reload="loadPackData"
+				v-on:reload="loadPackData(false)"
 				name="Stickers in this pack"
 				:stickerPrefix="key"
 				:emojiNamesAllowed="true"
@@ -171,7 +188,27 @@ module.exports = {
 				</ol>	
 			</div>
 		</modal>
-
+	
+		<modal
+			v-if="isUsersPack"
+			v-show="showPackHelperDialog"
+			@close="showPackHelperDialog = false"
+		>
+			<div class="pack-helper-dialog">
+				<div v-if="!published">
+					<h1>Almost There!</h1>
+					<p>Your pack isn't finished just yet. Once you add at least 4 stickers, you'll be able to publish <b>{{name}}</b> to the world!</p>	
+				</div>
+				<div v-if="published">
+					<h1>Congratulations!</h1>	
+					<p>The <b>{{name}}</b> Sticker Pack is now available for everyone to use!</p>
+				</div>
+				<div class="buttons">
+					<a class="btn" @click="showPackHelperDialog = false">Got it</a>	
+				</div>
+			</div>
+		</modal>
+	
 	</div>
 
 	<footer-bar></footer-bar>
@@ -242,7 +279,7 @@ module.exports = {
 					color: gray
 					border-color: gray
 
-	.use-pack-instructions
+	.use-pack-instructions, .pack-helper-dialog
 		h1
 			font-size: 32px
 			text-align: center
@@ -258,6 +295,13 @@ module.exports = {
 			.btn
 				display: inline-block
 				margin-left: 10px
+		p
+			font-weight: 100
+			font-size: 20px
+			line-height: 1.6em	
+			margin-top: -10px
+			margin-bottom: 30px
+			text-align: center
 		pre	
 			font-family: "Helvetica", "Arial", sans-serif
 			font-size: 16px
@@ -270,8 +314,14 @@ module.exports = {
 			margin-left: 5px
 			.mention
 				font-family: inherit 
-
-
+		.buttons
+			margin-top: -15px
+			text-align: center
+			.btn
+				font-size: 20px
+				padding: 10px
+				width: 130px
+				
 	@media screen and (max-width: 650px)
 		.sticker-pack-page > header
 			font-size: 45px
