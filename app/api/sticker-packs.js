@@ -286,6 +286,7 @@ router.patch('/:key', verifyUserAjax, async (req, res) => {
 	try{
 		let pack = await StickerPack.findOne({key: req.params.key});
 		if(!pack) return res.status(404).send('Sticker Pack not found');
+		if(res.locals.userId != pack.creatorId) return res.status(401).send('Unauthorized');
 
 		Object.assign(pack, {name, description});
 
