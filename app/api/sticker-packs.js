@@ -151,7 +151,7 @@ router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async
 	if(!key.match(/^[a-z0-9]+$/g)) return res.status(400).send('Sticker Pack key must contain lowercase letters and numbers only');
 	if(name.length > 60) return res.status(400).send('Sticker Pack name cannot be longer than 60 characters');
 	if(key.length > 8) return res.status(400).send('Sticker Pack key cannot be longer than 8 characters');	
-	if(description.length > 110) return res.status(400).send('Sticker Pack key cannot be longer than 110 characters');
+	if(description.length > 110) return res.status(400).send('Sticker Pack description cannot be longer than 110 characters');
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
 	//Check if Sticker Pack key is already used
@@ -280,7 +280,7 @@ router.patch('/:key', verifyUserAjax, async (req, res) => {
 
 	if(name.length === 0 || !description.length === 0) return res.status(400).send('Invalid body data'); 
 	if(name.length > 60) return res.status(400).send('Sticker Pack name cannot be longer than 60 characters');
-	if(description.length > 110) return res.status(400).send('Sticker Pack key cannot be longer than 110 characters');
+	if(description.length > 110) return res.status(400).send('Sticker Pack description cannot be longer than 110 characters');
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
 	try{
