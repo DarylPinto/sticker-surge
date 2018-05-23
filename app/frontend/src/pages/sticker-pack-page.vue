@@ -142,10 +142,7 @@ module.exports = {
 			</textarea>
 			<a v-if="published" class="btn hollow" @click="showPackSubscriberList = true">Use This Pack</a>	
 			<a v-if="!published" class="btn hollow publish" :class="{disabled: stickers.length < 4}" @click="publishPack">
-				{{!publishCheck.valid ?
-					publishCheck.invalidMessage :
-					"Publish This Pack!"
-				}}
+				{{!publishCheck.valid ?	publishCheck.invalidMessage : "Publish This Pack!"}}
 			</a>	
 		</header>
 		
