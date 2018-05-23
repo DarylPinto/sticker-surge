@@ -15,7 +15,7 @@
 
 	#main-footer
 		background-color: #1b1b1b
-		width: 100vw
+		width: 100%
 		height: 100px
 		margin-top: 60px
 		.container

@@ -272,7 +272,7 @@ module.exports = {
 				font-size: 18px
 				padding: 10px 20px
 				&.publish:not(.disabled)
-					animation: glow 1.5s ease-in 0s infinite alternate
+					animation: glow 0.625s ease-in 0s infinite alternate
 				&.disabled
 					font-size: 15px
 					pointer-events: none
@@ -295,6 +295,7 @@ module.exports = {
 			.btn
 				display: inline-block
 				margin-left: 10px
+				padding: 9px 16px
 		p
 			font-weight: 100
 			font-size: 20px
