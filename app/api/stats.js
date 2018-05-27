@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Guild = require('./models/guild-model.js');
 const User = require('./models/user-model.js');
+const StickerPack = require('./models/sticker-pack-model.js');
 
 //Aggregate settings for sticker count
 const count_settings = [

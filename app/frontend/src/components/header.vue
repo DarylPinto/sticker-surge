@@ -1,4 +1,5 @@
 <script>
+	import Vue from 'vue';
 	import swipeEvents from '../scripts/swipe-events.js';
 	swipeEvents.init();
 
@@ -77,10 +78,12 @@
 <style lang="sass">
 
 	$brand-red: #fc6262
-	$header-height: 100px
+	$header-color: #131313
+	$discord-gray: #2a2d2f
+	$header-height: 60px
 
 	#main-header
-		background-color: $brand-red
+		background-color: $header-color
 		height: $header-height 
 		width: 100%
 		display: flex
@@ -95,19 +98,19 @@
 				display: inline-flex
 				align-items: center
 			.logo
-				max-height: 65px
-				max-width: 249px
+				max-height: 45px
+				max-width: 249px	
 				width: auto
 			.main-nav
 				font-size: 0
 			.main-nav a
-				padding-left: 10px
-				padding-right: 10px
-				font-size: 18px
+				padding-left: 7px
+				padding-right: 7px
+				font-size: 16px
 				font-weight: 300
 				text-decoration: none
 				&:hover, &.router-link-active
-					background-color: rgba(255,255,255,0.1)
+					background-color: $discord-gray
 		.mobile-nav-btn
 			display: none
 			width: 35px

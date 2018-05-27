@@ -5,6 +5,7 @@ const verifyUserAjax = require('../middleware/verify-user.js')({ajax: true});
 const verifyBot = require('../middleware/verify-bot.js');
 const setGuildsCookie = require('../middleware/set-guilds-cookie.js');
 const Guild = require('./models/guild-model.js');
+const StickerPack = require('./models/sticker-pack-model.js');
 const util = require('./utilities/utilities.js');
 const imageToCdn = require('./utilities/image-to-cdn.js');
 const deleteCdnImage = require('./utilities/delete-cdn-image.js');
@@ -25,34 +26,6 @@ const removedFields = {
 	'_id': false,
 	'__v': false,
 	'customStickers._id': false
-}
-
-/**
-* Check if user can manage stickers
-*
-* First we check if user is blacklisted. If so, return false.
-* Then, we check if guild's stickerManagerIds includes user's id
-* If stickerManagerRole is set to @everyone, then there's no stickerManagerIds,
-* in this case we have to make sure that either:
-* A) the command came from the bot, and therefore the user is guaranteed to be in the guild
-* B) the command came from the user, and the user's guilds includes the current guild id
-*/
-function userCanManageStickers(guild, req, res){
-
-	if(guild.guildManagerIds.includes(res.locals.userId)) return true;
-	if(guild.listMode === 'blacklist' && guild.blacklist.userIds.includes(res.locals.userId)) return false;
-	if(guild.stickerManagers.userIds.includes(res.locals.userId)) return true;
-
-	if(guild.stickerManagers.roleId === '@everyone'){
-		if(!req.session.guilds) return true;
-		if(req.session.guilds.includes(guild.id)) return true;
-	}
-
-	return false;
-}
-
-function userIsGuildManager(guild, req, res){
-	return guild.guildManagerIds.includes(res.locals.userId);
 }
 
 ///////
@@ -143,7 +116,7 @@ router.post('/:id/stickers', verifyUserAjax, upload.single('sticker'), handleMul
 	.then(guild => {
 		if(!guild) return res.status(404).send('Guild not found');
 
-		if(!userCanManageStickers(guild, req, res)){
+		if(!util.userCanManageStickers(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -245,7 +218,7 @@ router.patch('/:id/command-prefix', verifyUserAjax, (req, res) => {
 			return null;	
 		}
 
-		if(!userIsGuildManager(guild, req, res)){
+		if(!util.userIsGuildManager(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -287,7 +260,7 @@ router.patch('/:id/sticker-manager-role', verifyUserAjax, (req, res) => {
 			return null;	
 		}
 
-		if(!userIsGuildManager(guild, req, res)){
+		if(!util.userIsGuildManager(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -338,6 +311,43 @@ router.patch('/:id/sticker-user-role', verifyUserAjax, async (req, res) => {
 
 });
 
+//Subscribe to a sticker pack
+router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
+
+	if(!req.body.packKey) return res.status(400).send('Invalid body data');
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');
+
+	try{
+
+		let guild = await Guild.findOne({id: req.params.id});
+		let pack = await StickerPack.findOne({key: req.body.packKey});
+
+		if(!util.userIsGuildManager(guild, req, res) && !util.userIsStickerManager(guild, req, res)){
+			res.status(401).send('Unauthorized');
+			return null;
+		}
+
+		if(!guild) return res.status(404).send('Guild not found');
+		if(!pack) return res.status(404).send('Sticker Pack not found');
+		
+		if(!guild.stickerPacks.includes(req.body.packKey)){
+			guild.stickerPacks.push(req.body.packKey);
+			pack.subscribers += 1;
+		}else{
+			return res.status(400).send('Guild already has that Sticker Pack');
+		}
+
+		await guild.save();
+		await pack.save(); //async
+		return res.status(201).json(guild.stickerPacks);
+
+	}catch(err){
+		console.error("Error updating stickerpacks for guild\n", err.message);
+		return res.status(500).send('Internal server error');
+	}
+
+});
+
 //////////
 //DELETE//
 //////////
@@ -365,7 +375,7 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 
 		//Users can only delete stickers they created
 		//Exception to the rule: Guild managers can delete any sticker
-		if(!userIsGuildManager(guild, req, res) && (res.locals.userId != sticker.creatorId)){
+		if(!util.userIsGuildManager(guild, req, res) && (res.locals.userId != sticker.creatorId)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -386,6 +396,43 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 		res.status(500).send('Internal server error');
 
 	});
+
+});
+
+//Unsubscribe from a sticker pack
+router.delete('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
+
+	if(!req.body.packKey) return res.status(400).send('Invalid body data');
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');	
+
+	try{
+
+		let guild = await Guild.findOne({id: req.params.id});
+		let pack = await StickerPack.findOne({key: req.body.packKey});	
+
+		if(!util.userIsGuildManager(guild, req, res) && !util.userIsStickerManager(guild, req, res)){
+			res.status(401).send('Unauthorized');
+			return null;
+		}
+
+		if(!guild) return res.status(404).send('Guild not found');
+		if(!guild.stickerPacks.includes(req.body.packKey)){
+			return res.status(400).send('Guild does not have a Sticker Pack with that key');
+		}
+
+		let deletion_request_index = guild.stickerPacks.indexOf(req.body.packKey);	
+		guild.stickerPacks.splice(deletion_request_index, 1);
+		pack.subscribers -= 1;
+		if(pack.subscribers < 0) pack.subscribers = 0;
+
+		await guild.save();
+		await pack.save(); //async
+		return res.json(guild.stickerPacks);
+
+	}catch(err){
+		console.error("Error updating stickerpacks for guild\n", err.message);
+		return res.status(500).send('Internal server error');
+	}
 
 });
 

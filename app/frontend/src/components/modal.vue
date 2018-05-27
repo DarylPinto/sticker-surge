@@ -67,6 +67,7 @@ module.exports = {
 			color: rgba(255, 255, 255, 0.3)
 			cursor: default
 			font-size: 30px
+			z-index: 1
 			&:hover
 				color: rgba(255,255,255,0.5)
 

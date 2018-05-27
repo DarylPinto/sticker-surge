@@ -2,9 +2,11 @@
 import Vue from 'vue';
 import axios from 'axios';
 import header from '../components/header.vue';
+import footer from '../components/footer.vue';
 import stickerCollection from '../components/sticker-collection.vue';
 
 Vue.component('header-bar', header);
+Vue.component('footer-bar', footer);
 Vue.component('stickerCollection', stickerCollection);
 
 if(!Array.prototype.includes){
@@ -26,12 +28,14 @@ module.exports = {
 			whitelistRole: '',
 			whitelistIds: [],
 			blacklistIds: [],
+			stickerPacks: [],
 			guildManagerIds: [],
 			stickerManagerIds: [],
 			stickerManagerRole: '',
 			pageLoaded: false,
 			userId: this.$cookie.get('id') || null,
-			userGuilds: JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || []
+			userGuilds: JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || [],
+			stickerPackData: []
 		}
 	},
 
@@ -77,11 +81,33 @@ module.exports = {
 				this.guildManagerIds = res.data.guildManagerIds;
 				this.stickerManagerIds = res.data.stickerManagers.userIds;
 				this.stickerManagerRole = res.data.stickerManagers.roleId;
+				this.stickerPacks = res.data.stickerPacks;
 				document.title = `${res.data.guildName} - Stickers for Discord`;	
 				this.pageLoaded = true;
-			}).catch(err => {
+			})
+			.then(() => {
+				this.stickerPackData = [];
+				this.stickerPacks.forEach(key => {
+					axios.get(`/api/sticker-packs/${key}`).then(res => {
+						this.stickerPackData.push(res.data);
+
+						//Scroll to pack in url hash once all loaded
+						if(this.stickerPackData.length === this.stickerPacks.length){
+							setTimeout(this.scrollToUrlHash, 500);
+						}
+
+					});
+				});
+			})
+			.catch(err => {
 				if(err.response.status === 404) window.location.replace('/');
 			});
+		},
+		scrollToUrlHash(){
+			if(window.location.hash.length < 1) return;
+			const hash = window.location.hash;
+			const el = document.querySelector(hash);
+			if(el) el.scrollIntoView({behavior: "smooth"});
 		}
 
 	},
@@ -127,18 +153,35 @@ module.exports = {
 			:pageType="pageType"
 			:userId="userId"
 			:userIsGuildManager="userIsGuildManager"
-			:isEditable="userCanEdit">
+			:isEditable="userCanEdit"
+		>
+		</stickerCollection>
+
+		<stickerCollection
+			v-for="pack in stickerPackData"
+			:key="pack.key"
+			:id="pack.key"
+			:name="pack.name"
+			:stickerPrefix="pack.key"
+			:emojiNamesAllowed="false"
+			:stickers="pack.stickers"
+			:maxStickers="400"
+			pageType="sticker-packs"
+			:userId="userId"	
+			:isEditable="false"
+		>
 		</stickerCollection>
 
 	</div>
+
+	<footer-bar></footer-bar>
 
 </main>
 </template>
 
 <style lang="sass">
 
-	.guild-page
-		margin-bottom: 120px
+	.guild-page	
 		transition: .2s
 		> header
 			margin-top: 40px
@@ -155,6 +198,11 @@ module.exports = {
 		h1
 			display: inline-block
 			margin-left: 15px
+
+		.sticker-collection
+			margin-bottom: 70px
+			&:last-of-type
+				margin-bottom: 0
 
 	@media screen and (max-width: 650px)
 		.guild-page > header

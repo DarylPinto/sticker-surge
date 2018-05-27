@@ -11,12 +11,19 @@ Vue.component('sticker', sticker);
 Vue.component('modal', modal);
 Vue.component('stickerCreationForm', stickerCreationForm);
 
+//String.startsWith polyfill
+if (!String.prototype.startsWith) {
+	String.prototype.startsWith = function(search, pos) {
+		return this.substr(!pos || pos < 0 ? 0 : +pos, search.length) === search;
+	};
+}
+
 const normalizeObj = obj => JSON.parse(JSON.stringify(obj));
 
 module.exports = {
 	props: ['name', 'stickerPrefix', 'emojiNamesAllowed', 'userId', 'userIsGuildManager', 'isEditable', 'stickers', 'maxStickers', 'pageType'],
-	data: function(){	
-		return {	
+	data: function(){
+		return {
 			stickerSearchString: '',
 			sortMethod: 'newest',
 			loadingNewSticker: false,
@@ -27,28 +34,35 @@ module.exports = {
 		noStickersText(){
 			return (!this.isEditable) ? 'No stickers here just yet!' : 'No stickers here just yet. Add some!';
 		},
-		sanitizedStickerSearchString(){
-			return this.stickerSearchString.toLowerCase().replace(/(:|-)/g, '');
-		},
 		maxStickersReached(){
 			return this.stickers.length >= this.maxStickers;
 		},
-		sortedStickers(){
+		shownStickers(){
 			//Clone stickers array
-			let sorted = [].concat(this.stickers);
+			let shown = [].concat(this.stickers);
+			let sanitized_search_string = this.stickerSearchString.toLowerCase().replace(/(:|-)/g, '');
 
 			//Sort by newest
 			if(this.sortMethod === 'newest'){
 				//Sorting is not necessary, since `stickers` are already newest -> oldest by default
-				//sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+				//shown.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 			}
 			//Sort by oldest
 			else if(this.sortMethod === 'oldest'){
-				sorted.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+				shown.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 			}
 			//Sort by most used
 			else if(this.sortMethod === 'mostUsed'){
-				sorted.sort((a, b) => b.uses - a.uses);
+				shown.sort((a, b) => b.uses - a.uses);
+			}
+			//Sort alphabetically
+			else if(this.sortMethod === 'alpha'){
+				shown.sort((a, b) => naturalCompare(a.name, b.name));
+			}
+			//Sort alphabetically (Reversed)
+			else if(this.sortMethod === 'alphaReverse'){
+				shown.sort((a, b) => naturalCompare(a.name, b.name));
+				shown.reverse();
 			}
 			//Sort alphabetically
 			else if(this.sortMethod === 'alpha'){
@@ -60,7 +74,10 @@ module.exports = {
 				sorted.reverse();
 			}
 
-			return sorted;
+			return shown.filter(sticker => {
+				let sticker_display_name = (this.pageType === 'sticker-packs') ? this.stickerPrefix+sticker.name : sticker.name;
+				return sticker_display_name.indexOf(sanitized_search_string) > -1;
+			});
 		}
 	},
 	methods: {	
@@ -83,7 +100,9 @@ module.exports = {
 		},
 
 		deleteSticker(stickerName){
-			if(!confirm(`Are you sure you want to delete ${stickerName}?`)) return false;
+			let sticker_display_name = (this.pageType === 'sticker-packs') ? this.stickerPrefix+'-'+stickerName : stickerName; 
+			let message = `Are you sure you want to delete ${sticker_display_name}?`;
+			if(!confirm(message)) return false;
 
 			axios.delete(`/api/${this.pageType}/${this.$route.params.id}/stickers/${stickerName}`)
 			.then(res => {
@@ -123,7 +142,14 @@ module.exports = {
 				<option value="alpha">Sort by: A-Z</option>
 				<option value="alphaReverse">Sort by: Z-A</option>
 			</select>
-			<button v-if="isEditable" class="btn" :class="{disabled: maxStickersReached}" @click="showStickerCreationModal = true">Create a Sticker</button>	
+			<button
+				v-if="isEditable"
+				class="btn"
+				:class="{disabled: maxStickersReached}"
+				@click="showStickerCreationModal = true"
+			>
+				Create a Sticker
+			</button>
 		</div>
 	</header>	
 	<div class="sticker-area">
@@ -134,9 +160,8 @@ module.exports = {
 			<img src="/images/loading-spin.svg" alt="">
 		</div>
 		<sticker
-			v-for="sticker in sortedStickers"
+			v-for="sticker in shownStickers"
 			v-on:deleteSticker="deleteSticker(sticker.name)"
-			v-show="sticker.name.indexOf(sanitizedStickerSearchString) > -1"
 			:type="pageType"
 			:key="sticker.name"
 			:link="sticker.url"

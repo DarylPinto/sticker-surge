@@ -2,9 +2,11 @@
 import Vue from 'vue';
 import axios from 'axios';
 import header from '../components/header.vue';
+import footer from '../components/footer.vue';
 import stickerCollection from '../components/sticker-collection.vue';
 
 Vue.component('header-bar', header);
+Vue.component('footer-bar', footer);
 Vue.component('stickerCollection', stickerCollection);
 
 module.exports = {
@@ -104,6 +106,8 @@ module.exports = {
 		</stickerCollection>
 
 	</div>
+
+	<footer-bar></footer-bar>
 
 </main>
 </template>
