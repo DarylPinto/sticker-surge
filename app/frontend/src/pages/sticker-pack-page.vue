@@ -29,7 +29,8 @@ module.exports = {
 			pageLoaded: false,
 			userId: this.$cookie.get('id') || null,
 			showPackSubscriberList: false,
-			showPackHelperDialog: false
+			showPackHelperDialog: false,
+			showPublishTooltip: false
 		}
 	},
 
@@ -46,7 +47,7 @@ module.exports = {
 			let item = (remaining === 1) ? "Sticker" : "Stickers";
 			return {
 				valid: remaining === 0,
-				invalidMessage: `Add ${remaining} More ${item} Before Publishing This Pack`
+				invalidMessage: `Add ${remaining} More ${item} Before Publishing`
 			}	
 		}
 	},	
@@ -94,6 +95,16 @@ module.exports = {
 			});
 		}, 400),
 
+		updatePackIcon: function(formData){
+			formData.set('name', this.name);
+			formData.set('description', this.description);
+
+			axios.patch(`/api/sticker-packs/${this.$route.params.id}`, formData, {'Content-Type': 'multipart/form-data'})
+			.catch(err => {
+				console.error(err.message);
+			});
+		},
+
 		//stackoverflow.com/a/995374
 		adjustDescHeight: function(){	
 			let textarea = this.$el.querySelector('.pack-desc');
@@ -102,10 +113,25 @@ module.exports = {
 		},
 
 		publishPack: function(){
+			if(!this.publishCheck.valid) return;
 			axios.post(`/api/sticker-packs/${this.$route.params.id}/publish`)
 			.then(res => {
+				this.$cookie.delete('currentNewPack');
 				this.published = res.data.published;
 				this.showPackHelperDialog = true;	
+			})
+			.catch(err => {
+				console.error(err.message);
+			})
+		},
+
+		deletePack: function(){
+			if(this.published) return;
+			if(!confirm(`Are you sure you want to delete this pack?`)) return false;
+			axios.delete(`/api/sticker-packs/${this.$route.params.id}`)
+			.then(res => {
+				this.$cookie.delete('currentNewPack');
+				window.location.replace('/sticker-packs');
 			})
 			.catch(err => {
 				console.error(err.message);
@@ -136,14 +162,38 @@ module.exports = {
 	<div :class="{transparent: !pageLoaded}">
 
 		<header class="pack-header">
-			<div class="pack-icon" :style="'background-image: url('+iconURL+')'"></div>
+			<groupIcon :defaultImage="iconURL" :canEdit="isUsersPack" @iconUpdated="updatePackIcon($event, formData)" />
 			<input v-model="name" class="pack-title" spellcheck="false" maxlength="30" :style="`font-size: ${nameFontSize}`" :disabled="!isUsersPack" @input="updatePackData" />
-			<textarea v-model="description" class="pack-desc" spellcheck="false" maxlength="110" :disabled="!isUsersPack" @input="updatePackData" @keydown="adjustDescHeight">
+			<textarea
+				v-model="description"
+				class="pack-desc"
+				spellcheck="false"
+				maxlength="110"
+				:disabled="!isUsersPack"
+				@input="updatePackData"
+				@keydown="adjustDescHeight"
+				@blur="adjustDescHeight"
+			>
 			</textarea>
-			<a v-if="published" class="btn hollow" @click="showPackSubscriberList = true">Use This Pack</a>	
-			<a v-if="!published" class="btn hollow publish" :class="{disabled: stickers.length < 4}" @click="publishPack">
-				{{!publishCheck.valid ?	publishCheck.invalidMessage : "Publish This Pack!"}}
-			</a>	
+			<div class="buttons">
+				<a v-if="published" class="btn hollow" @click="showPackSubscriberList = true">Use This Pack</a>
+
+				<!-- Pre-Publish Buttons -->
+				<div v-if="!published && !publishCheck.valid" class="tooltip top" :class="{transparent: !showPublishTooltip}">
+					{{!publishCheck.valid ?	publishCheck.invalidMessage : "Publish This Pack!"}}
+				</div>
+				<a
+					v-if="!published"
+					class="btn hollow publish"
+					:class="{disabled: stickers.length < 4}"
+					@click="publishPack"
+					@mouseover="showPublishTooltip = true"
+					@mouseleave="showPublishTooltip = false"
+				>
+					Publish This Pack
+				</a>
+				<a v-if="!published" @click="deletePack" class="btn hollow secondary">Delete Pack</a>	
+			</div>
 		</header>
 		
 		<div class="container" :class="{transparent: !pageLoaded}">
@@ -193,12 +243,12 @@ module.exports = {
 		>
 			<div class="pack-helper-dialog">
 				<div v-if="!published">
-					<h1>Almost There!</h1>
-					<p>Your pack isn't finished just yet. Once you add at least 4 stickers, you'll be able to publish <b>{{name}}</b> to the world!</p>	
+					<h1>Almost Done!</h1>	
+					<p>Once you add at least 4 stickers, you'll be able to publish this Sticker Pack for everyone to use!</p>
 				</div>
 				<div v-if="published">
 					<h1>Congratulations!</h1>	
-					<p>The <b>{{name}}</b> Sticker Pack is now available for everyone to use!</p>
+					<p>Congratulations! The <b>{{name}}</b> Sticker Pack has been published!</p>
 				</div>
 				<div class="buttons">
 					<a class="btn" @click="showPackHelperDialog = false">Got it</a>	
@@ -264,17 +314,33 @@ module.exports = {
 				outline: 0
 				min-height: 30px
 				resize: none
+				overflow: hidden
+			.buttons
+				display: flex
+				.tooltip
+					margin-left: -13px
+					margin-top: -35px
+					&:after
+						left: 115px	
 			.btn
+				min-width: 200px
 				margin-top: 20px
+				margin-left: 10px
+				margin-right: 10px
+				text-align: center
 				font-size: 18px
 				padding: 10px 20px
+				display: inline-block
 				&.publish:not(.disabled)
-					animation: glow 0.625s ease-in 0s infinite alternate
-				&.disabled
-					font-size: 15px
-					pointer-events: none
+					animation: glow 0.525s ease-in 0s infinite alternate
+				&.disabled, &.secondary
+					//font-size: 15px
 					color: gray
 					border-color: gray
+					background-color: transparent
+				&.secondary:hover
+					border-color: white
+					color: white
 
 	.use-pack-instructions, .pack-helper-dialog
 		h1

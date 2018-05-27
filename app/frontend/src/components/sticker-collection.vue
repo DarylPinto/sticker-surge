@@ -91,7 +91,9 @@ module.exports = {
 		},
 
 		deleteSticker(stickerName){
-			if(!confirm(`Are you sure you want to delete ${stickerName}?`)) return false;
+			let sticker_display_name = (this.pageType === 'sticker-packs') ? this.stickerPrefix+'-'+stickerName : stickerName; 
+			let message = `Are you sure you want to delete ${sticker_display_name}?`;
+			if(!confirm(message)) return false;
 
 			axios.delete(`/api/${this.pageType}/${this.$route.params.id}/stickers/${stickerName}`)
 			.then(res => {

@@ -35,7 +35,7 @@ const removedFields = {
 
 router.get('/', async (req, res) =>{
 
-	const packsPerPage = 18;
+	const packsPerPage = 12;
 
 	//Page #
 	let requestedPage = parseInt(req.query.page);
@@ -270,7 +270,7 @@ router.post('/:key/stickers/:stickername/uses', verifyBot, async (req, res) => {
 /////////
 
 //Update Sticker Pack
-router.patch('/:key', verifyUserAjax, async (req, res) => {
+router.patch('/:key', verifyUserAjax, upload.single('icon'), handleMulterError, async (req, res) => {
 	
 	if(!req.body.name || !req.body.description) return res.status(400).send('Invalid body data');
 
@@ -290,6 +290,8 @@ router.patch('/:key', verifyUserAjax, async (req, res) => {
 
 		Object.assign(pack, {name, description});
 
+		if(req.file) pack.icon = await imageToCdn(req.file.buffer, `${req.params.key}-ICON-${(new Date()).getTime()}`);
+
 		await pack.save();
 		delete pack._doc.stickers;
 		return res.json(pack._doc);
@@ -304,6 +306,25 @@ router.patch('/:key', verifyUserAjax, async (req, res) => {
 //////////
 //DELETE//
 //////////
+
+//DELETE unpublished sticker pack
+router.delete('/:key', verifyUserAjax, async (req, res) => {
+
+	try{
+		let pack = await StickerPack.findOne({key: req.params.key});
+		if(!pack) return res.status(404).send('Sticker Pack not found');
+		if(res.locals.userId != pack.creatorId) return res.status(401).send('Unauthorized');
+		if(pack.published) return res.status(401).send('Cannot cancel creation. Pack already published');
+
+		await StickerPack.deleteOne({key: req.params.key});
+		return res.send('Successfully cancelled creation of pack');
+	}catch(err){
+		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');
+		console.error(err);
+		return res.status(500).send('Internal server error');
+	}
+
+});
 
 //DELETE sticker from sticker pack
 router.delete('/:key/stickers/:stickername', verifyUserAjax, async (req, res) => {	

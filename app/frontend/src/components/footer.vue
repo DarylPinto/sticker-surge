@@ -1,7 +1,7 @@
 <template>
 <footer id="main-footer">
 	<div class="container">
-		<p>Made with <i class="material-icons">favorite</i> by DRL</p>
+		<!-- <p>Made with <i class="material-icons">favorite</i> by DRL</p> -->
 		<div>
 			<a href="https://github.com/darylpinto/stickers-for-discord" target="_blank">Github</a>
 			<a href="https://discord.gg/HNFmKsE" target="_blank">Discord</a>
@@ -22,7 +22,7 @@
 			height: inherit
 			display: flex
 			flex-direction: row
-			justify-content: space-between
+			justify-content: space-around
 			align-items: center
 		&.sticky
 			position: fixed

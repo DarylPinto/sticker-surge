@@ -3,16 +3,17 @@ import Vue from 'vue';
 import axios from 'axios';
 import debounce from 'debounce';
 import header from '../components/header.vue';
+import groupIcon from '../components/group-icon.vue';
 import footer from '../components/footer.vue';
 
 Vue.component('header-bar', header);
+Vue.component('groupIcon', groupIcon);
 Vue.component('footer-bar', footer);
 
 module.exports = {	
 	data: function(){
 		return {
-			pageLoaded: false,
-			packIcon: null,
+			pageLoaded: false,	
 			packTitle: '',
 			packKey: '',
 			packDescription: '',
@@ -39,20 +40,6 @@ module.exports = {
 			.then(res => this.packKeyValid = false)
 			.catch(err => this.packKeyValid = true);
 		}, 200),
-		showPackIconPreview: function(e){
-			let file = e.target.files[0];
-			if(!file){
-				this.packIcon = null;
-				return false;
-			}
-			
-			let reader = new FileReader();
-			reader.readAsDataURL(file);
-			reader.addEventListener('load', () => {
-				this.packIcon = reader.result;
-				reader = null; //de-reference
-			});
-		},
 		createPack: function(){
 			if(!this.packKeyValid) return alert('Pack prefix invalid');
 			if(!this.termsAccepted) return alert('You must accept the Terms and Conditions');
@@ -64,6 +51,7 @@ module.exports = {
 
 			axios.post('/api/sticker-packs', formData, {'Content-Type': 'multipart/form-data'})
 			.then(res => {
+				this.$cookie.set('currentNewPack', this.packKey);
 				if(res.status === 201) return window.location.replace(`/pack/${this.packKey}`);
 			})
 			.catch(err => {
@@ -79,6 +67,9 @@ module.exports = {
 	},
 	mounted: function(){
 		if(!this.userId) return window.location.replace('/sticker-packs'); //redirect if user not logged in
+
+		let currentNewPack = this.$cookie.get('currentNewPack');
+		if(currentNewPack) return window.location.replace(`/pack/${currentNewPack}`); //redirect if user curnrently working on a pack
 		this.pageLoaded = true;
 		document.title = 'Create a Sticker Pack - Stickers for Discord';
 		axios.get('/api/dbl-integrated').then(res => this.dblSupportRequired = res.data.dbl_integrated);
@@ -97,17 +88,13 @@ module.exports = {
 			<h1>Create a Sticker Pack</h1>
 		</header>
 		
-		<form @submit.prevent="createPack">	
-			<div class="pack-icon" :class="{'icon-submitted': packIcon}" :style="'background-image: url('+packIcon+')'"	>
-				<input type="file" name="icon" @change="showPackIconPreview" accept="image/png, image/jpeg, image/webp" required>
-				<span v-if="!packIcon">Choose&nbsp;an<br>Icon</span>
-				<span v-if="packIcon">Change<br>Icon</span>
-			</div>	
-			<input type="text" name="name" class="pack-title" placeholder="Title" maxlength="30" v-model="packTitle" required>
-			<input type="text" name="description" placeholder="Description" maxlength="110" v-model="packDescription" required>
+		<form @submit.prevent="createPack">
+			<groupIcon defaultImage="" :canEdit="true" />
+			<input type="text" name="name" class="pack-title" placeholder="Title" maxlength="30" v-model="packTitle" autocomplete="off" required>
+			<input type="text" name="description" placeholder="Description" maxlength="110" v-model="packDescription" autocomplete="off" required>
 			<div class="pack-key">
-				<div class="tooltip left" :class="{transparent: !(packKeyFocused && packKey.length === 0)}">
-					<p>Keep it short, sweet and to the point! All sticker names in your pack will begin with this prefix.</p>
+				<div class="tooltip left" :class="{transparent: !packKeyFocused}">
+					<p>All the sticker names in your pack will begin with this prefix, so keep it short, sweet and to the point!</p>
 					<p>This CANNOT be changed in the future.</p>
 				</div>
 				<input
@@ -119,6 +106,7 @@ module.exports = {
 					v-model="packKey"
 					@focus="packKeyFocused = true"
 					@blur="packKeyFocused = false"
+					autocomplete="off"
 					required
 				>
 				<i class="material-icons" :class="{error: !packKeyValid}" v-show="packKey.length > 0">
@@ -174,48 +162,6 @@ module.exports = {
 			align-items: center
 			width: 50%
 			margin: 45px auto
-			.pack-icon
-				display: inline-flex
-				justify-content: center
-				align-items: center
-				height: 100px
-				width: 100px
-				border-radius: 100%
-				background-color: #1f1f1f
-				border: 5px solid gray 
-				cursor: pointer
-				margin-bottom: 18px
-				overflow: hidden
-				background-size: cover
-				background-position: center center
-				background-repeat: no-repeat
-				&.icon-submitted
-					border-color: #484848
-					span
-						opacity: 0
-					&:hover span
-						opacity: 1
-				input[type="file"]
-					position: absolute
-					height: 100px
-					width: 100px
-					padding: 0
-					margin: 0
-					border-radius: 100%
-					opacity: 0
-					cursor: pointer
-				span
-					font-size: 12px
-					text-transform: uppercase
-					color: gray 
-					text-align: center
-					line-height: 1.2em
-					margin-top: 5px
-					background-color: rgba(0, 0, 0, 0.5);
-					padding: 45px
-					transition: .2s
-				&:hover span
-					color: white
 			input, p, .pack-key
 				width: 480px
 			.pack-key	
