@@ -65,10 +65,10 @@ client.on('roleDelete', role => {
 ////////////////
 const commands = {
 	'stickers': require('./commands/stickers.js'),
+	'addpack': require('./commands/add-pack.js'),
+	//'removepack': require('./commands/remove-pack.js'),
 	'createsticker': require('./commands/create-sticker.js'),
 	'deletesticker': require('./commands/delete-sticker.js'),
-	//'addstickerpack': require('./commands/add-stickerpack.js'),
-	//'removestickerpack': require('./commands/remove-stickerpack.js'),
 	'whitelist': require('./commands/set-whitelist-role.js'),
 	'blacklist': require('./commands/set-blacklist-role.js'),
 	'setprefix': require('./commands/set-command-prefix.js'),
@@ -130,6 +130,8 @@ client.on('message', message => {
 			}
 
 			if(usedGuildCommand('stickers')) commands.stickers(message)
+			else if(usedGuildCommand('addpack')) commands.addpack(message, bot_auth, prefix)
+			//else if(usedGuildCommand('removepack')) commands.removepack(message, bot_auth, prefix)
 			else if(usedGuildCommand('createsticker')) commands.createsticker(message, bot_auth, prefix)
 			else if(usedGuildCommand('deletesticker')) commands.deletesticker(message, bot_auth, prefix)
 			else if(usedGuildCommand('whitelist')) commands.whitelist(message, bot_auth, prefix)
@@ -160,6 +162,7 @@ client.on('message', message => {
 			}
 
 			if(usedDmCommand('stickers')) commands.stickers(message)
+			else if(usedDmCommand('addpack')) commands.addpack(message, bot_auth)
 			else if(usedDmCommand('createsticker')) commands.createsticker(message, bot_auth)
 			else if(usedDmCommand('deletesticker')) commands.deletesticker(message, bot_auth)
 			else if(usedDmCommand('commands')) commands.commands(message)

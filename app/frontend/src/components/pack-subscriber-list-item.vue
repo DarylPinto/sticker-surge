@@ -39,6 +39,9 @@ module.exports = {
 			})
 			.catch(err => {
 				console.error(err);
+				if(err.message.indexOf("already has that Sticker Pack")){
+					this.subscribed = !this.subscribed;
+				}
 				this.loading = false;
 			});
 		}

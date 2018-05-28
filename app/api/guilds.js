@@ -313,7 +313,6 @@ router.patch('/:id/sticker-user-role', verifyUserAjax, async (req, res) => {
 
 //Subscribe to a sticker pack
 router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
-
 	if(!req.body.packKey) return res.status(400).send('Invalid body data');
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
@@ -330,6 +329,8 @@ router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 		if(!guild) return res.status(404).send('Guild not found');
 		if(!pack) return res.status(404).send('Sticker Pack not found');
 		
+		if(!pack.published) return res.status(403).send('Sticker Pack has not been published');
+
 		if(!guild.stickerPacks.includes(req.body.packKey)){
 			guild.stickerPacks.push(req.body.packKey);
 			pack.subscribers += 1;
@@ -339,7 +340,10 @@ router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 
 		await guild.save();
 		await pack.save(); //async
-		return res.status(201).json(guild.stickerPacks);
+		return res.status(201).json({
+			packs: guild.stickerPacks,
+			packName: pack.name
+		});
 
 	}catch(err){
 		console.error("Error updating stickerpacks for guild\n", err.message);
