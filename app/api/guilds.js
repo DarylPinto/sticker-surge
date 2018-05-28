@@ -295,7 +295,7 @@ router.patch('/:id/sticker-user-role', verifyUserAjax, async (req, res) => {
 		let guild = await Guild.findOne({id: req.params.id});
 
 		if(!guild) return res.status(404).send('Guild not found');
-		if(!userIsGuildManager(guild, req, res)) return res.status(401).send('Unauthorized');
+		if(!util.userIsGuildManager(guild, req, res)) return res.status(401).send('Unauthorized');
 
 		guild.listMode = req.body.listMode;
 		guild.whitelist.roleId = req.body.whitelistRole;
@@ -322,7 +322,7 @@ router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 		let guild = await Guild.findOne({id: req.params.id});
 		let pack = await StickerPack.findOne({key: req.body.packKey});
 
-		if(!util.userIsGuildManager(guild, req, res) && !util.userIsStickerManager(guild, req, res)){
+		if(!util.userCanManageStickers(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}
@@ -410,7 +410,7 @@ router.delete('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 		let guild = await Guild.findOne({id: req.params.id});
 		let pack = await StickerPack.findOne({key: req.body.packKey});	
 
-		if(!util.userIsGuildManager(guild, req, res) && !util.userIsStickerManager(guild, req, res)){
+		if(!util.userCanManageStickers(guild, req, res)){
 			res.status(401).send('Unauthorized');
 			return null;
 		}

@@ -41,6 +41,17 @@ router.get('/:id', (req, res) => {
 	.catch(err => res.status(500).send('Internal server error'));
 });
 
+//GET guild info (everything except stickers) by id
+router.get('/:id/info', (req, res) => {
+	User.findOne({id: req.params.id}, removedFields)
+	.then(user => {	
+		if(!user) return res.status(404).send('User not found');
+		delete user._doc.customStickers;
+		res.json(user._doc);	
+	})
+	.catch(err => res.status(500).send('Internal server error'));
+});
+
 //GET user's stickers
 router.get('/:id/stickers', (req, res) => {
 	User.findOne({id: req.params.id}, removedFields)
