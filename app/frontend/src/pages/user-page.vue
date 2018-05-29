@@ -41,10 +41,15 @@ module.exports = {
 			.then(res => {
 				this.customStickers = res.data.customStickers;
 				this.username = res.data.username;
-				this.avatarURL = res.data.avatar ? `https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png` : null;
+				this.avatarURL = res.data.avatar ?
+					`https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png` :
+					'/images/default-discord-icon.png';
 				this.stickerPacks = res.data.stickerPacks;
 				document.title = `${res.data.username} - Stickers for Discord`;	
 				this.pageLoaded = true;
+			})
+			.catch(err => {
+				if(err.response.status === 404) window.location.replace('/');
 			})
 			.then(() => {
 
@@ -61,19 +66,33 @@ module.exports = {
 
 			})
 			.then(() => {
+				//Map user's sticker pack keys into requests for the pack data
 				return Promise.all(this.stickerPacks.map(key => {
-					return axios.get(`/api/sticker-packs/${key}`);
+					return axios.get(`/api/sticker-packs/${key}`)
+					.catch(err => {
+						//If a user's sticker pack doesn't exist for some reason,
+						//attempt to remove it so that the page can display properly on next refresh
+						//This should never happen, but it's a safety net in case it does
+						if(err.response.status === 404){
+							axios.delete(`/api/users/${this.$route.params.id}/sticker-packs`, {data: {packKey: key}});
+						}
+					});
 				}));
 			})
 			.then(responseData => {
 				responseData.reverse();
 				this.stickerPackData = responseData.map(res => res.data);
-				//Scroll to pack in url hash once all loaded
-				setTimeout(this.scrollToUrlHash, 500);
+				this.scrollToUrlHash();
 			})
 			.catch(err => {
-				if(err.response.status === 404) window.location.replace('/');
+				console.error(err.message);
 			});
+		},
+		scrollToUrlHash(){
+			if(window.location.hash.length < 1) return;
+			const hash = window.location.hash;
+			const el = document.querySelector(hash);
+			if(el) el.scrollIntoView({behavior: "smooth"});
 		}
 
 	},
@@ -104,10 +123,7 @@ module.exports = {
 	<div :class="{transparent: !pageLoaded}">
 
 		<header class="user-header">
-			<groupIcon
-				:defaultImage="(!avatarURL) ? '/images/default-discord-icon.png' : avatarURL" 
-				:canEdit="false"
-			/>
+			<groupIcon :defaultImage="avatarURL" :canEdit="false" />
 			<h1 :style="`font-size: ${nameFontSize}`">{{username}}</h1>
 		</header>
 			

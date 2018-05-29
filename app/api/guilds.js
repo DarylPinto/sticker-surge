@@ -426,14 +426,17 @@ router.delete('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 
 		let deletion_request_index = guild.stickerPacks.indexOf(req.body.packKey);	
 		guild.stickerPacks.splice(deletion_request_index, 1);
-		pack.subscribers -= 1;
-		if(pack.subscribers < 0) pack.subscribers = 0;
+
+		if(pack){
+			pack.subscribers -= 1;
+			if(pack.subscribers < 0) pack.subscribers = 0;
+			await pack.save(); //async
+		}
 
 		await guild.save();
-		await pack.save(); //async
 		return res.json({
 			packs: guild.stickerPacks,
-			packName: pack.name
+			packName: pack ? pack.name : req.body.packKey
 		});
 
 	}catch(err){

@@ -76,23 +76,36 @@ module.exports = {
 			.then(res => {
 				if(!res.data.isActive) return window.location.replace('/');
 				this.guild = res.data;
-				this.guild.icon = res.data.icon ? `https://cdn.discordapp.com/icons/${res.data.id}/${res.data.icon}.png` : null;
+				this.guild.icon = res.data.icon ?
+					`https://cdn.discordapp.com/icons/${res.data.id}/${res.data.icon}.png` :
+					'/images/default-discord-icon.png';
 				document.title = `${res.data.guildName} - Stickers for Discord`;	
 				this.pageLoaded = true;
 			})
+			.catch(err => {
+				if(err.response.status === 404) window.location.replace('/');
+			})
 			.then(() => {
+				//Map guild's sticker pack keys into requests for the pack data
 				return Promise.all(this.guild.stickerPacks.map(key => {
-					return axios.get(`/api/sticker-packs/${key}`);
+					return axios.get(`/api/sticker-packs/${key}`)
+					.catch(err => {
+						//If a guild's sticker pack doesn't exist for some reason,
+						//attempt to remove it so that the page can display properly on next refresh
+						//This should never happen, but it's a safety net in case it does
+						if(err.response.status === 404){
+							axios.delete(`/api/guilds/${this.$route.params.id}/sticker-packs`, {data: {packKey: key}});
+						}
+					});
 				}));
 			})
 			.then(responseData => {
 				responseData.reverse();
-				this.stickerPackData = responseData.map(res => res.data);
-				//Scroll to pack in url hash once all loaded
-				setTimeout(this.scrollToUrlHash, 500);
+				this.stickerPackData = responseData.map(res => res.data);	
+				this.scrollToUrlHash();
 			})
 			.catch(err => {
-				if(err.response.status === 404) window.location.replace('/');
+				console.error(err.message);
 			});
 		},
 		scrollToUrlHash(){
@@ -130,10 +143,7 @@ module.exports = {
 	<div :class="{transparent: !pageLoaded}">
 	
 		<header class="guild-header">
-			<groupIcon
-				:defaultImage="(!guild.icon) ? '/images/default-discord-icon.png' : guild.icon" 
-				:canEdit="false"
-			/>
+			<groupIcon :defaultImage="guild.icon" :canEdit="false" />
 			<h1 :style="`font-size: ${nameFontSize}`">{{guild.guildName}}</h1>
 		</header>
 
