@@ -42,7 +42,7 @@ module.exports = function(message, bot_auth, prefix){
 	})
 	.catch(err => {
 		if(err.message.includes('does not have a custom sticker with that name')){
-			message.channel.send('There\'s no sticker with that name.');
+			message.channel.send('There\'s no custom sticker with that name.');
 		}
 
 		else if(err.message.includes('Unauthorized')){

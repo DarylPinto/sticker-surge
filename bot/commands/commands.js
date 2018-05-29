@@ -1,5 +1,6 @@
 const rp = require('request-promise');
 const userStickerPerms = require('../utilities/user-sticker-perms.js');
+const covert = require('../../covert.js');
 
 module.exports = function(message, prefix, guild_info){
 
@@ -34,10 +35,20 @@ module.exports = function(message, prefix, guild_info){
 		}
 
 		if(user_perms.canManage){
-			command_list.fields.push({
-				name: `${escaped_prefix}createSticker`,
-				value: 'Create a custom sticker for anyone on this server to use.'
-			});
+			command_list.fields.push(...[
+				{
+					name: `${escaped_prefix}addPack`,
+					value: `Add a sticker pack for anyone on this server to use. [View all available packs](${covert.app_url}/sticker-packs)`
+				},
+				{
+					name: `${escaped_prefix}removePack`,
+					value: `Remove a sticker pack from this server.`
+				},
+				{
+					name: `${escaped_prefix}createSticker`,
+					value: 'Create a custom sticker for anyone on this server to use.'
+				}
+			]);
 		}
 
 		//delete sticker is listed twice, Note the difference in verbiage ("one of your stickers" for regular users and
@@ -95,6 +106,14 @@ module.exports = function(message, prefix, guild_info){
 				{
 					name: "stickers",
 					value: "View your personal stickers."
+				},
+				{
+					name: "addPack",
+					value: `Add a sticker pack to your personal collection. You can use these on any server with Stickers for Discord.\n[View all available packs](${covert.app_url}/sticker-packs)`
+				},
+				{
+					name: "removePack",
+					value: `Remove a sticker pack from your personal collection.`
 				},
 				{
 					name: "createSticker",

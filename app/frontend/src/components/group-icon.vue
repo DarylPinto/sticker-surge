@@ -83,6 +83,7 @@ module.exports = {
 			display: flex
 			justify-content: center
 			align-items: center
+			padding-top: 5px
 			font-size: 12px
 			text-transform: uppercase
 			color: gray 

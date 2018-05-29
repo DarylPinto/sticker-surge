@@ -219,7 +219,10 @@ router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 
 		await user.save();
 		await pack.save(); //async
-		return res.status(201).json(user.stickerPacks);
+		return res.status(201).json({
+			packs: user.stickerPacks,
+			packName: pack.name
+		});
 
 	}catch(err){
 		console.error("Error updating stickerpacks for user\n", err.message);
@@ -295,7 +298,10 @@ router.delete('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 
 		await user.save();
 		await pack.save(); //async
-		return res.json(user.stickerPacks);
+		return res.json({
+			packs: user.stickerPacks,
+			packName: pack.name
+		});
 
 	}catch(err){
 		console.error("Error updating stickerpacks for user\n", err.message);

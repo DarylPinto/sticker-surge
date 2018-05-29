@@ -9,6 +9,10 @@ module.exports = {
 		},
 		isCreatedByUser(){
 			return this.userId === this.creator;
+		},
+		//Disable deleting stickers (client-side only) when viewing a sticker-pack within a server/user page
+		packStickerInForeignGroup(){
+			return this.type === 'sticker-packs' && !this.$route.fullPath.startsWith('/pack/');
 		}
 	},
 	methods: {
@@ -29,7 +33,11 @@ module.exports = {
 
 <template>
 <div class="sticker" :data-clipboard-text="displayName" @click="notifyCopied">
-	<i class="material-icons delete-sticker" v-if="isCreatedByUser || userIsGuildManager" @click="emitDeleteSticker($event)">clear</i>	
+	<i
+		class="material-icons delete-sticker"
+		v-if="!packStickerInForeignGroup && (isCreatedByUser || userIsGuildManager)"
+		@click="emitDeleteSticker($event)"
+	>clear</i>	
 	<img :src="link" :alt="name">	
 	<p>{{displayName}}</p>
 </div>

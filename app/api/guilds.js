@@ -431,7 +431,10 @@ router.delete('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 
 		await guild.save();
 		await pack.save(); //async
-		return res.json(guild.stickerPacks);
+		return res.json({
+			packs: guild.stickerPacks,
+			packName: pack.name
+		});
 
 	}catch(err){
 		console.error("Error updating stickerpacks for guild\n", err.message);

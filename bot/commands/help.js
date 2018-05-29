@@ -1,12 +1,13 @@
 const rp = require('request-promise');
+const covert = require('../../covert.js');
 
 module.exports = function(message, prefix, resource_info){
 
 	const embed_color = 16540258;
 	const lib_version = "11.2.1";
 	const discord_link = "https://discord.gg/HNFmKsE";
-	const add_bot_link = "https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536879104";
-	const bot_vote_link = "https://discordbots.org/bot/224415693393625088";
+	const add_bot_link = `https://discordapp.com/oauth2/authorize?client_id=${covert.discord.app_id}&scope=bot&permissions=536879104`;
+	const bot_vote_link = `https://discordbots.org/bot/${covert.discord.app_id}`;
 
 	//Escape prefix to avoid issues with Discord formatting
 	const escaped_prefix = (prefix) ? prefix.replace(/[^a-zA-Z0-9]/g, '\\$&') : null;
@@ -50,6 +51,7 @@ module.exports = function(message, prefix, resource_info){
 					name: "Stickers for Discord",
 					value: `
 						To view a list of commands, type: **${escaped_prefix}commands**
+						[Click here](${covert.app_url}/sticker-packs) to view all available Sticker Packs
 						.
 					`.replace(/\t/g, '')
 				},
@@ -65,7 +67,7 @@ module.exports = function(message, prefix, resource_info){
 					`.replace(/\t/g, '')
 				},
 				{
-					name: "Useful Links",
+					name: "Misc. Links",
 					value: `
 						[Join our Discord](${discord_link})
 						[Add bot to another server](${add_bot_link})
