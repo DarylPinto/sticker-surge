@@ -57,8 +57,8 @@ module.exports = {
 			return this.guild.guildManagerIds.includes(this.userId);
 		},
 		nameFontSize: function(){
-			let size = 1 - (this.guild.guildName.length / 100);
-			if(size < 0.3) size = 0.3;
+			let size = 0.9 - (this.guild.guildName.length / 25);
+			if(size < 0.52) size = 0.52;
 			return size.toString() + 'em';
 		}
 	},
@@ -81,18 +81,15 @@ module.exports = {
 				this.pageLoaded = true;
 			})
 			.then(() => {
-				this.stickerPackData = [];
-				this.guild.stickerPacks.forEach(key => {
-					axios.get(`/api/sticker-packs/${key}`).then(res => {
-						this.stickerPackData.push(res.data);
-
-						//Scroll to pack in url hash once all loaded
-						if(this.stickerPackData.length === this.guild.stickerPacks.length){
-							setTimeout(this.scrollToUrlHash, 500);
-						}
-
-					});
-				});
+				return Promise.all(this.guild.stickerPacks.map(key => {
+					return axios.get(`/api/sticker-packs/${key}`);
+				}));
+			})
+			.then(responseData => {
+				responseData.reverse();
+				this.stickerPackData = responseData.map(res => res.data);
+				//Scroll to pack in url hash once all loaded
+				setTimeout(this.scrollToUrlHash, 500);
 			})
 			.catch(err => {
 				if(err.response.status === 404) window.location.replace('/');
@@ -122,50 +119,56 @@ module.exports = {
 </script>
 
 <template>
-<main>
+<main class="guild-page">
 
 	<header-bar :userId="userId"></header-bar>
-	
+
 	<div v-if="!pageLoaded" class="loading-page">
 		<img src="/images/loading-spin.svg">
 	</div>
 
-	<div class="container guild-page" :class="{transparent: !pageLoaded}">
-		
-		<header>
-			<img v-if="guild.icon" :src="guild.icon" :alt="guild.guildName">
-			<img v-else src="/images/default-discord-icon.png" :alt="guild.guildName">
-			<h1 :style="`font-size: ${nameFontSize}`">{{guild.guildName}}</h1>	
+	<div :class="{transparent: !pageLoaded}">
+	
+		<header class="guild-header">
+			<groupIcon
+				:defaultImage="(!guild.icon) ? '/images/default-discord-icon.png' : guild.icon" 
+				:canEdit="false"
+			/>
+			<h1 :style="`font-size: ${nameFontSize}`">{{guild.guildName}}</h1>
 		</header>
 
-		<stickerCollection
-			v-on:reload="loadPageData"
-			name="Custom Stickers"
-			:stickerPrefix="null"
-			:emojiNamesAllowed="false"
-			:stickers="guild.customStickers"
-			:maxStickers="400"
-			:pageType="pageType"
-			:userId="userId"
-			:userIsGuildManager="userIsGuildManager"
-			:isEditable="userCanEdit"
-		>
-		</stickerCollection>
+		<div class="container">
 
-		<stickerCollection
-			v-for="pack in stickerPackData"
-			:key="pack.key"
-			:id="pack.key"
-			:name="pack.name"
-			:stickerPrefix="pack.key"
-			:emojiNamesAllowed="false"
-			:stickers="pack.stickers"
-			:maxStickers="400"
-			pageType="sticker-packs"
-			:userId="userId"	
-			:isEditable="false"
-		>
-		</stickerCollection>
+			<stickerCollection
+				v-on:reload="loadPageData"
+				name="Custom Stickers"
+				:stickerPrefix="null"
+				:emojiNamesAllowed="false"
+				:stickers="guild.customStickers"
+				:maxStickers="400"
+				:pageType="pageType"
+				:userId="userId"
+				:userIsGuildManager="userIsGuildManager"
+				:isEditable="userCanEdit"
+			>
+			</stickerCollection>
+
+			<stickerCollection
+				v-for="pack in stickerPackData"
+				:key="pack.key"
+				:id="pack.key"
+				:name="pack.name"
+				:stickerPrefix="pack.key"
+				:emojiNamesAllowed="false"
+				:stickers="pack.stickers"
+				:maxStickers="400"
+				pageType="sticker-packs"
+				:userId="userId"	
+				:isEditable="false"
+			>
+			</stickerCollection>
+
+		</div>
 
 	</div>
 
@@ -176,23 +179,22 @@ module.exports = {
 
 <style lang="sass">
 
-	.guild-page	
-		transition: .2s
-		> header
-			margin-top: 40px
-			margin-bottom: 40px
+	.guild-page
+		> div
+			transition: .2s
+		header.guild-header
+			background-color: rgba(0,0,0,0.3)
+			padding-top: 25px
+			padding-bottom: 40px
+			margin-bottom: 45px
 			display: flex
-			align-items: center
+			flex-direction: column
+			justify-content: center
+			align-items: center	
 			font-size: 90px
-			> img
-				border-radius: 100%
-				height: 100px
-				color: transparent
-				font-size: 10px
-				border: 5px solid rgba(255, 255, 255, 0.1)
 		h1
 			display: inline-block
-			margin-left: 15px
+			font-weight: 400
 
 		.sticker-collection
 			margin-bottom: 70px

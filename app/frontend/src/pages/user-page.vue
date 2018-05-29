@@ -17,7 +17,9 @@ module.exports = {
 			username: '',
 			avatarURL: '',
 			customStickers: [],
+			stickerPacks: [],
 			pageLoaded: false,
+			stickerPackData: [],
 			userId: this.$cookie.get('id') || null
 		}
 	},
@@ -25,8 +27,8 @@ module.exports = {
 	computed: {
 		isUsersPage: function(){return this.userId === this.$route.params.id},
 		nameFontSize: function(){
-			let size = 1 - (this.username.length / 100);
-			if(size < 0.3) size = 0.3;
+			let size = 0.9 - (this.username.length / 25);
+			if(size < 0.52) size = 0.52;
 			return size.toString() + 'em';
 		}
 	},
@@ -40,9 +42,11 @@ module.exports = {
 				this.customStickers = res.data.customStickers;
 				this.username = res.data.username;
 				this.avatarURL = res.data.avatar ? `https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png` : null;
+				this.stickerPacks = res.data.stickerPacks;
 				document.title = `${res.data.username} - Stickers for Discord`;	
 				this.pageLoaded = true;
-			}).then(() => {
+			})
+			.then(() => {
 
 				//If user is logged in and on their own page, update their username + avatar
 				if(!this.isUsersPage) return;
@@ -55,7 +59,19 @@ module.exports = {
 					document.title = `${res.data.username} - Stickers for Discord`;
 				});
 
-			}).catch(err => {
+			})
+			.then(() => {
+				return Promise.all(this.stickerPacks.map(key => {
+					return axios.get(`/api/sticker-packs/${key}`);
+				}));
+			})
+			.then(responseData => {
+				responseData.reverse();
+				this.stickerPackData = responseData.map(res => res.data);
+				//Scroll to pack in url hash once all loaded
+				setTimeout(this.scrollToUrlHash, 500);
+			})
+			.catch(err => {
 				if(err.response.status === 404) window.location.replace('/');
 			});
 		}
@@ -77,7 +93,7 @@ module.exports = {
 </script>
 
 <template>
-<main>
+<main class="user-page">
 
 	<header-bar :userId="userId"></header-bar>
 	
@@ -85,25 +101,46 @@ module.exports = {
 		<img src="/images/loading-spin.svg">
 	</div>
 
-	<div class="container user-page" :class="{transparent: !pageLoaded}">
-		
-		<header>
-			<img v-if="avatarURL" :src="avatarURL" :alt="username">
-			<img v-if="!avatarURL" src="/images/default-discord-icon.png" :alt="username">
-			<h1 :style="`font-size: ${nameFontSize}`">{{username}}</h1>	
-		</header>
+	<div :class="{transparent: !pageLoaded}">
 
-		<stickerCollection
-			v-on:reload="loadPageData"
-			name="Custom Stickers"
-			:stickerPrefix="null"
-			:emojiNamesAllowed="true"
-			:stickers="customStickers"
-			:maxStickers="200"
-			:pageType="pageType"
-			:userId="userId"
-			:isEditable="isUsersPage">
-		</stickerCollection>
+		<header class="user-header">
+			<groupIcon
+				:defaultImage="(!avatarURL) ? '/images/default-discord-icon.png' : avatarURL" 
+				:canEdit="false"
+			/>
+			<h1 :style="`font-size: ${nameFontSize}`">{{username}}</h1>
+		</header>
+			
+		<div class="container">
+
+			<stickerCollection
+				v-on:reload="loadPageData"
+				name="Custom Stickers"
+				:stickerPrefix="null"
+				:emojiNamesAllowed="true"
+				:stickers="customStickers"
+				:maxStickers="200"
+				:pageType="pageType"
+				:userId="userId"
+				:isEditable="isUsersPage">
+			</stickerCollection>
+
+			<stickerCollection
+				v-for="pack in stickerPackData"
+				:key="pack.key"
+				:id="pack.key"
+				:name="pack.name"
+				:stickerPrefix="pack.key"
+				:emojiNamesAllowed="false"
+				:stickers="pack.stickers"
+				:maxStickers="400"
+				pageType="sticker-packs"
+				:userId="userId"	
+				:isEditable="false"
+			>
+			</stickerCollection>
+
+		</div>
 
 	</div>
 
@@ -115,24 +152,26 @@ module.exports = {
 <style lang="sass">
 
 	.user-page
-		margin-bottom: 90px
-		transition: .2s
-		> header
-			margin-top: 40px
-			margin-bottom: 40px
+		> div
+			transition: .2s
+		header.user-header
+			background-color: rgba(0,0,0,0.3)
+			padding-top: 25px
+			padding-bottom: 40px
+			margin-bottom: 45px
 			display: flex
-			align-items: center
+			flex-direction: column
+			justify-content: center
+			align-items: center	
 			font-size: 90px
-			> img
-				border-radius: 100%
-				height: 100px
-				width: 100px
-				color: transparent
-				font-size: 10px
-				border: 5px solid rgba(255, 255, 255, 0.1)
 		h1
 			display: inline-block
-			margin-left: 15px
+			font-weight: 400
+
+		.sticker-collection
+			margin-bottom: 70px
+			&:last-of-type
+				margin-bottom: 0
 
 	@media screen and (max-width: 650px)
 		.user-page > header

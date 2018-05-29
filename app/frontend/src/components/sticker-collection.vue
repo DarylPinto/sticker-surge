@@ -280,6 +280,7 @@ module.exports = {
 		opacity: 0.4
 		text-align: center
 		margin-top: 100px
+		margin-bottom: 50px
 		width: calc(100% - 15px)
 		font-weight: 100
 

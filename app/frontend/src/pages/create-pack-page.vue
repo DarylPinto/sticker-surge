@@ -93,7 +93,7 @@ module.exports = {
 			<input type="text" name="name" class="pack-title" placeholder="Title" maxlength="30" v-model="packTitle" autocomplete="off" required>
 			<input type="text" name="description" placeholder="Description" maxlength="110" v-model="packDescription" autocomplete="off" required>
 			<div class="pack-key">
-				<div class="tooltip left" :class="{transparent: !packKeyFocused}">
+				<div class="tooltip left" :class="{transparent: !packKeyFocused || !packKeyValid}">
 					<p>All the sticker names in your pack will begin with this prefix, so keep it short, sweet and to the point!</p>
 					<p>This CANNOT be changed in the future.</p>
 				</div>

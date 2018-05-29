@@ -29,7 +29,7 @@ module.exports = {
 
 			this.userGuilds.forEach(id => {
 				axios.get(`/api/guilds/${id}?nocache=${(new Date()).getTime()}`)
-				.then(res => {
+				.then(res => {	
 					if(userCanManageStickersInGuild(res.data, this.userId, this.userGuilds)){
 						this.packItemData.push({
 							id: id,

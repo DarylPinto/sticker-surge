@@ -38,7 +38,7 @@ module.exports = {
 		isUsersPack: function(){return this.userId === this.creatorId},
 		nameFontSize: function(){
 			let size = 0.9 - (this.name.length / 25);
-			if(size < 0.4) size = 0.4;
+			if(size < 0.52) size = 0.52;
 			return size.toString() + 'em';
 		},
 		//Check if pack is able to be published
@@ -278,19 +278,6 @@ module.exports = {
 			justify-content: center
 			align-items: center	
 			font-size: 90px
-			.pack-icon
-				display: block
-				border-radius: 100%
-				height: 90px
-				width: 90px
-				color: transparent
-				font-size: 10px
-				margin-bottom: 15px
-				border: 5px solid #484848
-				background-color: #1f1f1f
-				background-size: cover
-				background-position: center center
-				background-repeat: no-repeat
 			.pack-title
 				display: block
 				width: 100%
