@@ -58,7 +58,7 @@ module.exports = {
 				
 			axios.get(`/api/sticker-packs/${this.$route.params.id}?nocache=${(new Date()).getTime()}`)
 			.then(res => {
-				if(!res.data.published && res.data.creatorId !== this.userId){
+				if(!res.data.listed || (!res.data.published && res.data.creatorId !== this.userId)){
 					return window.location.replace('/sticker-packs');
 				}
 

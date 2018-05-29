@@ -21,7 +21,8 @@ module.exports = {
 			search: '',
 			pageLoaded: false,
 			currentlyLoadingPacks: false,
-			userId: this.$cookie.get('id') || null
+			userId: this.$cookie.get('id') || null,
+			userBanned: false
 		}
 	},
 
@@ -65,6 +66,14 @@ module.exports = {
 		this.pageLoaded = true;
 		this.loadPacks(true);
 
+		//Hide "create new pack" button if user banned from creating sticker packs
+		if(this.userId){
+			axios.get(`/api/users/${this.userId}?nocache=${(new Date()).getTime()}`)
+			.then(res => {
+				if(res.data.bans.indexOf('CREATE_STICKER_PACK') > -1) this.userBanned = true;
+			});
+		}
+
 		//Scroll to bottom to load more
 		window.addEventListener('scroll', () => {
 			let distance_from_bottom = 80;
@@ -102,7 +111,7 @@ module.exports = {
 					<option value="newest">Sort by: Newest</option>
 					<option value="oldest">Sort by: Oldest</option>
 				</select>
-				<router-link to="/sticker-packs/new" class="btn" v-if="userId">Create a Sticker Pack</router-link>	
+				<router-link to="/sticker-packs/new" class="btn" v-if="userId && !userBanned">Create a Sticker Pack</router-link>	
 			</div>	
 		</div>
 

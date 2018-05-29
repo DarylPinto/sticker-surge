@@ -329,7 +329,8 @@ router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 		if(!guild) return res.status(404).send('Guild not found');
 		if(!pack) return res.status(404).send('Sticker Pack not found');
 		
-		if(!pack.published) return res.status(403).send('Sticker Pack has not been published');
+		if(!pack.listed) return res.status(403).send('Sticker Pack is unlisted. Cannot be subscribed to.');
+		if(!pack.published) return res.status(403).send('Sticker Pack has not been published');	
 
 		if(!guild.stickerPacks.includes(req.body.packKey)){
 			guild.stickerPacks.push(req.body.packKey);

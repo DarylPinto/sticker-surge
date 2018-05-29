@@ -68,9 +68,15 @@ module.exports = {
 	mounted: function(){
 		if(!this.userId) return window.location.replace('/sticker-packs'); //redirect if user not logged in
 
+		//redirect if user banned from creating sticker packs
+		axios.get(`/api/users/${this.userId}?nocache=${(new Date()).getTime()}`)
+		.then(res => {
+			if(res.data.bans.indexOf('CREATE_STICKER_PACK') > -1) return window.location.replace('/sticker-packs');
+			this.pageLoaded = true;
+		});
+
 		let currentNewPack = this.$cookie.get('currentNewPack');
 		if(currentNewPack) return window.location.replace(`/pack/${currentNewPack}`); //redirect if user curnrently working on a pack
-		this.pageLoaded = true;
 		document.title = 'Create a Sticker Pack - Stickers for Discord';
 		axios.get('/api/dbl-integrated').then(res => this.dblSupportRequired = res.data.dbl_integrated);
 	}

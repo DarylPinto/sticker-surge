@@ -53,7 +53,7 @@ router.get('/', async (req, res) =>{
 	else sortType = '-createdAt';
 
 	//Search
-	let search = {published: true};
+	let search = {$and: [{published: true}, {listed: true}]};
 
 	if(req.query.search){
 		let s = decodeURIComponent(req.query.search).trim();
@@ -154,6 +154,10 @@ router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async
 	if(description.length > 110) return res.status(400).send('Sticker Pack description cannot be longer than 110 characters');
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 
+	//Check if user is banned from creating sticker packs
+	const user = await User.findOne({id: res.locals.userId});
+	if(user.bans.includes('CREATE_STICKER_PACK')) return res.status(403).send('User is banned from creating sticker packs');
+
 	//Check if Sticker Pack key is already used
 	const keyAlreadyUsed = await StickerPack.findOne({key});
 	if(keyAlreadyUsed) return res.status(400).send('There is already a Sticker Pack with that key');	
@@ -195,6 +199,11 @@ router.post('/:key/publish', verifyUserAjax, async (req, res) => {
 		if(!pack) return res.status(404).send('Sticker Pack not found');
 		if(res.locals.userId != pack.creatorId) return res.status(401).send('Unauthorized');
 		if(pack.stickers.length < 4) return res.status(400).send('At least 4 stickers must be in this pack before publishing');
+
+		//Check if user is banned from creating sticker packs
+		const user = await User.findOne({id: res.locals.userId});
+		if(user.bans.includes('CREATE_STICKER_PACK')) return res.status(403).send('User is banned from creating sticker packs');
+		
 		pack.published = true;	
 		await pack.save();	
 

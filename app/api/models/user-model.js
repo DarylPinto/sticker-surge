@@ -16,7 +16,7 @@ const userSchema = Schema({
 		groupType: {type: String, required: true, default: 'user'},
 		groupId: {type: String, required: true, default: 'unknown'}
 	}],
-	createdStickerPacks: [String],
+	bans: [String],
 	stickerPacks: [String]
 });
 

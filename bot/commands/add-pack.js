@@ -52,6 +52,10 @@ module.exports = function(message, bot_auth, prefix){
 			message.channel.send(`You do not have permission to add Sticker Packs.`);
 		}
 
+		else if(err.message.includes('Sticker Pack is unlisted. Cannot be subscribed to.')){
+			message.channel.send('That sticker pack is no longer available.');
+		}
+
 		else if(err.message.includes('Pack has not been published')){
 			message.channel.send(`That sticker pack has not been published yet.`);
 		}

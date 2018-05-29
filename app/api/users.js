@@ -210,6 +210,9 @@ router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 		if(!user) return res.status(404).send('User not found');
 		if(!pack) return res.status(404).send('Sticker Pack not found');
 		
+		if(!pack.listed) return res.status(403).send('Sticker Pack is unlisted. Cannot be subscribed to.');
+		if(!pack.published) return res.status(403).send('Sticker Pack has not been published');
+
 		if(!user.stickerPacks.includes(req.body.packKey)){
 			user.stickerPacks.push(req.body.packKey);
 			pack.subscribers += 1;

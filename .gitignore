@@ -1,4 +1,5 @@
 node_modules/
+admin/
 covert.js
 app/sticker-temp/
 app/frontend/public/images/

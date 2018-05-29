@@ -13,7 +13,7 @@ module.exports = {
 	},
 	computed: {
 		iconURL(){
-			if(!this.icon)	return null;
+			if(!this.icon) return null;
 			const icon_type = (this.type === 'users') ? 'avatars' : 'icons';
 			return `https://cdn.discordapp.com/${icon_type}/${this.itemId}/${this.icon}.png`;
 		},
@@ -39,7 +39,7 @@ module.exports = {
 			})
 			.catch(err => {
 				console.error(err);
-				if(err.message.indexOf("already has that Sticker Pack")){
+				if(err.message.indexOf("already has that Sticker Pack") > -1){
 					this.subscribed = !this.subscribed;
 				}
 				this.loading = false;
