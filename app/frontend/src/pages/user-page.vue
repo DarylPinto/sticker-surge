@@ -167,6 +167,8 @@ module.exports = {
 		h1
 			display: inline-block
 			font-weight: 400
+			text-align: center
+			max-width: 70%
 
 		.sticker-collection
 			margin-bottom: 70px

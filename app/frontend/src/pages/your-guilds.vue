@@ -93,30 +93,36 @@ module.exports = {
 </script>
 
 <template>
-<main>
+<main class="your-guilds-page">
 
 	<header-bar :userId="userId"></header-bar>
 	
-	<div class="container your-guilds-page" :class="{transparent: !pageLoaded}">
-		
-		<h1>Your Servers</h1>
+	<div v-if="!guildsLoaded" class="loading-page">
+		<img src="/images/loading-spin.svg">
+	</div>
 
-		<div v-if="!guildsLoaded" class="loading-page">
-			<img src="/images/loading-spin.svg">
-		</div>
+	<div :class="{transparent: !pageLoaded}">
 
-		<div v-if="userGuilds.length === 0 && guildsLoaded" class="no-guilds-alert">
-			<p>You're not in any servers with Stickers for Discord<br>
-			Let's fix that, shall we?</p>
-			<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=8192" class="btn" target="_blank">Add to Discord</a>
-		</div>
+		<header class="your-guilds-header">
+			<h1>Your Servers</h1>	
+		</header>
 
-		<div v-if="userGuilds.length > 0 && guildsLoaded" v-for="guild in userGuildData" :key="guild.id" class="guild">
-			<router-link :to="`/server/${guild.id}`">
-				<img v-if="guild.icon" :src="`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`" :alt="guild.name">
-				<img v-if="!guild.icon" src="/images/default-discord-icon.png" :alt="guild.name">
-				<h2>{{guild.name}}</h2>
-			</router-link>
+		<div class="container">
+
+			<div v-if="userGuilds.length === 0 && guildsLoaded" class="no-guilds-alert">
+				<p>You're not in any servers with Stickers for Discord<br>
+				Let's fix that, shall we?</p>
+				<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=8192" class="btn" target="_blank">Add to Discord</a>
+			</div>
+
+			<div v-if="userGuilds.length > 0 && guildsLoaded" v-for="guild in userGuildData" :key="guild.id" class="guild">
+				<router-link :to="`/server/${guild.id}`">
+					<img v-if="guild.icon" :src="`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`" :alt="guild.name">
+					<img v-if="!guild.icon" src="/images/default-discord-icon.png" :alt="guild.name">
+					<h2>{{guild.name}}</h2>
+				</router-link>
+			</div>
+
 		</div>
 
 	</div>
@@ -128,26 +134,33 @@ module.exports = {
 
 <style lang="sass">
 
-	.your-guilds-page
-		margin-top: 40px
-		transition: .2s
-		h1
-			font-size: 85px
-			padding-bottom: 15px	
-			margin-bottom: 30px
-			border-bottom: 2px solid rgba(255, 255, 255, 0.45)
+	.your-guilds-page	
+		> div
+			transition: .2s
+		header.your-guilds-header
+			background-color: rgba(0,0,0,0.3)
+			padding-top: 65px
+			padding-bottom: 65px
+			margin-bottom: 35px
+			display: flex
+			flex-direction: column
+			justify-content: center
+			align-items: center	
+			font-size: 50px
 		.guild
 			display: inline-block
-			width: calc(25% - 11.5px)
+			width: calc(50% - 7.5px)
 			margin-right: 15px
 			vertical-align: top
 			border-radius: 5px
-			height: 280px
+			//height: 140px
 			margin-bottom: 15px
 			background-color: rgba(255,255,255,0.05)
 			a
 				text-decoration: none
-				display: inline-block	
+				display: inline-flex
+				flex-direction: column
+				align-items: center
 				text-align: center
 				border-radius: 5px
 				height: inherit
@@ -157,20 +170,21 @@ module.exports = {
 				transition: .2s
 				&:hover
 					background-color: rgba(255,255,255,0.05)
-			&:nth-of-type(4n)
+			&:nth-of-type(2n)
 				margin-right: 0
 			h2
-				font-size: 20px
+				font-size: 29px
 				margin-top: 10px
 				margin-bottom: 10px
 				font-weight: 100
 				line-height: 1.3em
+				color: rgba(255,255,255,0.7)
 			img
 				border-radius: 200px
 				border: 5px solid rgba(255, 255, 255, 0.1)
-				margin-top: 25px
-				height: 128px
-				width: 128px
+				height: 80px
+				width: 80px
+				margin-top: 10px
 
 		.no-guilds-alert
 			text-align: center
@@ -190,20 +204,13 @@ module.exports = {
 
 	@media screen and (max-width: 940px)
 		.your-guilds-page
-			h1
-				font-size: 75px
 			.guild
 				box-sizing: border-box
-				width: calc(50% - 7.5px)
+				width: 100%
 				&:nth-of-type(4n)
 					margin-right: 0
 				&:nth-of-type(2n)
 					margin-right: 0
-
-	@media screen and (max-width: 700px)
-		.your-guilds-page
-			.no-guilds-alert p
-				font-size: 20px
 
 	@media screen and (max-width: 650px)
 		.your-guilds-page
@@ -214,9 +221,11 @@ module.exports = {
 	@media screen and (max-width: 600px)
 		.your-guilds-page
 			.guild
-				height: 200px
-				img
-					margin-top: 10px
+				height: auto
+				a
+					flex-direction: column
+					justify-content: center
+				img	
 					height: 90px
 					width: 90px
 
