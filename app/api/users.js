@@ -279,7 +279,7 @@ router.delete('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
 
 //Unsubscribe from a sticker pack
 router.delete('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
-	console.log(req.body);
+	
 	if(!req.body.packKey) return res.status(400).send('Invalid body data');
 	if(!res.locals.userId) return res.status(401).send('Unauthorized');
 	if(res.locals.userId != req.params.id) return res.status(401).send('Unauthorized');

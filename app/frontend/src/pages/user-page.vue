@@ -82,7 +82,7 @@ module.exports = {
 			.then(responseData => {
 				responseData.reverse();
 				this.stickerPackData = responseData.map(res => res.data);
-				this.scrollToUrlHash();
+				window.setTimeout(() => this.scrollToUrlHash(), 750);	
 			})
 			.catch(err => {
 				console.error(err.message);
