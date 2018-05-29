@@ -1,6 +1,7 @@
 <script>
 import Vue from 'vue';
 import axios from 'axios';
+import userCanManageStickersInGuild from '../utilities/user-can-manage-stickers-in-guild.js';
 import packSubscriberListItem from './pack-subscriber-list-item.vue';
 
 Vue.component('packSubscriberListItem', packSubscriberListItem);
@@ -19,15 +20,6 @@ module.exports = {
 			}]
 		}
 	},
-	methods: {	
-		//Determine if user can manage stickers in guild - duh
-		userCanManageStickersInGuild(guild){
-			if(guild.stickerManagerRole === '@everyone') return true;
-			if(guild.guildManagerIds.indexOf(this.userId) > -1) return true;
-			if(guild.stickerManagerIds.indexOf(this.userId) > -1) return true;
-			return false;
-		}
-	},
 	mounted: function(){
 		
 		axios.get(`/api/set-guilds?nocache=${(new Date()).getTime()}`)
@@ -38,7 +30,7 @@ module.exports = {
 			this.userGuilds.forEach(id => {
 				axios.get(`/api/guilds/${id}?nocache=${(new Date()).getTime()}`)
 				.then(res => {
-					if(this.userCanManageStickersInGuild(res.data)){
+					if(userCanManageStickersInGuild(res.data, this.userId, this.userGuilds)){
 						this.packItemData.push({
 							id: id,
 							name: res.data.guildName,

@@ -1,6 +1,7 @@
 <script>
 import Vue from 'vue';
 import axios from 'axios';
+import userCanManageStickersInGuild from '../utilities/user-can-manage-stickers-in-guild.js';
 import header from '../components/header.vue';
 import footer from '../components/footer.vue';
 import stickerCollection from '../components/sticker-collection.vue';
@@ -20,39 +21,43 @@ module.exports = {
 
 	data: function(){
 		return {
-			guildId: '',
-			guildName: '',
-			iconURL: '',
-			customStickers: [],
-			listMode: 'whitelist',
-			whitelistRole: '',
-			whitelistIds: [],
-			blacklistIds: [],
-			stickerPacks: [],
-			guildManagerIds: [],
-			stickerManagerIds: [],
-			stickerManagerRole: '',
+			guild: {
+				id: '',
+				guildName: '',
+				icon: '',
+				customStickers: [],
+				listMode: 'whitelist',
+				whitelist: {
+					userIds: [],
+					roleId: '@everyone'
+				},
+				blacklist: {
+					userIds: [],
+					roleId: null
+				},
+				guildManagerIds: [],
+				stickerManagers: {
+					userIds: [],
+					roleId: '@everyone',
+				},
+				stickerPacks: [],
+			},
 			pageLoaded: false,
 			userId: this.$cookie.get('id') || null,
-			userGuilds: JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || [],
+			userGuilds: JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || [],	
 			stickerPackData: []
 		}
 	},
 
 	computed: {
 		userCanEdit: function(){
-			if(!this.userId) return false; //User must be logged in
-			else if(!this.userGuilds.includes(this.guildId)) return false; //User must be part of guild
-			else if(this.guildManagerIds.includes(this.userId)) return true; //User can edit if guildManager
-			else if(this.listMode === 'blacklist' && this.blacklistIds.includes(this.userId)) return false; //User cannot edit if blacklisted
-			else if(this.stickerManagerRole === '@everyone' || this.stickerManagerIds.includes(this.userId)) return true;
-			return false;
+			return userCanManageStickersInGuild(this.guild, this.userId, this.userGuilds);	
 		},
 		userIsGuildManager: function(){
-			return this.guildManagerIds.includes(this.userId);
+			return this.guild.guildManagerIds.includes(this.userId);
 		},
 		nameFontSize: function(){
-			let size = 1 - (this.guildName.length / 100);
+			let size = 1 - (this.guild.guildName.length / 100);
 			if(size < 0.3) size = 0.3;
 			return size.toString() + 'em';
 		}
@@ -70,29 +75,19 @@ module.exports = {
 			axios.get(`/api/${this.pageType}/${this.$route.params.id}?nocache=${(new Date()).getTime()}`)
 			.then(res => {
 				if(!res.data.isActive) return window.location.replace('/');
-				this.guildId = res.data.id;
-				this.guildName = res.data.guildName;
-				this.iconURL = res.data.icon ? `https://cdn.discordapp.com/icons/${res.data.id}/${res.data.icon}.png` : null;
-				this.customStickers = res.data.customStickers;
-				this.listMode = res.data.listMode;
-				this.whitelistRole = res.data.whitelist.roleId;
-				this.whitelistIds = res.data.whitelist.userIds;
-				this.blacklistIds = res.data.blacklist.userIds;
-				this.guildManagerIds = res.data.guildManagerIds;
-				this.stickerManagerIds = res.data.stickerManagers.userIds;
-				this.stickerManagerRole = res.data.stickerManagers.roleId;
-				this.stickerPacks = res.data.stickerPacks;
+				this.guild = res.data;
+				this.guild.icon = res.data.icon ? `https://cdn.discordapp.com/icons/${res.data.id}/${res.data.icon}.png` : null;
 				document.title = `${res.data.guildName} - Stickers for Discord`;	
 				this.pageLoaded = true;
 			})
 			.then(() => {
 				this.stickerPackData = [];
-				this.stickerPacks.forEach(key => {
+				this.guild.stickerPacks.forEach(key => {
 					axios.get(`/api/sticker-packs/${key}`).then(res => {
 						this.stickerPackData.push(res.data);
 
 						//Scroll to pack in url hash once all loaded
-						if(this.stickerPackData.length === this.stickerPacks.length){
+						if(this.stickerPackData.length === this.guild.stickerPacks.length){
 							setTimeout(this.scrollToUrlHash, 500);
 						}
 
@@ -138,9 +133,9 @@ module.exports = {
 	<div class="container guild-page" :class="{transparent: !pageLoaded}">
 		
 		<header>
-			<img v-if="iconURL" :src="iconURL" :alt="guildName">
-			<img v-if="!iconURL" src="/images/default-discord-icon.png" :alt="guildName">
-			<h1 :style="`font-size: ${nameFontSize}`">{{guildName}}</h1>	
+			<img v-if="guild.icon" :src="guild.icon" :alt="guild.guildName">
+			<img v-else src="/images/default-discord-icon.png" :alt="guild.guildName">
+			<h1 :style="`font-size: ${nameFontSize}`">{{guild.guildName}}</h1>	
 		</header>
 
 		<stickerCollection
@@ -148,7 +143,7 @@ module.exports = {
 			name="Custom Stickers"
 			:stickerPrefix="null"
 			:emojiNamesAllowed="false"
-			:stickers="customStickers"
+			:stickers="guild.customStickers"
 			:maxStickers="400"
 			:pageType="pageType"
 			:userId="userId"

@@ -22,6 +22,7 @@ module.exports = async function(message, bot_auth){
 		.catch(err => handleSendStickerError(err));
 	}
 
+	//Attempt to use sticker. Returns true if sticker was succesfully sent, and false if not.
 	async function useSticker(sticker, pack_key){
 
 		//Ensure user has proper permissions to send a sticker
@@ -62,10 +63,7 @@ module.exports = async function(message, bot_auth){
 				message.channel.send('You do not have permission to send stickers on this server.');
 				return false;
 			}
-		}
-
-		//Delete original message
-		if(message.channel.type === 'text' && message.channel.guild.me.hasPermission('MANAGE_MESSAGES')) message.delete();
+		}	
 
 		//Respond with sticker
 		let message_options = {
@@ -79,6 +77,10 @@ module.exports = async function(message, bot_auth){
 
 			//Guild messages
 			if(is_guild_message){
+
+				//Delete original message
+				if(message.channel.guild.me.hasPermission('MANAGE_MESSAGES')) message.delete();
+
 				//Webhook style sticker
 				if(message.channel.guild.me.hasPermission('MANAGE_WEBHOOKS')){
 					let avatar = message.author.displayAvatarURL;

@@ -1,7 +1,7 @@
 <script>
 import Vue from 'vue';
 import axios from 'axios';
-import emojis from '../data/emojis.json';
+import emojis from '../utilities/emojis.json';
 
 module.exports = {
 	props: ['stickers', 'emojiNamesAllowed'],
