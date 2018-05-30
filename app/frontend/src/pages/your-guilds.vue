@@ -149,11 +149,11 @@ module.exports = {
 			font-size: 50px
 		.guild
 			display: inline-block
-			width: calc(50% - 7.5px)
+			width: calc(25% - 11.5px)
 			margin-right: 15px
 			vertical-align: top
 			border-radius: 5px
-			//height: 140px
+			height: 190px
 			margin-bottom: 15px
 			background-color: rgba(255,255,255,0.05)
 			a
@@ -170,10 +170,10 @@ module.exports = {
 				transition: .2s
 				&:hover
 					background-color: rgba(255,255,255,0.05)
-			&:nth-of-type(2n)
+			&:nth-of-type(4n)
 				margin-right: 0
 			h2
-				font-size: 29px
+				font-size: 18px
 				margin-top: 10px
 				margin-bottom: 10px
 				font-weight: 100
@@ -206,7 +206,7 @@ module.exports = {
 		.your-guilds-page
 			.guild
 				box-sizing: border-box
-				width: 100%
+				width: calc(50% - 7.5px)
 				&:nth-of-type(4n)
 					margin-right: 0
 				&:nth-of-type(2n)
@@ -233,6 +233,8 @@ module.exports = {
 		.your-guilds-page
 			h1
 				font-size: 50px
+			.guild
+				width: 100%
 			.guild h2
 				font-size: 16px
 
