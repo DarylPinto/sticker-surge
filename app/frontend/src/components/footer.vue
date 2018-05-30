@@ -5,7 +5,7 @@
 		<div>
 			<a href="https://github.com/darylpinto/stickers-for-discord" target="_blank">Github</a>
 			<a href="https://discord.gg/HNFmKsE" target="_blank">Discord</a>
-			<a href="#" target="_blank">Terms and Conditions</a>
+			<a href="/terms.html" target="_blank">Terms & Conditions</a>
 		</div>
 	</div>
 </footer>

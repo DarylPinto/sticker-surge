@@ -127,7 +127,7 @@ module.exports = {
 					<!-- Standard checkboxes used for keyboard controls -->
 					<input type="checkbox" v-model="termsAccepted">
 					<i class="material-icons">{{termsAccepted ? 'check_box' : 'check_box_outline_blank'}}</i>
-					I have read and agree to the <a href="#" target="_blank">Terms and Conditions</a>
+					I have read and agree to the <a href="/terms.html" target="_blank">Terms & Conditions</a>
 				</p>
 				<p v-if="dblSupportRequired" @click="dblSupported = !dblSupported">
 					<!-- Standard checkboxes used for keyboard controls -->
