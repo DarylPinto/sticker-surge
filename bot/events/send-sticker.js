@@ -22,50 +22,25 @@ module.exports = async function(message, bot_auth){
 		.catch(err => handleSendStickerError(err));
 	}
 
+	//Returns an array of pack keys that a user is subscribed to
+	async function getUsersStickerPacks(userId){
+		try{
+			let user = await rp({
+				method: 'GET',
+				uri: `${covert.app_url}/api/users/${userId}/info`,
+				json: true
+			});
+			return user.stickerPacks;
+		}catch(err){	
+			//Return empty array if user is not in DB (and therefore isn't subscribed to any packs)
+			return [];	
+		}
+	}
+
 	//Attempt to use sticker. Returns true if sticker was succesfully sent, and false if not.
 	async function useSticker(sticker, pack_key){
 
-		//Ensure user has proper permissions to send a sticker
-		if(is_guild_message){
-			let user_perms;
-			const guild_and_user_info = await Promise.all([
-				rp({
-					method: 'GET',
-					uri: `${covert.app_url}/api/guilds/${message.channel.guild.id}/info`,
-					json: true
-				}),
-				rp({
-					method: 'GET',
-					uri: `${covert.app_url}/api/users/${user.id}/info`,
-					json: true
-				})
-			]);
-
-			const guild_info = guild_and_user_info[0];
-			const user_info = guild_and_user_info[1];
-
-			//Don't send sticker if guild AND message author aren't subscribed to pack
-			if(pack_key && !guild_info.stickerPacks.includes(pack_key) && !user_info.stickerPacks.includes(pack_key)){
-				return false;
-			}
-
-			user_perms = userStickerPerms({
-				userId: message.author.id,
-				guildManagerIds: guild_info.guildManagerIds,
-				stickerManagerIds: guild_info.stickerManagers.userIds,
-				listMode: guild_info.listMode,
-				whitelistRole: guild_info.whitelist.roleId,
-				whitelistIds: guild_info.whitelist.userIds,
-				blacklistIds: guild_info.blacklist.userIds
-			});
-
-			if(!user_perms.canSend){
-				message.channel.send('You do not have permission to send stickers on this server.');
-				return false;
-			}
-		}	
-
-		//Respond with sticker
+		//Prepare sticker message content
 		let message_options = {
 			files: [{
 				attachment: sticker.url,
@@ -74,9 +49,35 @@ module.exports = async function(message, bot_auth){
 		}
 
 		try{
-
-			//Guild messages
+			//Ensure user has proper permissions to send a sticker
 			if(is_guild_message){
+				
+				const guild_info = await rp({
+					method: 'GET',
+					uri: `${covert.app_url}/api/guilds/${message.channel.guild.id}/info`,
+					json: true
+				});
+
+				const guild_packs = guild_info.stickerPacks;
+				const user_packs = await getUsersStickerPacks(user.id);
+
+				//Don't send sticker if guild AND message author aren't subscribed to pack
+				if(pack_key && !guild_packs.includes(pack_key) && !user_packs.includes(pack_key))	return false;
+
+				const user_perms = userStickerPerms({
+					userId: message.author.id,
+					guildManagerIds: guild_info.guildManagerIds,
+					stickerManagerIds: guild_info.stickerManagers.userIds,
+					listMode: guild_info.listMode,
+					whitelistRole: guild_info.whitelist.roleId,
+					whitelistIds: guild_info.whitelist.userIds,
+					blacklistIds: guild_info.blacklist.userIds
+				});
+
+				if(!user_perms.canSend){
+					message.channel.send('You do not have permission to send stickers on this server.');
+					return false;
+				}
 
 				//Delete original message
 				if(message.channel.guild.me.hasPermission('MANAGE_MESSAGES')) message.delete();
@@ -95,19 +96,12 @@ module.exports = async function(message, bot_auth){
 					return true;
 				}
 			}
-
 			//User messages/DMs
 			else{
-				const user_info = await rp({
-					method: 'GET',
-					uri: `${covert.app_url}/api/users/${user.id}/info`,
-					json: true
-				});
+				const user_packs = await getUsersStickerPacks(user.id);
 
 				//Don't send sticker if user isn't subscribed to pack
-				if(pack_key && !user_info.stickerPacks.includes(pack_key)){
-					return false;
-				}
+				if(pack_key && !user_packs.includes(pack_key)) return false;
 
 				message.channel.send(`**${author_name}:**`, message_options);
 				return true;
