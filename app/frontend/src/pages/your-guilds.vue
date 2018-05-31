@@ -137,6 +137,8 @@ module.exports = {
 	.your-guilds-page	
 		> div
 			transition: .2s
+		.loading-page img
+			margin-top: 280px
 		header.your-guilds-header
 			background-color: rgba(0,0,0,0.3)
 			padding-top: 65px

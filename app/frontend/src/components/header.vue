@@ -88,6 +88,7 @@
 		width: 100%
 		display: flex
 		justify-content: center
+		z-index: 1
 		.container
 			display: flex
 			justify-content: space-between

@@ -93,40 +93,44 @@ module.exports = {
 
 	<header-bar :userId="userId"></header-bar>
 
-	<header class="sticker-pack-list-header">
-		<h1>Sticker Packs</h1>
-	</header>
+	<div :class="{transparent: !pageLoaded}">
 
-	<div class="container" :class="{transparent: !pageLoaded}">
+		<header class="sticker-pack-list-header">
+			<h1>Sticker Packs</h1>
+		</header>
 
-		<div class="sort-wrap">
-			<h2>{{sortMethod}} packs</h2>
-			<div class="section-options">
-				<span class="search-box">
-					<i class="material-icons">search</i>
-					<input type="text" placeholder="Search" v-model="search" @input="debouncedLoad(true)">
-				</span>
-				<select class="sort-stickers" v-model="sortMethod" @change="loadPacks(true)">
-					<option value="popular">Sort by: Popular</option>
-					<option value="newest">Sort by: Newest</option>
-					<option value="oldest">Sort by: Oldest</option>
-				</select>
-				<router-link to="/sticker-packs/new" class="btn" v-if="userId && !userBanned">Create a Sticker Pack</router-link>	
-			</div>	
-		</div>
+		<div class="container">
 
-		<stickerPackListItem
-			v-for="pack in packs"
-			:key="pack.key"
-			:link="`/pack/${pack.key}`"
-			:name="pack.name"
-			:icon="pack.icon"
-			:description="pack.description"
-			:subscribers="pack.subscribers"
-		/>
+			<div class="sort-wrap">
+				<h2>{{sortMethod}} packs</h2>
+				<div class="section-options">
+					<span class="search-box">
+						<i class="material-icons">search</i>
+						<input type="text" placeholder="Search" v-model="search" @input="debouncedLoad(true)">
+					</span>
+					<select class="sort-stickers" v-model="sortMethod" @change="loadPacks(true)">
+						<option value="popular">Sort by: Popular</option>
+						<option value="newest">Sort by: Newest</option>
+						<option value="oldest">Sort by: Oldest</option>
+					</select>
+					<router-link to="/sticker-packs/new" class="btn" v-if="userId && !userBanned">Create a Sticker Pack</router-link>	
+				</div>	
+			</div>
 
-		<div v-if="currentlyLoadingPacks" class="loading-packs">
-			<img src="/images/loading-spin.svg">
+			<stickerPackListItem
+				v-for="pack in packs"
+				:key="pack.key"
+				:link="`/pack/${pack.key}`"
+				:name="pack.name"
+				:icon="pack.icon"
+				:description="pack.description"
+				:subscribers="pack.subscribers"
+			/>
+
+			<div v-if="currentlyLoadingPacks" class="loading-packs">
+				<img src="/images/loading-spin.svg">
+			</div>
+
 		</div>
 
 	</div>
@@ -140,8 +144,9 @@ module.exports = {
 
 	$brand-red: #fc6262
 
-	.sticker-pack-list-page	
-		transition: .2s
+	.sticker-pack-list-page
+		> div
+			transition: .2s
 		div.sort-wrap
 			display: flex
 			margin-top: 55px
