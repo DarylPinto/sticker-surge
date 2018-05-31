@@ -127,6 +127,7 @@ module.exports = async function(message, bot_auth){
 	//User stickers start with -
 	if(command.startsWith('-')){
 		let sticker_name = encodeURIComponent(command.replace('-', ''));
+		if(sticker_name.length === 0) return;
 
 		rp({
 			method: 'GET',
@@ -144,6 +145,7 @@ module.exports = async function(message, bot_auth){
 	else if(!command.includes('-') && is_guild_message){
 		let guild = message.channel.guild;
 		let sticker_name = encodeURIComponent(command);
+		if(sticker_name.length === 0) return;
 
 		rp({
 			method: 'GET',
@@ -161,6 +163,7 @@ module.exports = async function(message, bot_auth){
 	else{
 		let pack_key = command.split('-')[0];
 		let sticker_name = command.split('-')[1];
+		if(sticker_name.length === 0) return;
 
 		rp({
 			method: 'GET',
