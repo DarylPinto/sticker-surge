@@ -1,9 +1,9 @@
-const Discord = require('discord.js');
 const rp = require('request-promise');
 const userStickerPerms = require('../utilities/user-sticker-perms.js');
+const editWebhook = require('../utilities/edit-webhook.js');
 const covert = require('../../covert.js');
 
-module.exports = async function(message, bot_auth){
+module.exports = async function(message, client, bot_auth){
 
 	let command = message.content.toLowerCase().replace(/(:|;)/g, '');
 	let user = message.author;
@@ -12,6 +12,15 @@ module.exports = async function(message, bot_auth){
 
 	if(is_guild_message && message.member.nickname) author_name = message.member.nickname;
 
+	//Returns Webhook used to send stickers
+	async function getStickerWebhook(channel){
+		const hooks = await channel.guild.fetchWebhooks();
+		let hook = hooks.find(hook => hook.owner.id === client.user.id);
+		if(hook) return hook;
+		return await channel.createWebhook("Stickers for Discord");
+	}
+
+	//Increment `uses` property on sticker
 	function incrementStickerUses(sticker_name, sticker_type, group_id){
 		rp({
 			method: 'POST',
@@ -54,7 +63,7 @@ module.exports = async function(message, bot_auth){
 				
 				const guild_info = await rp({
 					method: 'GET',
-					uri: `${covert.app_url}/api/guilds/${message.channel.guild.id}/info`,
+					uri: `${covert.app_url}/api/guilds/${message.guild.id}/info`,
 					json: true
 				});
 
@@ -62,7 +71,7 @@ module.exports = async function(message, bot_auth){
 				const user_packs = await getUsersStickerPacks(user.id);
 
 				//Don't send sticker if guild AND message author aren't subscribed to pack
-				if(pack_key && !guild_packs.includes(pack_key) && !user_packs.includes(pack_key))	return false;
+				if(pack_key && !guild_packs.includes(pack_key) && !user_packs.includes(pack_key)) return false;
 
 				const user_perms = userStickerPerms({
 					userId: message.author.id,
@@ -80,14 +89,25 @@ module.exports = async function(message, bot_auth){
 				}
 
 				//Delete original message
-				if(message.channel.guild.me.hasPermission('MANAGE_MESSAGES')) message.delete();
+				if(message.guild.me.hasPermission('MANAGE_MESSAGES')) message.delete();
 
 				//Webhook style sticker
-				if(message.channel.guild.me.hasPermission('MANAGE_WEBHOOKS')){
+				if(message.guild.me.hasPermission('MANAGE_WEBHOOKS')){
+					let name = (author_name.length > 1) ? author_name : author_name + '.'; //Discord requires webhook names to be 2 chars minimum
 					let avatar = message.author.displayAvatarURL;
-					let hook = await message.channel.createWebhook(author_name, avatar);
+					let channel_id = message.channel.id;
+					let hook = await getStickerWebhook(message.channel);	
+	
+					//Update webhook only when user or channel has changed
+					if(hook.name !== name || hook.channelID !== channel_id){
+						hook = await editWebhook(client, {
+							bot_token: covert.discord.bot_token,
+							hook_id: hook.id,
+							body: {name, avatar, channel_id}
+						});	
+					}
+
 					await hook.send(message_options);
-					hook.delete();
 					return true;
 				}
 				//Classic style sticker
@@ -115,13 +135,14 @@ module.exports = async function(message, bot_auth){
 
 	function handleSendStickerError(err){
 		if(err.statusCode) err.status = err.statusCode;
-		if(err.status === 404) return;
+		if(err.status === 404) return;	
 		console.error(`
 			${is_guild_message ? "Guild" : "User"}: ${is_guild_message ? message.guild.id : user.id}
 			Message: ${message.content}
 			Error Code: ${err.code}
 			Error Message: ${err.message}
-		`.replace(/\t+/g, ''));
+		`.replace(/\t+/g, ''));	
+		//throw err;
 	}
 
 	//User stickers start with -
@@ -143,7 +164,7 @@ module.exports = async function(message, bot_auth){
 
 	//Guild stickers have no -
 	else if(!command.includes('-') && is_guild_message){
-		let guild = message.channel.guild;
+		let guild = message.guild;
 		let sticker_name = encodeURIComponent(command);
 		if(sticker_name.length === 0) return;
 

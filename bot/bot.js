@@ -83,7 +83,7 @@ const sticker_regex = () => /^((:|;)[a-zA-Zа-яёА-ЯЁ0-9-]+(:|;)|-[a-zA-Zа-
 //Allow user to post sticker by editing a message incase of a typo
 client.on('messageUpdate', (oldMessage, newMessage) => {
 	if(newMessage.author.bot) return false;
-	if(sticker_regex().test(newMessage.content.trim())) sendSticker(newMessage, bot_auth);
+	if(sticker_regex().test(newMessage.content.trim())) sendSticker(newMessage, client, bot_auth);
 });
 
 //Listen for posting stickers or using commands
@@ -96,7 +96,7 @@ client.on('message', message => {
 	//Send sticker//
 	////////////////
 	if(sticker_regex().test(message.content.trim())){
-		sendSticker(message, bot_auth);
+		sendSticker(message, client, bot_auth);
 		return false;
 	}
 
@@ -116,7 +116,7 @@ client.on('message', message => {
 
 		if(!message_has_command) return false; //Ensures the API isn't called on every message
 
-		rp({uri: `${covert.app_url}/api/guilds/${message.channel.guild.id}`, json: true})
+		rp({uri: `${covert.app_url}/api/guilds/${message.guild.id}`, json: true})
 		.then(guild => {
 
 			let prefix = guild.commandPrefix.toLowerCase();	
