@@ -62,7 +62,7 @@ module.exports = async function(message, client, bot_auth){
 			}]
 		}
 
-		try{
+		try{	
 			//Ensure user has proper permissions to send a sticker
 			if(is_guild_message){
 				
@@ -141,13 +141,18 @@ module.exports = async function(message, client, bot_auth){
 	function handleSendStickerError(err){
 		if(err.statusCode) err.status = err.statusCode;
 		if(err.status === 404) return;	
-		/*console.error(`
+		console.error(`
+			====
+
 			${is_guild_message ? "Guild" : "User"}: ${is_guild_message ? message.guild.id : user.id}
 			Message: ${message.content}
-			Error Code: ${err.code}
+			Time: ${(new Date().toLocaleString('en-US', {timezone: 'EST'}))}
+			Error Code: ${err.code ? err.code : 'N/A'}
 			Error Message: ${err.message}
-		`.replace(/\t+/g, ''));	*/
-		throw err;
+			Error Stack: ${(err.stack.length > 300) ? err.stack.substr(0, 300) + '...\ntruncated after 300 characters' : err.stack}
+
+			====
+		`.replace(/\t+/g, ''));	
 	}
 
 	//User stickers start with -
