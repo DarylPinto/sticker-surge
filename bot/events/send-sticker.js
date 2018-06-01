@@ -15,7 +15,12 @@ module.exports = async function(message, client, bot_auth){
 	//Returns Webhook used to send stickers
 	async function getStickerWebhook(channel){
 		const hooks = await channel.guild.fetchWebhooks();
-		let hook = hooks.find(hook => hook.owner.id === client.user.id);
+		let hook = hooks.find(hook => {
+			//Checking if hook.owner is undefined is necessary
+			//for some (old?) webhooks, as they don't have that property.
+			if(!hook.owner) return false;
+			return hook.owner.id === client.user.id;
+		});
 		if(hook) return hook;
 		return await channel.createWebhook("Stickers for Discord");
 	}
@@ -136,13 +141,13 @@ module.exports = async function(message, client, bot_auth){
 	function handleSendStickerError(err){
 		if(err.statusCode) err.status = err.statusCode;
 		if(err.status === 404) return;	
-		console.error(`
+		/*console.error(`
 			${is_guild_message ? "Guild" : "User"}: ${is_guild_message ? message.guild.id : user.id}
 			Message: ${message.content}
 			Error Code: ${err.code}
 			Error Message: ${err.message}
-		`.replace(/\t+/g, ''));	
-		//throw err;
+		`.replace(/\t+/g, ''));	*/
+		throw err;
 	}
 
 	//User stickers start with -
