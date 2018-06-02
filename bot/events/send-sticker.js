@@ -1,6 +1,6 @@
 const rp = require('request-promise');
 const userStickerPerms = require('../utilities/user-sticker-perms.js');
-const editWebhook = require('../utilities/edit-webhook.js');
+const updateWebhookChannel = require('../utilities/update-webhook-channel.js');
 const covert = require('../../covert.js');
 
 module.exports = async function(message, client, bot_auth){
@@ -21,8 +21,8 @@ module.exports = async function(message, client, bot_auth){
 			if(!hook.owner) return false;
 			return hook.owner.id === client.user.id;
 		});
-		if(hook) return hook;
-		return await channel.createWebhook("Stickers for Discord");
+		if(hook) return hook;	
+		return await channel.createWebhook("Stickers", client.user.displayAvatarURL);
 	}
 
 	//Increment `uses` property on sticker
@@ -98,20 +98,17 @@ module.exports = async function(message, client, bot_auth){
 
 				//Webhook style sticker
 				if(message.guild.me.hasPermission('MANAGE_WEBHOOKS')){
-					let name = (author_name.length > 1) ? author_name : author_name + '.'; //Discord requires webhook names to be 2 chars minimum
-					let avatar = message.author.displayAvatarURL;
-					let channel_id = message.channel.id;
-					let hook = await getStickerWebhook(message.channel);	
-	
-					//Update webhook only when user or channel has changed
-					if(hook.name !== name || hook.channelID !== channel_id){
-						hook = await editWebhook(client, {
-							bot_token: covert.discord.bot_token,
-							hook_id: hook.id,
-							body: {name, avatar, channel_id}
-						});	
+					let hook = await getStickerWebhook(message.channel);
+					//Discord requires webhook names to be 2 chars minimum
+					let name = (author_name.length > 1) ? author_name : author_name + '.';
+						
+					//Update webhook channel
+					if(hook.channelID !== message.channel.id){
+						await updateWebhookChannel(hook.id, message.channel.id);	
 					}
 
+					message_options.username = name;
+					message_options.avatarURL = user.displayAvatarURL;
 					await hook.send(message_options);
 					return true;
 				}
