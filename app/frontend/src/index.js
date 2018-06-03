@@ -36,7 +36,10 @@ const router = new VueRouter({
 		{ path: '/pack/:id', component: StickerPackPage, props: {pageType: 'sticker-packs'}},
 		{ path: '/sticker-packs', component: StickerPacksListPage },
 		{ path: '/sticker-packs/new', component: CreatePackPage }
-	]
+	],
+	scrollBehavior (to, from, savedPosition){
+		return (savedPosition) ? savedPosition : {x: 0, y: 0};
+	}
 });
 
 new Vue({

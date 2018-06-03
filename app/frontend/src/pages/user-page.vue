@@ -82,7 +82,7 @@ module.exports = {
 			.then(responseData => {
 				responseData.reverse();
 				this.stickerPackData = responseData.map(res => res.data);
-				window.setTimeout(() => this.scrollToUrlHash(), 750);	
+				window.setTimeout(() => this.scrollToUrlHash(), 250);	
 			})
 			.catch(err => {
 				console.error(err.message);
@@ -92,7 +92,7 @@ module.exports = {
 			if(window.location.hash.length < 1) return;
 			const hash = window.location.hash;
 			const el = document.querySelector(hash);
-			if(el) el.scrollIntoView({behavior: "smooth"});
+			if(el) el.scrollIntoView({behavior: "smooth", block: "start"});
 		}
 
 	},
@@ -187,7 +187,10 @@ module.exports = {
 			max-width: 70%
 
 		.sticker-collection
-			margin-bottom: 70px
+			margin-bottom: 40px
+			padding-top: 30px
+			&:first-of-type
+				padding-top: 0
 			&:last-of-type
 				margin-bottom: 0
 
