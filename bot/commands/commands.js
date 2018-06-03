@@ -80,7 +80,7 @@ module.exports = function(message, prefix, guild_info){
 				},
 				{
 					name: `${escaped_prefix}setManagerRole`,
-					value: 'Set the role required to create stickers on this server.'
+					value: 'Set the role required to create stickers and manage sticker packs on this server.'
 				}
 			]);	
 		}
