@@ -7,8 +7,8 @@ module.exports = {
 		let swiperight = new Event('swiperight');
 
 		let touchPositions = [];
-		let horizontalThreshhold = 40;
-		let verticalThreshhold = 100;
+		let horizontalThreshhold = 60;
+		let verticalThreshhold = 70;
 
 		document.addEventListener('touchmove', function(e){
 			touchPositions.push({

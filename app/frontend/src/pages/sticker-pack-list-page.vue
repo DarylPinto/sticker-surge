@@ -180,4 +180,31 @@ module.exports = {
 			margin: 0 auto
 			margin-top: 20px
 
+	@media screen and (max-width: 880px)
+		div.sort-wrap h2
+			display: none
+
+	@media screen and (max-width: 600px)	
+		.sticker-pack-list-page
+			.container
+				width: 92%
+			.sort-wrap .section-options
+				> *
+					width: 30%
+					margin-bottom: 5px
+					height: 30px
+				.search-box input, .sort-stickers, .btn
+					padding: 7px
+					font-size: 12.5px
+				.search-box
+					input
+						width: 100%
+						max-width: 100%
+				.btn
+					font-size: 0
+					justify-content: center
+					&::before
+						content: "Create"
+						font-size: 12.5px	
+
 </style>

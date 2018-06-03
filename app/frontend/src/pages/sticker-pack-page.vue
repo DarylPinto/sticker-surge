@@ -159,6 +159,10 @@ module.exports = {
 
 	<header-bar :userId="userId"></header-bar>
 
+	<div v-if="!pageLoaded" class="loading-page">
+		<img src="/images/loading-spin.svg">
+	</div>
+
 	<div :class="{transparent: !pageLoaded}">
 
 		<header class="pack-header">
@@ -196,7 +200,7 @@ module.exports = {
 			</div>
 		</header>
 		
-		<div class="container" :class="{transparent: !pageLoaded}">
+		<div class="container">
 
 			<stickerCollection
 				v-on:reload="loadPackData(false)"
@@ -376,14 +380,17 @@ module.exports = {
 	@media screen and (max-width: 650px)
 		.sticker-pack-page > header
 			font-size: 45px
-			justify-content: center
-			margin-top: 25px
-			margin-bottom: 25px
+			justify-content: center	
 
 	@media screen and (max-width: 560px)
-		.sticker-pack-page > header > img
-			height: 75px
-			width: 75px
+		.sticker-pack-page
+			> header > img
+				height: 75px
+				width: 75px
+			header.pack-header
+				.pack-title, .pack-desc 
+					max-width: 90%
+
 
 	@media screen and (max-width: 450px)
 		.sticker-pack-page > header

@@ -219,9 +219,7 @@ module.exports = {
 	@media screen and (max-width: 650px)
 		.guild-page > header
 			font-size: 45px
-			justify-content: center
-			margin-top: 25px
-			margin-bottom: 25px
+			justify-content: center	
 
 	@media screen and (max-width: 560px)
 		.guild-page > header > img

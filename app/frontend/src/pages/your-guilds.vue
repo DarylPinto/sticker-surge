@@ -237,6 +237,7 @@ module.exports = {
 				font-size: 50px
 			.guild
 				width: 100%
+				margin-right: 0
 			.guild h2
 				font-size: 16px
 

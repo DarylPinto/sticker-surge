@@ -72,7 +72,7 @@ module.exports = {
 					.catch(err => {
 						//If a user's sticker pack doesn't exist for some reason,
 						//attempt to remove it so that the page can display properly on next refresh
-						//This should never happen, but it's a safety net in case it does
+						//This should never happen, but it's a safety net in case it does	
 						if(err.response.status === 404){
 							axios.delete(`/api/users/${this.$route.params.id}/sticker-packs`, {data: {packKey: key}});
 						}
@@ -197,9 +197,7 @@ module.exports = {
 	@media screen and (max-width: 650px)
 		.user-page > header
 			font-size: 45px
-			justify-content: center
-			margin-top: 25px
-			margin-bottom: 25px
+			justify-content: center	
 
 	@media screen and (max-width: 560px)
 		.user-page > header > img

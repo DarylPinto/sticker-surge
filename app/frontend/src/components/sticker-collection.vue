@@ -308,8 +308,7 @@ module.exports = {
 					margin-bottom: 20px
 
 	@media screen and (max-width: 515px)
-		.sticker-collection header .section-options
-			justify-content: space-between
+		.sticker-collection header .section-options	
 			> *
 				width: 30%
 				margin-bottom: 5px

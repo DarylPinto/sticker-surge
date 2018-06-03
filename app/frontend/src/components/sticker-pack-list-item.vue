@@ -22,8 +22,8 @@ module.exports = {
 
 	.sticker-pack-list-item
 		display: inline-flex
-		width: calc(33.45% - 11.5px)//100%
-		height: 260px//700px
+		width: calc(33.45% - 11.5px)
+		height: 260px
 		border: 1px solid rgba(0, 0, 0, 0.4)
 		box-sizing: border-box
 		position: relative
@@ -87,5 +87,21 @@ module.exports = {
 			span
 				margin-right: 8px
 				color: rgba(255,255,255,0.4)
+
+	@media screen and (max-width: 1160px)	
+		.sticker-pack-list-item
+			width: calc(50% - 7.5px)
+			&:nth-of-type(3n)
+				margin-right: 15px
+			&:nth-of-type(2n)
+				margin-right: 0
+
+	@media screen and (max-width: 660px)	
+		.sticker-pack-list-item
+			width: 100%
+			min-height: 260px
+			height: auto
+			margin-right: 0	
+
 
 </style>
