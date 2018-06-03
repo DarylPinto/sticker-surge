@@ -81,6 +81,7 @@ module.exports = async function(message, client, bot_auth){
 				const user_perms = userStickerPerms({
 					userId: message.author.id,
 					guildManagerIds: guild_info.guildManagerIds,
+					stickerManagerRole: guild_info.stickerManagers.roleId,
 					stickerManagerIds: guild_info.stickerManagers.userIds,
 					listMode: guild_info.listMode,
 					whitelistRole: guild_info.whitelist.roleId,

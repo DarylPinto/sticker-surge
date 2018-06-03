@@ -1,6 +1,7 @@
 module.exports = function({
 	userId = null,
 	guildManagerIds = [],
+	stickerManagerRole = null,
 	stickerManagerIds = [],
 	listMode = null,
 	whitelistRole = null,
@@ -8,25 +9,21 @@ module.exports = function({
 	blacklistIds = []
 } = {}){
 
-	//Default perms 
-	let	canManage = false;
-	let canSend = true;
-	
-	if(guildManagerIds.includes(userId)){
-		canManage = true;
-		canSend = true;
-	}else if(listMode === 'blacklist' && blacklistIds.includes(userId)){
-		canManage = false;
-		canSend = false;
-	}else if(listMode === 'whitelist'){
-		if(whitelistRole === '@everyone' || whitelistIds.includes(userId) || stickerManagerIds.includes(userId)){
-			canManage = true;
-			canSend = true;
-		}else if(whitelistRole != '@everyone' && !whitelistIds.includes(userId)){
-			canManage = false;
-			canSend = false;
-		}
+	//Base permissions 
+	let isGuildManager = guildManagerIds.includes(userId);
+	let isBlacklisted = !isGuildManager && (listMode === 'blacklist' && blacklistIds.includes(userId));
+	let isWhitelisted = isGuildManager || whitelistRole === '@everyone' || (listMode === 'whitelist' && whitelistIds.includes(userId));
+	let isStickerManager = isGuildManager || stickerManagerRole === '@everyone' || stickerManagerIds.includes(userId);
+
+	//If whitelisted and blacklisted, user should be blacklisted 
+	if(!isGuildManager && isWhitelisted && isBlacklisted){
+		isBlacklisted = true;
+		isWhitelisted = false;
 	}
+
+	//Calculate final permissions
+	let canManage = isGuildManager || (isStickerManager && !isBlacklisted);
+	let canSend = isGuildManager || (isWhitelisted && !isBlacklisted);
 
 	return {canManage, canSend};
 }

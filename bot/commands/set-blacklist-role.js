@@ -50,7 +50,7 @@ module.exports = function(message, bot_auth, prefix){
 	})
 	.then(res => {	
 		message.channel.send(`
-			All users without the role **${escaped_new_blacklist_role_name}** are now able to send stickers on this server.
+			All users __without__ the role **${escaped_new_blacklist_role_name}** are now able to send stickers on this server.
 			To restore default behavior, use **${prefix}whitelist everyone**
 		`.replace(/\t/g, ''));
 
