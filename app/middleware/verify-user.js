@@ -37,14 +37,15 @@ function getNewAccessToken(id){return new Promise((resolve, reject) => {
 * Delete stored refresh token from database
 * If request is ajax, respond with 401, otherwise redirect to /login
 */
-function handleExpiredRefreshToken(){
+function handleExpiredRefreshToken(req, res, next, options){
+
 	User.findOne({id: req.session.id}).then(user => {
 		user.refresh_token = '';
 		return user.save();
 	})
 	.then(() => {
 		if(options.ajax) return res.status(401).send('Unauthorized');
-		if(!options.ajax) return res.redirect('/login');
+		return res.redirect('/login');
 	})
 	.catch(err => {
 		console.log(err);
@@ -86,10 +87,13 @@ return function(req, res, next){
 		//User access_token has expired, get a new token
 		getNewAccessToken(req.session.id)
 		.then(token => {
+			res.locals.userId = req.session.id;
 			req.session.token = token;
 			next();
 		})
-		.catch(err => handleExpiredRefreshToken);
+		.catch(err => {
+			handleExpiredRefreshToken(req, res, next, options);
+		});
 
 	});
 
