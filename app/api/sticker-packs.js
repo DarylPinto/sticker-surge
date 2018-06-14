@@ -312,6 +312,39 @@ router.patch('/:key', verifyUserAjax, upload.single('icon'), handleMulterError, 
 	
 });
 
+//Edit sticker from sticker pack
+router.patch('/:key/stickers/:stickername', verifyUserAjax, async (req, res) => {	
+
+	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
+	if(!req.body.name.match(/^:?-?[a-z0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
+	if(req.body.name.length > 20) return res.status(400).send('Sticker name cannot be longer than 20 characters');	
+
+	try{
+
+		let pack = await StickerPack.findOne({key: req.params.key});
+
+		if(!pack) return res.status(404).send('Sticker Pack not found');
+		if(res.locals.userId != pack.creatorId) return res.status(401).send('Unauthorized');
+
+		let sticker_names = pack.stickers.map(s => s.name);
+		let modification_request_index = sticker_names.indexOf(req.params.stickername);
+		if(modification_request_index === -1) return res.status(404).send('Sticker Pack does not have a sticker with that name');
+	
+		pack.stickers[modification_request_index].name = req.body.name;
+		await pack.save();
+
+		return res.send('Successfully updated sticker');
+
+	}catch(err){
+
+		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');
+		console.error(err);
+		res.status(500).send('Internal server error');
+
+	}
+
+});
+
 //////////
 //DELETE//
 //////////

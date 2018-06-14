@@ -204,6 +204,56 @@ router.patch('/:id', verifyBot, (req, res) => {
 
 });
 
+//Edit existing guild's custom sticker
+router.patch('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {	
+
+	if(!req.body.name) return res.status(400).send('Invalid body data');
+	if(!req.body.name.match(/^:?-?[a-zа-яё0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
+	if(req.body.name.length > 20) return res.status(400).send('Sticker name cannot be longer than 20 characters');
+	if(emojis.includes(req.body.name)) return res.status(400).send('Sticker name already in use by an emoji');	
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');
+
+	Guild.findOne({id: req.params.id})
+	.then(guild => {
+		if(!guild){
+			res.status(404).send('Guild not found');
+			return null;
+		}
+
+		let sticker_names = guild.customStickers.map(s => s.name);
+		let modification_request_index = sticker_names.indexOf(req.params.stickername);
+		if(modification_request_index === -1){
+			res.status(404).send('Guild does not have a custom sticker with that name');
+			return null;
+		}
+
+		let sticker = guild.customStickers[modification_request_index];
+
+		//Users can only edit stickers they created
+		//Exception to the rule: Guild managers can edit any sticker
+		if(!util.userIsGuildManager(guild, req, res) && (res.locals.userId != sticker.creatorId)){
+			res.status(401).send('Unauthorized');
+			return null;
+		}
+
+		sticker.name = req.body.name;
+		return guild.save();
+
+	})
+	.then(guild => {
+
+		if(guild) res.send('Successfully updated custom sticker');
+
+	})
+	.catch(err => {
+
+		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');	
+		res.status(500).send('Internal server error');
+
+	});
+
+});
+
 //Update guild prefix specifically (bot or auth'd user)
 router.patch('/:id/command-prefix', verifyUserAjax, (req, res) => {
 

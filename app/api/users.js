@@ -195,6 +195,47 @@ router.patch('/:id', verifyBot, (req, res) => {
 
 });
 
+//Edit existing user's custom sticker
+router.patch('/:id/stickers/:stickername', verifyUserAjax, (req, res) => {
+
+	if(!req.body.name || (!req.body.url && !req.file)) return res.status(400).send('Invalid body data');
+	if(!req.body.name.match(/^:?-?[a-zа-яё0-9]+:?$/g)) return res.status(400).send('Sticker name must contain lowercase letters and numbers only');
+	if(req.body.name.length > 20) return res.status(400).send('Sticker name cannot be longer than 20 characters');	
+	if(res.locals.userId != req.params.id) return res.status(401).send('Unauthorized');
+
+	User.findOne({id: req.params.id})
+	.then(user => {
+		
+		if(!user){
+			res.status(404).send('User not found');
+			return null;
+		}
+
+		let sticker_names = user.customStickers.map(s => s.name);
+		let modification_request_index = sticker_names.indexOf(req.params.stickername);
+		if(modification_request_index === -1){
+			res.status(404).send('User does not have a custom sticker with that name');
+			return null;
+		}
+
+		user.customStickers[modification_request_index].name = req.body.name;
+		return user.save();
+
+	})	
+	.then(user => {
+
+		if(user) res.send('Successfully updated custom sticker');
+
+	})
+	.catch(err => {
+
+		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');	
+		res.status(500).send('Internal server error');
+
+	});
+
+});
+
 //Subscribe to a sticker pack
 router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 
