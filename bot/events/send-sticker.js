@@ -100,8 +100,10 @@ module.exports = async function(message, client, bot_auth){
 				//Webhook style sticker
 				if(message.guild.me.hasPermission('MANAGE_WEBHOOKS')){
 					let hook = await getStickerWebhook(message.channel);
-					//Discord requires webhook names to be 2 chars minimum
-					let name = (author_name.length > 1) ? author_name : author_name + '.';
+					//Discord requires webhook names to be 2 chars minimum.
+					//Spread operator below provides more accurate char count for usernames that can potentially include emojis	
+					//stackoverflow.com/a/37535876
+					let name = ([...author_name].length > 1) ? author_name : author_name + '.';
 						
 					//Update webhook channel
 					if(hook.channelID !== message.channel.id){
