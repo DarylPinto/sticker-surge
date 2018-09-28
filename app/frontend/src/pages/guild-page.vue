@@ -158,7 +158,10 @@ module.exports = {
 				:maxStickers="400"
 				:pageType="pageType"
 				:userId="userId"
+				:groupId="guild.id"
+				groupType="guilds"
 				:userIsGuildManager="userIsGuildManager"
+				:userCanManageStickersInGroup="userCanEdit"
 				:isEditable="userCanEdit"
 			>
 			</stickerCollection>
@@ -173,7 +176,10 @@ module.exports = {
 				:stickers="pack.stickers"
 				:maxStickers="400"
 				pageType="sticker-packs"
-				:userId="userId"	
+				:userId="userId"
+				:groupId="guild.id"
+				groupType="guilds"
+				:userCanManageStickersInGroup="userCanEdit"
 				:isEditable="false"
 			>
 			</stickerCollection>

@@ -21,7 +21,7 @@ if (!String.prototype.startsWith) {
 const normalizeObj = obj => JSON.parse(JSON.stringify(obj));
 
 module.exports = {
-	props: ['name', 'stickerPrefix', 'emojiNamesAllowed', 'userId', 'userIsGuildManager', 'isEditable', 'stickers', 'maxStickers', 'pageType'],
+	props: ['name', 'stickerPrefix', 'emojiNamesAllowed', 'userId', 'groupId', 'groupType', 'userIsGuildManager', 'userCanManageStickersInGroup', 'isEditable', 'stickers', 'maxStickers', 'pageType'],
 	data: function(){
 		return {
 			stickerSearchString: '',
@@ -112,6 +112,22 @@ module.exports = {
 				console.error(err.response.data);
 				if(err.response.status === 401) window.location.href = '/login';
 			});
+		},
+
+		unsubscribeFromPack(){
+			let message = `Are you sure you want to stop using the "${this.name}" sticker pack?`;
+			if(!confirm(message)) return false;
+
+			// Unsubscribe from pack
+			axios({
+				method: 'delete',
+				url: `/api/${this.groupType}/${this.groupId}/sticker-packs`,
+				data: {packKey: this.stickerPrefix}
+			});
+
+			// Remove from currently loaded view
+			let pack_index = this.$parent.stickerPackData.map(pack => pack.key).indexOf(this.stickerPrefix);
+			this.$parent.stickerPackData.splice(pack_index, 1);
 		}
 
 	},
@@ -129,7 +145,14 @@ module.exports = {
 
 	<!-- Main Page -->
 	<header>
-		<h2>{{name}}</h2>
+		<h2>
+			<a
+				:href="pageType === 'sticker-packs' && groupType != 'sticker-packs' ? `/pack/${stickerPrefix}` : false"
+				target="_blank"
+			>
+				{{name}}
+			</a>
+		</h2>
 		<div class="section-options">
 			<span class="search-box">
 				<i class="material-icons">search</i>
@@ -142,6 +165,14 @@ module.exports = {
 				<option value="alpha">Sort by: A-Z</option>
 				<option value="alphaReverse">Sort by: Z-A</option>
 			</select>
+			<button
+				v-if="pageType === 'sticker-packs' && userCanManageStickersInGroup"
+				@click="unsubscribeFromPack"
+				class="pack-unsub"
+			>
+				<i class="material-icons">clear</i>
+				Stop Using this Pack
+			</button>
 			<button
 				v-if="isEditable"
 				class="btn"
@@ -221,6 +252,11 @@ module.exports = {
 		h2
 			font-size: 30px
 			font-weight: 300
+			a
+				text-decoration: none
+				cursor: default
+			a[href]
+				cursor: pointer	
 		> header
 			margin-bottom: 30px
 			padding-bottom: 10px
@@ -234,6 +270,28 @@ module.exports = {
 					pointer-events: none
 					background-color: #929292
 					color: lightgray
+				.pack-unsub
+					display: flex
+					justify-content: center
+					align-items: center
+					min-width: 37px
+					border: 1px solid #7d7d7d	
+					background-color: transparent
+					border-radius: 100px
+					color: #7d7d7d
+					font-size: 0	
+					outline: 0
+					cursor: pointer
+					transition: .2s
+					i
+						font-size: 18px
+						color: #7d7d7d
+					&:hover
+						font-size: 16px
+						padding-right: 16px	
+						i
+							padding-right: 5px
+					
 				.sort-stickers
 					background-color: #2a2d2f
 					border-radius: 40px

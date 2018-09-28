@@ -138,6 +138,9 @@ module.exports = {
 				:maxStickers="200"
 				:pageType="pageType"
 				:userId="userId"
+				:groupId="userId"
+				groupType="users"
+				:userCanManageStickersInGroup="true"
 				:isEditable="isUsersPage">
 			</stickerCollection>
 
@@ -151,7 +154,10 @@ module.exports = {
 				:stickers="pack.stickers"
 				:maxStickers="400"
 				pageType="sticker-packs"
-				:userId="userId"	
+				:userId="userId"
+				:groupId="userId"
+				groupType="users"
+				:userCanManageStickersInGroup="true"
 				:isEditable="false"
 			>
 			</stickerCollection>

@@ -211,6 +211,8 @@ module.exports = {
 				:maxStickers="400"
 				:pageType="pageType"
 				:userId="userId"
+				:groupId="key"
+				groupType="sticker-packs"
 				:isEditable="isUsersPack">
 			</stickerCollection>
 
