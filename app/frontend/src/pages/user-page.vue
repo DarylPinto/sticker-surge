@@ -140,7 +140,7 @@ module.exports = {
 				:userId="userId"
 				:groupId="userId"
 				groupType="users"
-				:userCanManageStickersInGroup="true"
+				:userCanManageStickersInGroup="isUsersPage"
 				:isEditable="isUsersPage">
 			</stickerCollection>
 
@@ -157,7 +157,7 @@ module.exports = {
 				:userId="userId"
 				:groupId="userId"
 				groupType="users"
-				:userCanManageStickersInGroup="true"
+				:userCanManageStickersInGroup="isUsersPage"
 				:isEditable="false"
 			>
 			</stickerCollection>
