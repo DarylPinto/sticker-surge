@@ -1,5 +1,4 @@
 @import _reset
-//@import _mixins
 @import url(https://fonts.googleapis.com/css?family=Material+Icons|Rubik:300,400,500,700) //Righteous
 
 $brand-red: #fc6262
@@ -7,6 +6,7 @@ $brand-darkred: #c54d4d
 $discord-gray: #2a2d2f
 $mention-color: #7289da
 $mention-bg: rgba(115,139,215,.1)
+$header-height: 60px
 
 *
 	font-family: 'Rubik', sans-serif
@@ -18,7 +18,8 @@ body
 main
 	display: flex
 	flex-direction: column
-	min-height: 100vh
+	min-height: calc(100vh - #{$header-height})
+	margin-top: $header-height
 	> div
 		flex-grow: 1
 

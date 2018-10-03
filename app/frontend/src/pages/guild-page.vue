@@ -215,8 +215,8 @@ module.exports = {
 			max-width: 70%
 
 		.sticker-collection
-			margin-bottom: 40px
-			padding-top: 30px
+			margin-bottom: -10px
+			padding-top: 90px
 			&:first-of-type
 				padding-top: 0
 			&:last-of-type
