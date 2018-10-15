@@ -6,25 +6,24 @@ const Guild = require('../api/models/guild-model.js');
 * The cookie is added to the session as a tamper proof httpOnly cookie and as a standard easily readable cookie for
 * the view layer to use
 */
-function setGuildsCookie(req, res, next){
+async function setGuildsCookie(req, res, next){
 
 	if(!req.session.token) return next();
 
-	let user_guilds_request = rp({
-		method: 'GET',
-		uri: 'https://discordapp.com/api/users/@me/guilds',
-		headers: {'Authorization': `Bearer ${req.session.token}`},
-		json: true
-	});
+	try{
 
-	let all_sticker_guilds = Guild.find({isActive: true});
+		// User's guilds
+		const user_guilds_request = await rp({
+			method: 'GET',
+			uri: 'https://discordapp.com/api/users/@me/guilds',
+			headers: {'Authorization': `Bearer ${req.session.token}`},
+			json: true
+		});
+		const user_guild_ids = user_guilds_request.map(g => g.id);
 
-	Promise.all([user_guilds_request, all_sticker_guilds])
-	.then(data => {	
-
-		let user_guild_ids = data[0].map(g => g.id);
-		let all_sticker_guilds = data[1].map(g => g.id);
-		let guilds_cookie = all_sticker_guilds.filter(id => user_guild_ids.includes(id));	
+		// Guilds bot and user have in common
+		const common_guilds = await Guild.find({isActive: true, id: {$in: user_guild_ids}});	
+		const guilds_cookie = common_guilds.map(g => g.id);	
 
 		//Set cookies
 		res.cookie('guilds', JSON.stringify(guilds_cookie), {
@@ -34,9 +33,7 @@ function setGuildsCookie(req, res, next){
 
 		next();
 
-	})
-	.catch(err => {
-
+	}catch(err){
 		if(err.response && err.response.body && err.response.body.retry_after){
 			//Request user guilds again after Discord's rate limit ends
 			let retry_after = err.response.body.retry_after;
@@ -45,8 +42,7 @@ function setGuildsCookie(req, res, next){
 			console.error(err);
 			next();
 		}
-		
-	});
+	}
 
 }
 
