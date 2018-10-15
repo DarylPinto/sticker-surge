@@ -28,7 +28,7 @@ module.exports = {
 			this.userGuilds = JSON.parse(decodeURIComponent(this.$cookie.get('guilds')));
 
 			this.userGuilds.forEach(id => {
-				axios.get(`/api/guilds/${id}?nocache=${(new Date()).getTime()}`)
+				axios.get(`/api/guilds/${id}/info?nocache=${(new Date()).getTime()}`)
 				.then(res => {	
 					if(userCanManageStickersInGuild(res.data, this.userId, this.userGuilds)){
 						this.packItemData.push({
@@ -44,7 +44,7 @@ module.exports = {
 
 		});
 
-		axios.get(`/api/users/${this.userId}?nocache=${(new Date()).getTime()}`)
+		axios.get(`/api/users/${this.userId}/info?nocache=${(new Date()).getTime()}`)
 		.then(res => {
 			this.packItemData[0] = {
 				id: res.data.id,
