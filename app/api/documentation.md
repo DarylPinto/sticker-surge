@@ -36,7 +36,7 @@ Accessible by: Anyone
 
 Usage: Initialize a guild within the service
 
-Body (required): `string:name, string:id`
+Body (required): `string:guildName, string:id`
 
 Accessible by: Stickers for Discord Bot
 
@@ -54,15 +54,63 @@ Usage: Increment amount of uses for a custom sticker within a guild
 
 Accessible by: Stickers for Discord Bot
 
+### POST /guilds/{guild\_id}/sticker-packs
+
+Usage: Subscribe to a sticker pack
+
+Body (required): `string:packKey`
+
+Accessible by: Users with proper permissions within their Discord Server
+
 ---
 
-### PATCH /guilds/{guild_id}
+### PATCH /guilds/{guild\_id}
 
 Usage: Update guild info
 
 Body (optional): `string:guildName, string:icon, array:guildManagerIds, array:stickerManagerIds`
 
 Accessible by: Stickers for Discord Bot
+
+### PATCH /guilds/{guild\_id}/stickers/{sticker\_name}
+
+Usage: Edit existing guild's custom sticker
+
+Body (required): `string:name`
+
+Accessible by: Users with proper permissions within their Discord Server
+
+### PATCH /guilds/{guild\_id}/command-prefix
+
+Usage: Edit prefix of the bot commands
+
+Body (required): `string:commandPrefix`
+
+Accessible by: Stickers for Discord Bot and users with proper permissions within their Discord Server
+
+### PATCH /guilds/{guild\_id}/sticker-user-role
+
+Usage: Update guild whitelist/blacklist
+
+Body (required): `string:listMode, string:whitelistRole, string:blacklistRole`
+
+Accessible by: Stickers for Discord Bot and users with proper permissions within their Discord Server
+
+---
+
+## DELETE /guilds/{guild\_id}/stickers/{sticker\_name}
+
+Usage: Delete guild's custom sticker
+
+Accessible by: Users with proper permissions within their Discord Server
+
+## DELETE /guilds/{guild\_id}/sticker-packs
+
+Usage: Unsubscribe from a sticker pack
+
+Body (required): `string:packKey`
+
+Accessible by: Users with proper permissions within their Discord Server
 
 ---
 
@@ -96,6 +144,14 @@ Accessible by: Anyone
 
 ## Sticker Packs
 
+### GET /sticker-packs
+
+Usage: Get list of 12 packs without list of stickers
+
+Parameters (optional): `page=<number of page>, sort=popular|newest|oldest, search=<pack prefix>`
+
+Accessible by: Anyone
+
 ### GET /sticker-packs/{pack\_prefix}
 
 Usage: Get information about a pack
@@ -104,7 +160,7 @@ Accessible by: Anyone
 
 ### GET /sticker-packs/{pack\_prefix}/info
 
-Usage: Get information about a pack without list of custom stickers
+Usage: Get information about a pack without list of stickers
 
 Accessible by: Anyone
 
@@ -120,6 +176,28 @@ Usage: Get information about a specific custom sticker from a pack
 
 Accessible by: Anyone
 
+---
+
+## Statistics
+
+## GET /stats
+
+Usage: Get statistics about number of active and inactive guilds, sticker packs, their subscribers, users, stickers
+
+Accessible by: Anyone
+
+## GET /stats/recent-stickers
+
+Usage: Get list of 25 newest stickers
+
+Accessible by: Anyone
+
+## GET /stats/most-used-stickers
+
+Usage: Get list of 25 most used guilds' stickers, 25 most used users' stickers, 25 most used packs' stickers
+
+Accessibe by: Anyone
+
 --- 
 
 ## Objects Structure
@@ -131,7 +209,7 @@ Accessible by: Anyone
 | id | Snowflake (String) | Guild ID |
 | guildName | String | Guild Name |
 | isActive | Boolean | TODO |
-| stickerPacks | Array of Strings | List of aviable sticker pack's prefixes |
+| stickerPacks | Array of Strings | List of aviable sticker packs' prefixes |
 | guildManagerIds | Array of Snowflakes (Strings) | List of users with Administrator permission |
 | stickerManagers | Object | Role that allow to edit custom stickers and (un)subscribe to sticker packs and list of users with that role |
 | blacklist | Object | Role that disallow to use stickers on this server and list of users with that role (empty if `roleId` is "@everyone" or null) |
@@ -140,3 +218,15 @@ Accessible by: Anyone
 | customStickers | Array of Sticker objects | List of custom stickers of the server |
 | commandPrefix | String | Prefix of bot commands |
 | icon | String | Guild [icon hash](https://discordapp.com/developers/docs/reference#image-formatting) |
+
+### User
+
+| Field | Type | Description |
+| --- | --- | --- |
+| id | Snowflake (String) | User ID |
+| createdStickerPacks | Array of Strings | List of prefixes of sticker packs created by user |
+| username | String | User name |
+| stickerPacks | Array of Strings | List of prefixes of sticker packs that user subscribed for |
+| bans | Array of Strings | List of banned features for user (only 'CREATE_STICKER_PACK' ban is extist right now) |
+| customStickers | Array of Sticker objects | List of user's private stickers |
+| avatar | String | User [avatar hash](https://discordapp.com/developers/docs/reference#image-formatting) |
