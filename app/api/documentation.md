@@ -86,7 +86,7 @@ Usage: Edit prefix of the bot commands
 
 Body (required): `string:commandPrefix`
 
-Accessible by: Stickers for Discord Bot and users with proper permissions within their Discord Server
+Accessible by: Users with proper permissions within their Discord Server
 
 ### PATCH /guilds/{guild\_id}/sticker-user-role
 
@@ -94,7 +94,7 @@ Usage: Update guild whitelist/blacklist
 
 Body (required): `string:listMode, string:whitelistRole, string:blacklistRole`
 
-Accessible by: Stickers for Discord Bot and users with proper permissions within their Discord Server
+Accessible by: Users with proper permissions within their Discord Server
 
 ---
 
@@ -142,6 +142,70 @@ Accessible by: Anyone
 
 --- 
 
+### POST /users
+
+Usage: Initialize a user within the service
+
+Body (required): `string:username, string:id`
+
+Accessible by: Stickers for Discord Bot
+
+### POST /users/{user\_id}/stickers
+
+Usage: Create a new custom sticker for a user
+
+Body (required): `string:name, (string:url OR image_file:file)`
+
+Accessible by: User
+
+### POST /users/{user\_id}/stickers/{sticker\_name}/uses
+
+Usage: Increment amount of uses for a custom sticker
+
+Accessible by: Stickers for Discord Bot
+
+### POST /users/{user\_id}/sticker-packs
+
+Usage: Subscribe to a sticker pack
+
+Body (required): `string:packKey`
+
+Accessible by: User
+
+---
+
+### PATCH /users/{user\_id}
+
+Usage: Update user info
+
+Accessible by: Stickers for Discord Bot
+
+### PATCH /users/{user\_id}/stickers/{sticker\_name}
+
+Usage: Edit existing user's custom sticker
+
+Body (required): `string:name`
+
+Accessible by: User
+
+---
+
+## DELETE /users/{user\_id}/stickers/{sticker\_name}
+
+Usage: Delete user's custom sticker
+
+Accessible by: User
+
+## DELETE /users/{user\_id}/sticker-packs
+
+Usage: Unsubscribe from a sticker pack
+
+Body (required): `string:packKey`
+
+Accessible by: User
+
+---
+
 ## Sticker Packs
 
 ### GET /sticker-packs
@@ -152,29 +216,91 @@ Parameters (optional): `page=<number of page>, sort=popular|newest|oldest, searc
 
 Accessible by: Anyone
 
-### GET /sticker-packs/{pack\_prefix}
+### GET /sticker-packs/{pack\_key}
 
 Usage: Get information about a pack
 
 Accessible by: Anyone
 
-### GET /sticker-packs/{pack\_prefix}/info
+### GET /sticker-packs/{pack\_key}/info
 
 Usage: Get information about a pack without list of stickers
 
 Accessible by: Anyone
 
-### GET /sticker-packs/{pack\_prefix}/stickers
+### GET /sticker-packs/{pack\_key}/stickers
 
 Usage: Get list of custom stickers of a pack
 
 Accessible by: Anyone
 
-### GET /sticker-packs/{pack\_prefix}/stickers/{sticker\_name}
+### GET /sticker-packs/{pack\_key}/stickers/{sticker\_name}
 
 Usage: Get information about a specific custom sticker from a pack
 
 Accessible by: Anyone
+
+---
+
+### POST /sticker-packs
+
+Usage: Create new sticker pack
+
+Body (required): `string:name, string:key, string:description, image_file:file`
+
+Accessible by: Users who is not banned from creating sticker packs and has voted on Discord Bot List
+
+### POST /sticker-packs/{pack\_key}/publish
+
+Usage: Publish sticker pack
+
+Accessible by: Creator of a pack
+
+### POST /sticker-packs/{pack\_key}/stickers
+
+Usage: Create a new sticker for a pack
+
+Body (required): `string:name, (string:url OR image_file:file)`
+
+Accessible by: Creator of a pack
+
+### POST /sticker-packs/{pack\_key}/stickers/{sticker\_name}/uses
+
+Usage: Increment amount of uses for a sticker
+
+Accessible by: Stickers for Discord Bot
+
+---
+
+### PATCH /sticker-packs/{pack\_key}
+
+Usage: Update sticker pack
+
+Body (optional): `string:name, string:key, string:description, image_file:file`
+
+Accessible by: Creator of a pack
+
+### PATCH /sticker-packs/{pack\_key}/stickers/{sticker\_name}
+
+Usage: Edit existing pack's sticker
+
+Body (required): `string:name`
+
+Accessible by: Creator of a pack
+
+---
+
+### DELETE /sticker-packs/{pack\_key}
+
+Usage: Delete unpublished sticker pack
+
+Accessible by: Creator of a pack
+
+### DELETE /sticker-packs/{pack\_key}/stickers/{sticker\_name}
+
+Usage: Delete sticker from sticker pack
+
+Accessible by: Creator of a pack
 
 ---
 
@@ -209,7 +335,7 @@ Accessibe by: Anyone
 | id | Snowflake (String) | Guild ID |
 | guildName | String | Guild Name |
 | isActive | Boolean | TODO |
-| stickerPacks | Array of Strings | List of aviable sticker packs' prefixes |
+| stickerPacks | Array of Strings | List of aviable sticker packs' keys |
 | guildManagerIds | Array of Snowflakes (Strings) | List of users with Administrator permission |
 | stickerManagers | Object | Role that allow to edit custom stickers and (un)subscribe to sticker packs and list of users with that role |
 | blacklist | Object | Role that disallow to use stickers on this server and list of users with that role (empty if `roleId` is "@everyone" or null) |
@@ -224,9 +350,36 @@ Accessibe by: Anyone
 | Field | Type | Description |
 | --- | --- | --- |
 | id | Snowflake (String) | User ID |
-| createdStickerPacks | Array of Strings | List of prefixes of sticker packs created by user |
+| createdStickerPacks | Array of Strings | List of keys of sticker packs created by user |
 | username | String | User name |
-| stickerPacks | Array of Strings | List of prefixes of sticker packs that user subscribed for |
+| stickerPacks | Array of Strings | List of keys of sticker packs that user subscribed for |
 | bans | Array of Strings | List of banned features for user (only 'CREATE_STICKER_PACK' ban is extist right now) |
 | customStickers | Array of Sticker objects | List of user's private stickers |
 | avatar | String | User [avatar hash](https://discordapp.com/developers/docs/reference#image-formatting) |
+
+### Sticker pack
+
+| Field | Type | Description |
+| --- | --- | --- |
+| name | String | Pack name |
+| key | String | Pack key |
+| description | String | Pack description |
+| creatorId | Snowflake (String) | User ID of creator |
+| stickers | Array of Sticker objects | List of pack's stickers |
+| createdAt | Date (String) | Date and time of pack's creation |
+| subscribers | Integer | Amount of pack's subscribers |
+| listed | Boolean | TODO |
+| published | Boolean | Is pack published? |
+| icon | String | URL of pack's icon |
+
+### Sticker
+| Field | Type | Description |
+| --- | --- | --- |
+| name | String | Sticker name |
+| url | String | URL of sticker |
+| groupId | String | TODO pack-key |
+| groupType | String | TODO sticker-pack |
+| createdVia | String | TODO website |
+| createdAt | Date (String) | Date and time of sticker's creation |
+| createdId | Snowflake (String) | User ID of creator |
+| uses | Integer | Amount of uses |
