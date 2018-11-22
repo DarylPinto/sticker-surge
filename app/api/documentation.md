@@ -334,13 +334,13 @@ Accessibe by: Anyone
 | --- | --- | --- |
 | id | Snowflake (String) | Guild ID |
 | guildName | String | Guild Name |
-| isActive | Boolean | TODO |
+| isActive | Boolean | Is server exists and is bot in server? |
 | stickerPacks | Array of Strings | List of aviable sticker packs' keys |
 | guildManagerIds | Array of Snowflakes (Strings) | List of users with Administrator permission |
 | stickerManagers | Object | Role that allow to edit custom stickers and (un)subscribe to sticker packs and list of users with that role |
 | blacklist | Object | Role that disallow to use stickers on this server and list of users with that role (empty if `roleId` is "@everyone" or null) |
 | whitelist | Object | Role that allow to use stickers on this server and list of users with that role (empty if `roleId` is "@everyone" or null) |
-| listMode | String | Shows is white- of blacklist enabled (TODO fix) |
+| listMode | String | `whitelist` or `blacklist` |
 | customStickers | Array of Sticker objects | List of custom stickers of the server |
 | commandPrefix | String | Prefix of bot commands |
 | icon | String | Guild [icon hash](https://discordapp.com/developers/docs/reference#image-formatting) |
@@ -368,7 +368,7 @@ Accessibe by: Anyone
 | stickers | Array of Sticker objects | List of pack's stickers |
 | createdAt | Date (String) | Date and time of pack's creation |
 | subscribers | Integer | Amount of pack's subscribers |
-| listed | Boolean | TODO |
+| listed | Boolean | Is pack listed? |
 | published | Boolean | Is pack published? |
 | icon | String | URL of pack's icon |
 
@@ -377,9 +377,9 @@ Accessibe by: Anyone
 | --- | --- | --- |
 | name | String | Sticker name |
 | url | String | URL of sticker |
-| groupId | String | TODO pack-key |
-| groupType | String | TODO sticker-pack |
-| createdVia | String | TODO website |
+| groupId | String | Pack prefix if `groupType` is `sticker-pack`, user/server ID if `groupType` is `user`/`guild` |
+| groupType | String | Is this sticker from `sticker-pack` or `user`'s/`guild`'s custom stickers list? |
+| createdVia | String | Is this sticker was created via `website` or `discord`? |
 | createdAt | Date (String) | Date and time of sticker's creation |
 | createdId | Snowflake (String) | User ID of creator |
 | uses | Integer | Amount of uses |
