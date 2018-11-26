@@ -16,27 +16,23 @@ const deactivateGuild = require('./events/deactivate-guild.js');
 const updateGuildInfo = require('./events/update-guild-info.js');
 const initUser = require('./events/init-user.js');
 const updateUserInfo = require('./events/update-user-info.js');
-const updateDblStats = require('./events/update-dbl-stats.js');
 
 client.on('ready', () => {
 	client.user.setPresence({game: {name: 'stickersfordiscord.com'}});
-	client.guilds.forEach(g => updateGuildInfo(g, bot_auth));
-	updateDblStats(client);
+	// client.guilds.forEach(g => updateGuildInfo(g, bot_auth));
 	console.log('Stickers for Discord bot is online!');
 });
 
-//Add guild to db for the first time, update Discord Bot List guild count
+//Add guild to db for the first time
 client.on('guildCreate', guild => {
 	initGuild(guild, bot_auth);
-	updateDblStats(client);
 });
 
-//Set isActive flag to false in db when bot leaves guild, update Discord Bot List guild count
+//Set isActive flag to false in db when bot leaves guild
 client.on('guildDelete', guild => {
 	//SetTimeout prevents race condition between guildDelete and guildUpdate
 	setTimeout(() => {
 		deactivateGuild(guild, bot_auth);
-		updateDblStats(client);
 	}, 1500);
 });
 
