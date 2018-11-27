@@ -112,7 +112,7 @@ module.exports = {
 			<div v-if="userGuilds.length === 0 && guildsLoaded" class="no-guilds-alert">
 				<p>You're not in any servers with Stickers for Discord<br>
 				Let's fix that, shall we?</p>
-				<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=8192" class="btn" target="_blank">Add to Discord</a>
+				<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536879104" class="btn" target="_blank">Add to Discord</a>
 			</div>
 
 			<div v-if="userGuilds.length > 0 && guildsLoaded" v-for="guild in userGuildData" :key="guild.id" class="guild">
