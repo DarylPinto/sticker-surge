@@ -10,18 +10,34 @@ const covert = require('../covert.js');
 
 async function main(){
 
+	const stats_uri = `${covert.app_url}/api/stats`;
+	let stats, guild_count, shard_count;
+
 	// Get stats from API
-	const stats = await rp({uri: `${covert.app_url}/api/stats`, json: true});	
-	const guild_count = stats.active_guilds;
-	const shard_count = Math.ceil(guild_count/2500);	
-	
+	try{
+		stats = await rp({uri: stats_uri, json: true});
+		guild_count = stats.active_guilds;
+	}catch(err){
+		return console.error("Unable to connect to Stickers for Discord API.");
+	}	
+		
 	// Spawn shards
+	shard_count = (guild_count === 0) ? 1 : Math.ceil(guild_count/2500);
 	console.log(`Spawning ${shard_count} shards to handle ${guild_count} guilds.`);
 	Manager.spawn(shard_count);
 
 	// Update Discord Bot List stats every half hour
-	setInterval(() => {
+	setInterval(async () => {
+
+		try{
+			stats = await rp({uri: stats_uri, json: true});
+			guild_count = stats.active_guilds;	
+		}catch(err){
+			return;
+		}
+
 		updateDblStats(guild_count);
+		
 	}, 1000 * 60 * 30);
 
 }
