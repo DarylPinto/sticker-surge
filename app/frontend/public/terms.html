@@ -8,14 +8,14 @@
 	<meta name="og:title" content="Terms & Conditions - Stickers for Discord">
 	<meta name="og:description" content="Terms & Conditions - Stickers for Discord">
 	<meta charset="utf-8">
-	
+
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="theme-color" content="#fc6262">
 	<meta name="mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 
 	<link rel="shortcut icon" type="image/ico" href="/icon.ico" />
-	
+
 	<style>
 		*{
 			color: white;
@@ -60,7 +60,13 @@
 			margin: 0 auto;
 			padding-bottom: 40px;
 		}
-	</style>	
+		code {
+			font-family: monospace;
+		}
+		.with-associated-paragraph {
+			margin-bottom: 10px;
+		}
+	</style>
 
 </head>
 <body>
@@ -79,8 +85,20 @@
 		<h2>Privacy</h2>
 		<p>Cookies are used on this site in order to provide basic functionality.</p>
 		<p>All user/server pages on this site are listed publicly and do not require authentication to <em>view</em>. This is necessary in order to appease users who do not wish to log in to the site but still need to use it to view which stickers are available.</p>
-		<p>This service does not collect any <em>personal or private</em> information. All information collected from Discord servers (Role IDs, User IDs) or from Google Analytics is gathered for the explicit purpose of providing functionality to the service or aggregating data to help us improve the service.</p>	
+		<p>This service does not collect any <em>personal or private</em> information. All information collected from Discord servers (Role IDs, User IDs) or from Google Analytics is gathered for the explicit purpose of providing functionality to the service or aggregating data to help us improve the service.</p>
 
+		<p class="with-associated-paragraph">The information collected by the bot to function is the following:</p>
+		<ul>
+			<li>
+				Your server name, server image, and server id is saved when the bot is added to the server. This is so that a page can be created for your server that will be viewable whenever someone uses the <code>$stickers</code> command in Discord or logs into the site and clicks on "Servers".
+			</li>
+			<li>
+				Server Managers, Sticker Managers, Whitelisted users, and Blacklisted user IDs are stored in a database so that those features can function. Additionally an user's name, and avatar will be saved if a user privately messages the bot, or logs into the website, this is done to create a page for the user with their personal stickers.
+			</li>
+			<li>
+				Command requests will <em>not</em> save an user's ID, or username.
+			</li>
+		</ul>
 	</div>
 </body>
 </html>
