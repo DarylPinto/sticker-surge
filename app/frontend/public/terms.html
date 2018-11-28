@@ -35,10 +35,11 @@
 			font-size: 30px;
 		}
 		h1, h2{
-			margin-bottom: 30px;
+			margin-bottom: 10px;
 		}
 		p{
-			margin-bottom: 30px;
+			margin-top: 0;
+			margin-bottom: 20px;
 		}
 		p, ul, li{
 			font-size: 18px;
@@ -61,9 +62,15 @@
 			padding-bottom: 40px;
 		}
 		code {
+			background-color: rgba(255, 255, 255, 0.1);
+			padding: 2px 4px;
+			border-radius: 2px;
 			font-family: monospace;
 		}
-		.with-associated-paragraph {
+		p + ul {
+			margin-top: -15px;
+		}
+		li {
 			margin-bottom: 10px;
 		}
 	</style>
@@ -75,7 +82,7 @@
 		<a href="/" class="logo"><img src="/images/logo.svg"></a>
 
 		<h1>Terms & Conditions</h1>
-		<p>By accessing and using this service, you accept and agree to be bound by the terms and provision of this agreement. In addition, when using these particular services, you shall be subject to any posted guidelines or rules applicable to such services. Any participation in this service will constitute acceptance of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
+		<p>By accessing and using this service, you accept and agree to be bound by the terms and provision of this agreement. In addition, when using this particular service, you shall be subject to any posted guidelines or rules applicable to such services. Any participation in this service will constitute acceptance of this agreement. If you do not agree to abide by the above, please do not use this service.</p>
 		<p>We reserve the right to change these conditions from time to time as it sees fit and your continued use of the service will signify your acceptance of any adjustment to these terms.</p>
 
 		<h2>Content</h2>
@@ -83,22 +90,22 @@
 		<p>When creating content using this service, refrain from: Spam, any sort of personal identifiable information, explicit sexual content, fetish artwork/themes, hate speech/controversial topics, brutal violence/gore etc. Your content may be taken down at any time at our moderators' discretion, and bans will be given out when deemed appropriate.</p>
 
 		<h2>Privacy</h2>
-		<p>Cookies are used on this site in order to provide basic functionality.</p>
-		<p>All user/server pages on this site are listed publicly and do not require authentication to <em>view</em>. This is necessary in order to appease users who do not wish to log in to the site but still need to use it to view which stickers are available.</p>
-		<p>This service does not collect any <em>personal or private</em> information. All information collected from Discord servers (Role IDs, User IDs) or from Google Analytics is gathered for the explicit purpose of providing functionality to the service or aggregating data to help us improve the service.</p>
+		<p>Cookies are used on this site in order to provide basic authentication functionality and for Google Analytics.</p>
+		<p>All user/server pages on this site are public and do not require authentication to <em>view</em>. This is necessary in order to appease users who do not wish to log in to the site but still need to view which stickers are available to them.</p>
 
-		<p class="with-associated-paragraph">The information collected by the bot to function is the following:</p>
+		<p>The following data is stored:</p>
 		<ul>
 			<li>
-				Your server name, server image, and server id is saved when the bot is added to the server. This is so that a page can be created for your server that will be viewable whenever someone uses the <code>$stickers</code> command in Discord or logs into the site and clicks on "Servers".
+				Your server name, server icon, and server ID is stored when the bot is added to the server and updated in real time while the bot is present. This is so that a page can be generated for your server (Viewable whenever someone uses the <code>$stickers</code> command in Discord or logs into the site and clicks on "Servers".)
 			</li>
 			<li>
-				Server Managers, Sticker Managers, Whitelisted users, and Blacklisted user IDs are stored in a database so that those features can function. Additionally an user's name, and avatar will be saved if a user privately messages the bot, or logs into the website, this is done to create a page for the user with their personal stickers.
+				The name and avatar of a user is saved if (and only if) a user private message the bot or logs into the website. This is so that a page can be generated for the user, which is viewable whenever they private message the bot with the <code>$stickers</code> command in Discord or log into the site and click "Personal Stickers".
 			</li>
 			<li>
-				Command requests will <em>not</em> save an user's ID, or username.
+				IDs of users with special permissions (Server Managers, Sticker Managers, Whitelisted/Blacklisted Members) in your server are saved so that the bot knows who is able to perform what actions (Add stickers, Delete stickers, Manage sticker roles etc.)
 			</li>
 		</ul>
+		<p>This service does not collect any <em>personal or private</em> information. All aforementioned information is stored by the service for the explicit purpose of providing functionality.</p>
 	</div>
 </body>
 </html>
