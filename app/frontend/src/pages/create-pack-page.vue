@@ -92,6 +92,7 @@ module.exports = {
 
 		<header class="create-pack-header">
 			<h1>Create a Sticker Pack</h1>
+			<p class="description">Sticker packs are <em>public and available for everyone to use.</em> If you're trying to create stickers for exclusively for your server, <router-link to="/servers">click here instead.</router-link></p>
 		</header>
 		
 		<form @submit.prevent="createPack">
@@ -161,6 +162,15 @@ module.exports = {
 			justify-content: center
 			align-items: center	
 			font-size: 50px
+			.description
+				font-size: 20px
+				max-width: 680px
+				color: gray
+				margin-top: 25px
+				line-height: 1.4em
+				text-align: center
+				a, em
+					color: gray
 
 		form
 			display: flex
