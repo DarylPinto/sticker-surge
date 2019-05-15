@@ -45,7 +45,7 @@ module.exports = function(message, bot_auth, prefix){
 	})
 	.catch(err => {
 		if(err.message.includes('Sticker Pack not found')){
-			message.channel.send(`There's no Sticker Pack with that prefix.\nYou can view all available Sticker Packs here: ${covert.app_url}/sticker-packs`);
+			message.channel.send(`There's no Sticker Pack with that prefix. Make sure you're using the Sticker Pack *prefix*, not the Sticker Pack *name*.\nClick the "Use This Pack" button on the website for help.\nYou can view all available Sticker Packs here: ${covert.app_url}/sticker-packs`);
 		}
 
 		else if(err.message.includes('Unauthorized')){
