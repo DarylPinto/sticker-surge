@@ -78,13 +78,19 @@ module.exports = {
 			});
 		},
 
+		sanitizeStickerName(){
+			this.newStickerName = this.newStickerName.toLowerCase().replace(/[^a-zа-яё0-9]/g, '');
+		},
+
 		//Show custom error message on invalid stickername (for Safari)
 		//stackoverflow.com/q/16867407/#42422152
+		/*
 		checkStickerNameValidity(e){
 			e.target.setCustomValidity('');
 			e.target.checkValidity();
 			e.target.setCustomValidity(e.target.validity.valid ? '' : 'Lowercase letters and numbers only');
 		}
+		*/
 	}
 }
 </script>
@@ -108,7 +114,7 @@ module.exports = {
 	</div>	
 	<input
 		v-model="newStickerName"
-		@input="checkStickerNameValidity"
+		@input="sanitizeStickerName"
 		name="name"
 		placeholder="Sticker Name"
 		pattern="^:?-?[a-zа-яё0-9]+:?$"	
