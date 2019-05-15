@@ -125,9 +125,8 @@ module.exports = {
 			})
 		},
 
-		deletePack: function(){
-			if(this.published) return;
-			if(!confirm(`Are you sure you want to delete this pack?`)) return false;
+		deletePack: function(){	
+			if(!confirm(`Are you sure you want to delete this pack? This action CANNOT be undone.`)) return false;
 			axios.delete(`/api/sticker-packs/${this.$route.params.id}`)
 			.then(res => {
 				this.$cookie.delete('currentNewPack');
@@ -196,7 +195,7 @@ module.exports = {
 				>
 					Publish This Pack
 				</a>
-				<a v-if="!published" @click="deletePack" class="btn hollow secondary">Delete Pack</a>	
+				<a v-if="isUsersPack" @click="deletePack" class="btn hollow secondary">Delete Pack</a>	
 			</div>
 		</header>
 		

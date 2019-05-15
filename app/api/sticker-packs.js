@@ -349,17 +349,19 @@ router.patch('/:key/stickers/:stickername', verifyUserAjax, async (req, res) => 
 //DELETE//
 //////////
 
-//DELETE unpublished sticker pack
+//DELETE (unlist) sticker pack
 router.delete('/:key', verifyUserAjax, async (req, res) => {
 
 	try{
 		let pack = await StickerPack.findOne({key: req.params.key});
 		if(!pack) return res.status(404).send('Sticker Pack not found');
 		if(res.locals.userId != pack.creatorId) return res.status(401).send('Unauthorized');
-		if(pack.published) return res.status(401).send('Cannot cancel creation. Pack already published');
+		// if(pack.published) return res.status(401).send('Cannot cancel creation. Pack already published');
 
-		await StickerPack.deleteOne({key: req.params.key});
-		return res.send('Successfully cancelled creation of pack');
+		// await StickerPack.deleteOne({key: req.params.key});
+		pack.listed = false;
+		await pack.save();
+		return res.send('Successfully unlisted pack');
 	}catch(err){
 		if(err.message.includes('Unauthorized')) return res.status(401).send('Unauthorized');
 		console.error(err);
