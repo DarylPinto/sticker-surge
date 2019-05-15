@@ -5,10 +5,12 @@ const messageDefaultChannel = require('../utilities/message-default-channel.js')
 
 module.exports = function(guild, bot_auth){
 	
+	/*	
 	const sendWelcomeMessage = prefix => {
 		let escaped_prefix = prefix.replace(/[^a-zA-Z0-9]/g, '\\$&');
 		messageDefaultChannel(guild, `This server can now use stickers! Type **${escaped_prefix}commands** to get started.`);	
 	}
+	*/
 
 	rp({
 		method: 'POST',
@@ -23,7 +25,7 @@ module.exports = function(guild, bot_auth){
 	})
 	.then(() => {
 		console.log(`Guild ${guild.id} added!`);
-		sendWelcomeMessage('$');
+		// sendWelcomeMessage('$');
 		updateGuildInfo(guild, bot_auth);
 	})
 	.catch(err => {
