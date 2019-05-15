@@ -32,7 +32,12 @@ module.exports = {
 	},
 	computed: {
 		noStickersText(){
-			return (!this.isEditable) ? 'No stickers here just yet!' : 'No stickers here just yet. Add some!';
+			let text;
+			if(this.isEditable && this.pageType !== 'sticker-packs') text = 'No custom stickers here just yet. Add some!';
+			else if(this.pageType !== 'sticker-packs') text = 'No custom stickers here just yet!';	
+			else if(this.isEditable && this.pageType === 'sticker-packs') text = 'No stickers in this pack just yet. Add some!';
+			else text = 'No stickers here just yet!';
+			return text;
 		},
 		maxStickersReached(){
 			return this.stickers.length >= this.maxStickers;
