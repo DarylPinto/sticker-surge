@@ -45,6 +45,10 @@ app.get('/stickers', verifyUser, (req, res) => {
 	res.redirect(`/user/${req.session.id}`);
 });
 
+app.get('/undefined', (req, res) => {
+	res.redirect('/');
+});
+
 //API
 app.use('/api/users', require('./api/users.js'));
 app.use('/api/guilds', require('./api/guilds.js'));
