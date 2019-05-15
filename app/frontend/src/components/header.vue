@@ -1,34 +1,52 @@
 <script>
-	import Vue from 'vue';
-	import swipeEvents from '../scripts/swipe-events.js';
-	swipeEvents.init();
+import Vue from 'vue';
+import axios from 'axios';
+import swipeEvents from '../scripts/swipe-events.js';
+swipeEvents.init();
 
-	module.exports = {
-		props: ['userId'],
-		data: function(){
-			return {
-				loggedIn: this.userId != null,
-				mobileNavOpen: false
-			}
-		},
-		methods: {
-			toggleMobileNav(){
-				this.mobileNavOpen = !this.mobileNavOpen;
-			},
-			openMobileNav(){
-				this.mobileNavOpen = true;
-			},
-			closeMobileNav(){
-				this.mobileNavOpen = false;
-			}
-		},
-		mounted: function(){
-			document.addEventListener('swipeleft', this.closeMobileNav);
-			document.addEventListener('swiperight', this.openMobileNav);
+module.exports = {
+	props: ['userId'],
+	data: function(){
+		return {
+			loggedIn: this.userId != null,
+			mobileNavOpen: false,	
+			username: null,
+			avatarURL: null
 		}
+	},
+	methods: {
+		toggleMobileNav(){
+			this.mobileNavOpen = !this.mobileNavOpen;
+		},
+		openMobileNav(){
+			this.mobileNavOpen = true;
+		},
+		closeMobileNav(){
+			this.mobileNavOpen = false;
+		},
+		updateUserInfo(){
+			axios.get(`/api/users/${this.userId}?nocache=${(new Date()).getTime()}`)
+			.then(res => {
+				this.username = res.data.username;
+				this.avatarURL = res.data.avatar ?
+					`https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png` :
+					'/images/default-discord-icon.png';
+			});
+		}
+	},
+	mounted: function(){
+		document.addEventListener('swipeleft', this.closeMobileNav);
+		document.addEventListener('swiperight', this.openMobileNav);
 
-	}
+		if(this.userId) this.updateUserInfo();
+	},
+	watch: {
+		'$route': function(){	
+			if(this.userId) this.updateUserInfo();
+		}
+	},
 
+}
 </script>
 
 <template>
@@ -43,15 +61,34 @@
 		</router-link>
 
 		<nav class="main-nav">
-
+		
+			<router-link to="/sticker-packs">Sticker Packs</router-link>
+			<!--
+			<router-link to="/docs">Documentation</router-link>
+			<router-link to="/faq">FAQ</router-link>
+			-->
+			<a href="https://discord.gg/HNFmKsE" target="_blank" rel="noopener noreferrer">Community</a>
+			<!--
 			<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
 			<router-link :to="`/user/${userId}`" v-if="loggedIn">Personal Stickers</router-link>
-			<router-link to="/sticker-packs">Sticker Packs</router-link>
+			
 
 			<a href="/login" v-if="!loggedIn">Log In</a>
 			<a href="/logout" v-if="loggedIn">Log Out</a>
-			
-		</nav>	
+			-->			
+		</nav>
+
+		<a href="/login" v-if="!loggedIn" class="login-btn">Login</a>
+
+		<div v-if="loggedIn" class="nav-profile">
+			<img :src="avatarURL">
+			<span>{{username}} ▾</span>
+			<nav class="profile-submenu">
+				<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
+				<router-link :to="`/user/${userId}`" v-if="loggedIn">Personal Stickers</router-link>
+				<a href="/logout">Logout</a>
+			</nav>
+		</div>
 
 	</div>
 
@@ -82,6 +119,7 @@
 	$header-color: #131313
 	$discord-gray: #2a2d2f
 	$header-height: 60px
+	$login-gray: #b0b0b2
 
 	#main-header
 		background-color: $header-color
@@ -95,7 +133,7 @@
 		z-index: 1
 		.container
 			display: flex
-			justify-content: space-between
+			align-items: center
 			margin: 0
 			a
 				color: white
@@ -108,14 +146,70 @@
 				width: auto
 			.main-nav
 				font-size: 0
-			.main-nav a
-				padding-left: 7px
-				padding-right: 7px
-				font-size: 16px
-				font-weight: 300
+				margin-left: 15px
+				a
+					padding-left: 7px
+					padding-right: 7px
+					font-size: 16px
+					font-weight: 300
+					text-decoration: none
+					&:hover, &.router-link-active
+						background-color: $discord-gray
+			.login-btn	
+				margin-left: auto
+				border: 2px solid $login-gray
+				color: $login-gray 
+				border-radius: 20px
+				height: auto
+				padding: 8px 15px
+				font-size: 14px
+				font-weight: 100
+				transition: .2s
 				text-decoration: none
-				&:hover, &.router-link-active
-					background-color: $discord-gray
+				&:hover
+					background-color: transparent
+					color: white
+					border-color: white
+			.nav-profile
+				display: flex
+				align-items: center
+				height: $header-height
+				margin-left: auto
+				cursor: pointer
+				position: relative
+				img
+					height: 30px
+					margin-right: 7px
+					border-radius: 100px
+					border: 1px solid rgba(255, 255, 255, 0.2)
+				.profile-submenu
+					opacity: 0
+					pointer-events: none
+					background-color: black
+					position: absolute
+					top: $header-height
+					right: 0
+					padding: 10px 0 7px 0
+					transition: .2s
+					border-bottom-left-radius: 5px
+					border-bottom-right-radius: 5px
+					&:hover
+						opacity: 1
+						pointer-events: auto
+					a
+						height: auto
+						width: 120px
+						padding: 7px 14px
+						font-size: 14px
+						text-align: right
+						text-decoration: none
+						&:hover, &.router-link-active
+							background-color: $discord-gray
+
+				&:hover .profile-submenu
+					opacity: 1
+					pointer-events: auto
+
 		.mobile-nav-btn
 			display: none
 			width: 35px
@@ -178,13 +272,8 @@
 			box-shadow: 0 0 40px black
 			pointer-events: auto
 
-
-	@media screen and (min-width: 790px)
-		.mobile-nav.open, .mobile-nav-backdrop.open
-			display: none
-
-
 	@media screen and (max-width: 790px)
+
 		#main-header
 			height: 80px
 			.container
@@ -196,8 +285,8 @@
 				.mobile-nav-btn
 					display: block
 
-		.main-nav
-			display: none
+		.main-nav, .login-btn, .nav-profile
+			display: none !important
 	
 	@media screen and (max-width: 360px)
 		#main-header .mobile-nav-btn
