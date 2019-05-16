@@ -51,13 +51,14 @@ module.exports = {
 			<h1>Stickers for Discord</h1>	
 		</div>	
 		<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536879104" class="btn" target="_blank">Add to Discord</a>
+		<router-link to="/docs" class="btn secondary">Learn More</router-link>
 
 		<video src="demo-video.mp4" autoplay loop muted></video>	
 	</div>
 </main>
 </template>
 
-<style lang="sass">
+<style lang="sass">	
 
 	.home-page
 		text-align: center
@@ -83,7 +84,7 @@ module.exports = {
 			margin-bottom: 60px
 			h1
 				transform: scale(1, 1.1)
-				font-weight: bold
+				font-weight: 500
 				font-size: 65px
 			span
 				display: block
@@ -91,13 +92,20 @@ module.exports = {
 				font-weight: 400
 				opacity: 0.8
 				font-size: 35px
-		a
+		a.btn
 			font-size: 24px
 			font-weight: 100
 			border-radius: 40px
 			padding: 13px 25px
+			min-width: 200px
 			text-shadow: 1px 1px rgba(0, 0, 0, 0.50)
 			letter-spacing: -0.5px
+			&.secondary
+				margin-left: 15px
+				&:hover
+					border-color: #5f6263
+					background-color: #5f6263 
+					text-shadow: none
 
 	//Media query widths
 	@media screen and (max-width: 750px)
@@ -132,5 +140,8 @@ module.exports = {
 				padding-top: 0
 			video
 				display: none
+			a.btn.secondary
+				margin-left: 0
+				margin-top: 15px
 
 </style>

@@ -113,18 +113,20 @@ module.exports = {
 				<div>
 					<strong>How do I make stickers?</strong>
 					<p>There are 3 types of stickers that you can make:</p>
+				
+					<ol>
+						<li>Server stickers<br />
+						These stickers will be usable by anyone in your Discord server. You can create them by using the <pre>$createsticker</pre> command.
+						You can also create server stickers by logging in to the website, clicking on "Your Servers", selecting your server, and then clicking "Create a Sticker"</li>
 
-					<p>1) Server stickers<br />
-					These stickers will be usable by anyone in your Discord server. You can create them by using the <pre>$createsticker</pre> command.
-					You can also create server stickers by logging in to the website, clicking on "Your Servers", selecting your server, and then clicking "Create a Sticker"</p>
+						<li>Personal Stickers<br />
+						These stickers will only be usable by you, but you can use them on any server where the bot is present. You can create them by Direct Messaging the bot with the command <pre>$createSticker</pre><br />
+						You can also create personal stickers by logging in to the website, clicking on "Personal Stickers", and clicking "Create a Sticker"</li>
 
-					<p>2) Personal Stickers<br />
-					These stickers will only be usable by you, but you can use them on any server where the bot is present. You can create them by Direct Messaging the bot with the command <pre>$createSticker</pre><br />
-					You can also create personal stickers by logging in to the website, clicking on "Personal Stickers", and clicking "Create a Sticker"</p>
-
-					<p>3) Sticker Packs<br />
-					These stickers will be publicly available for anyone to use. Don't create sticker packs if the stickers are in-jokes between you and your friends that no one else will understand (use server stickers for that). Sticker packs are for general-purpose stickers. Make them if you think many people will enjoy using them.
-					You can create sticker packs by logging in to the website, clicking on "Sticker Packs", and then clicking "Create a Sticker Pack".</p>
+						<li>Sticker Packs<br />
+						These stickers will be publicly available for anyone to use. Don't create sticker packs if the stickers are in-jokes between you and your friends that no one else will understand (use server stickers for that). Sticker packs are for general-purpose stickers. Make them if you think many people will enjoy using them.
+						You can create sticker packs by logging in to the website, clicking on "Sticker Packs", and then clicking "Create a Sticker Pack".</li>
+					</ol>
 				</div>
 				<div>
 					<strong>How many stickers can I have?</strong>
@@ -241,12 +243,17 @@ module.exports = {
 						font-size: 16px
 
 		#faq
-			div
-				margin-bottom: 25px
+			h2
+				margin-bottom: 30px
+			div	
+				margin-bottom: 45px
 			strong
 				line-height: 1.2em
 				font-size: 20px
 				margin-bottom: 3px
 				display: block
+				font-weight: 500
+			li
+				line-height: 1.4em
 
 </style>
