@@ -110,7 +110,7 @@ module.exports = {
 		<div class="container">
 
 			<div v-if="userGuilds.length === 0 && guildsLoaded" class="no-guilds-alert">
-				<p>You're not in any servers with Stickers for Discord<br>
+				<p>Stickers for Discord is not in any of your servers<br>
 				Let's fix that, shall we?</p>
 				<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536879104" class="btn" target="_blank">Add to Discord</a>
 			</div>
@@ -191,7 +191,7 @@ module.exports = {
 		.no-guilds-alert
 			text-align: center
 			p
-				font-size: 40px
+				font-size: 30px
 				opacity: 0.4
 				text-align: center
 				margin-top: 100px

@@ -1,11 +1,9 @@
 <template>
 <footer id="main-footer">
-	<div class="container">
-		<!-- <p>Made with <i class="material-icons">favorite</i> by DRL</p> -->
+	<div class="container">	
 		<div>
-			<a href="https://github.com/darylpinto/stickers-for-discord" target="_blank">Github</a>
-			<a href="https://discord.gg/HNFmKsE" target="_blank">Discord</a>
-			<a href="/terms.html" target="_blank">Terms & Conditions</a>
+			<a href="https://github.com/darylpinto/stickers-for-discord" target="_blank" rel="noopener noreferrer">Github</a>	
+			<a href="/terms.html" target="_blank" rel="noopener noreferrer">Terms & Conditions</a>
 		</div>
 	</div>
 </footer>
