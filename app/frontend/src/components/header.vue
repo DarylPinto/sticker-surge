@@ -63,10 +63,8 @@ module.exports = {
 		<nav class="main-nav">
 		
 			<router-link to="/sticker-packs">Sticker Packs</router-link>
-			<!--
-			<router-link to="/docs">Documentation</router-link>
-			<router-link to="/faq">FAQ</router-link>
-			-->
+			<router-link to="/docs">Documentation</router-link>	
+			<!-- <router-link to="/faq">FAQ</router-link> -->
 			<a href="https://discord.gg/HNFmKsE" target="_blank" rel="noopener noreferrer">Community</a>
 			<!--
 			<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
@@ -141,7 +139,7 @@ module.exports = {
 				display: inline-flex
 				align-items: center
 			.logo
-				max-height: 45px
+				max-height: 37px
 				max-width: 249px	
 				width: auto
 			.main-nav
