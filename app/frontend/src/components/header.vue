@@ -63,17 +63,8 @@ module.exports = {
 		<nav class="main-nav">
 		
 			<router-link to="/sticker-packs">Sticker Packs</router-link>
-			<router-link to="/docs">Documentation</router-link>	
-			<!-- <router-link to="/faq">FAQ</router-link> -->
-			<a href="https://discord.gg/HNFmKsE" target="_blank" rel="noopener noreferrer">Community</a>
-			<!--
-			<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
-			<router-link :to="`/user/${userId}`" v-if="loggedIn">Personal Stickers</router-link>
-			
-
-			<a href="/login" v-if="!loggedIn">Log In</a>
-			<a href="/logout" v-if="loggedIn">Log Out</a>
-			-->			
+			<router-link to="/docs">Documentation</router-link>
+			<a href="https://discord.gg/HNFmKsE" target="_blank" rel="noopener noreferrer">Community</a>		
 		</nav>
 
 		<a href="/login" v-if="!loggedIn" class="login-btn">Login</a>
@@ -100,9 +91,12 @@ module.exports = {
 		</router-link>
 
 		<router-link to="/" :exact="true">Home</router-link>
+		<router-link to="/sticker-packs">Sticker Packs</router-link>
+		<router-link to="/docs">Documentation</router-link>
+		<a href="https://discord.gg/HNFmKsE" target="_blank" rel="noopener noreferrer">Community</a>
+		<hr />
 		<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
 		<router-link :to="`/user/${userId}`" v-if="loggedIn">Personal Stickers</router-link>
-		<router-link to="/sticker-packs">Sticker Packs</router-link>
 
 		<a href="/login" v-if="!loggedIn">Log In</a>
 		<a href="/logout" v-if="loggedIn">Log Out</a>
@@ -170,6 +164,7 @@ module.exports = {
 					border-color: white
 			.nav-profile
 				display: flex
+				justify-content: flex-end
 				align-items: center
 				height: $header-height
 				margin-left: auto
@@ -183,30 +178,34 @@ module.exports = {
 				.profile-submenu
 					opacity: 0
 					pointer-events: none
-					background-color: black
+					background-color: #131313
 					position: absolute
-					top: $header-height
+					top: calc(#{$header-height} - 4px)
 					right: 0
-					padding: 10px 0 7px 0
 					transition: .2s
-					border-bottom-left-radius: 5px
-					border-bottom-right-radius: 5px
+					border-radius: 5px
+					overflow: hidden
+					border: 1px solid rgba(128, 128, 128, 0.25)
+					box-shadow: 0 0 5px rgba(0, 0, 0, 0.75)
 					&:hover
 						opacity: 1
 						pointer-events: auto
 					a
 						height: auto
-						width: 120px
-						padding: 7px 14px
+						width: 150px
+						box-sizing: border-box
+						padding: 15px
 						font-size: 14px
 						text-align: right
 						text-decoration: none
 						&:hover, &.router-link-active
 							background-color: $discord-gray
-
-				&:hover .profile-submenu
-					opacity: 1
-					pointer-events: auto
+				
+				&:hover
+					min-width: 150px
+					.profile-submenu
+						opacity: 1
+						pointer-events: auto
 
 		.mobile-nav-btn
 			display: none
@@ -254,11 +253,13 @@ module.exports = {
 			a
 				display: block
 				width: 100%
-				padding: 25px 20px
+				padding: 20px 20px
 				font-size: 18px
 				text-decoration: none
 				&:hover, &.router-link-active
 					background-color: rgba(255,255,255,0.1)
+			hr
+				border-bottom: 1px
 
 		.mobile-nav-backdrop.open
 			opacity: 1
