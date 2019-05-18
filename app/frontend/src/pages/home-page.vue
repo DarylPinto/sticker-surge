@@ -114,6 +114,16 @@ module.exports = {
 				font-size: 38px
 			span
 				font-size: 20px		
+	
+	@media screen and (max-width: 460px)
+		.home-page a.btn
+			margin: auto
+			display: block
+			width: 70%
+			&.secondary
+				margin-left: auto
+				margin-right: auto
+				margin-top: 15px
 
 	@media screen and (max-width: 435px)
 		.home-page .headline

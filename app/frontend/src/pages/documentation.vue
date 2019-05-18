@@ -35,7 +35,7 @@ module.exports = {
 		<div class="container">
 			<section id="tutorial">
 				<h2>Getting Started</h2>
-				<p>Inspired by other chat applications such as Telegram and LINE, Stickers for Discord fills the sticker shaped void that all us Discord users have in our hearts.</p>
+				<p>Inspired by other chat applications such as Telegram and LINE, Stickers for Discord aims to fill the sticker shaped void that us Discord users have in our hearts.</p>
 				<p>Getting your server set up is a piece of cake and only takes a minute:</p>
 				<ol>
 					<li>Add the bot to your server: <a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536879104" class="btn" target="_blank">Add to Discord</a></li>
@@ -116,7 +116,7 @@ module.exports = {
 				
 					<ol>
 						<li>Server stickers<br />
-						These stickers will be usable by anyone in your Discord server. You can create them by using the <pre>$createsticker</pre> command.
+						These stickers will be usable by anyone in your Discord server. You can create them by using the <pre>$createSticker</pre> command.
 						You can also create server stickers by logging in to the website, clicking on "Your Servers", selecting your server, and then clicking "Create a Sticker"</li>
 
 						<li>Personal Stickers<br />
