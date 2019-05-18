@@ -117,12 +117,12 @@ module.exports = {
 	
 	@media screen and (max-width: 460px)
 		.home-page a.btn
-			margin: auto
+			margin-left: auto
+			margin-right: auto
 			display: block
 			width: 70%
 			&.secondary
-				margin-left: auto
-				margin-right: auto
+				margin-left: auto !important
 				margin-top: 15px
 
 	@media screen and (max-width: 435px)

@@ -52,35 +52,35 @@ module.exports = {
 							<td>View the stickers your server can use.</td>
 						</tr>
 						<tr>
-							<td>$addPack [PACK PREFIX]</td>
+							<td>$addPack [PACK&nbsp;PREFIX]</td>
 							<td>Add a sticker pack for anyone on your server to use.</td>
 						</tr>
 						<tr>
-							<td>$removePack [PACK PREFIX]</td>
+							<td>$removePack [PACK&nbsp;PREFIX]</td>
 							<td>Remove a sticker pack from your server.</td>
 						</tr>
 						<tr>
-							<td>$createSticker [STICKER NAME] [IMAGE URL]</td>
+							<td>$createSticker [STICKER&nbsp;NAME] [IMAGE&nbsp;URL]</td>
 							<td>Create a custom sticker for your server to use.</td>
 						</tr>
 						<tr>
-							<td>$deleteSticker [STICKER NAME]</td>
+							<td>$deleteSticker [STICKER&nbsp;NAME]</td>
 							<td>Delete a custom sticker from your server.</td>
 						</tr>
 						<tr>
-							<td>$whitelist [ROLE NAME]</td>
+							<td>$whitelist [ROLE&nbsp;NAME]</td>
 							<td>Set the role required to use stickers on your server.</td>
 						</tr>
 						<tr>
-							<td>$blacklist [ROLE NAME]</td>
+							<td>$blacklist [ROLE&nbsp;NAME]</td>
 							<td>Set a role to be blocked from using stickers on your server.</td>
 						</tr>
 						<tr>
-							<td>$setPrefix [NEW PREFIX]</td>
+							<td>$setPrefix [NEW&nbsp;PREFIX]</td>
 							<td>Set the prefix used to invoke bot commands on your server.</td>
 						</tr>
 						<tr>
-							<td>$setManagerRole [ROLE NAME]</td>
+							<td>$setManagerRole [ROLE&nbsp;NAME]</td>
 							<td>Set the role required to create stickers and manage sticker packs on your server.</td>
 						</tr>
 						<tr>
@@ -197,6 +197,7 @@ module.exports = {
 				font-size: 18px
 				margin-bottom: 20px
 				margin-left: 20px
+				line-height: 1.4em
 				code
 					font-family: monospace
 					background-color: rgba(0, 0, 0, 0.2)
@@ -255,5 +256,29 @@ module.exports = {
 				font-weight: 500
 			li
 				line-height: 1.4em
+
+	@media screen and (max-width: 860px)
+		.documentation-page
+			h2
+				font-size: 26px
+			p, ol li, a.btn, pre
+				font-size: 16px
+			p, ol li
+				line-height: 1.6em
+			a.btn
+				padding: 4px 10px
+			pre
+				padding: 4px 2px
+			#commands
+				table td
+					padding: 10px
+					font-size: 14px
+					&:nth-child(2n)
+						font-size: 12px
+			#faq
+				margin-bottom: -40px
+				strong
+					font-size: 17px
+					line-height: 1.6em
 
 </style>
