@@ -185,6 +185,7 @@ module.exports = {
 					transition: .2s
 					border-radius: 5px
 					overflow: hidden
+					width: 150px
 					border: 1px solid rgba(128, 128, 128, 0.25)
 					box-shadow: 0 0 5px rgba(0, 0, 0, 0.75)
 					&:hover

@@ -28,7 +28,7 @@ module.exports = {
 
 	<div :class="{transparent: !pageLoaded}">
 
-		<header class="your-guilds-header">
+		<header class="documentation-header">
 			<h1>Documentation</h1>	
 		</header>
 
@@ -165,7 +165,7 @@ module.exports = {
 			transition: .2s
 			> .container
 				max-width: 950px
-		header.your-guilds-header
+		header.documentation-header
 			background-color: rgba(0,0,0,0.3)
 			padding-top: 65px
 			padding-bottom: 65px
