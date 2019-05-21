@@ -33,7 +33,7 @@ module.exports = {
 	},
 
 	mounted: function(){
-		document.title = 'Stickers for Discord';
+		document.title = 'Sticker Packs & Custom Stickers - Stickers for Discord';
 		this.pageLoaded = true;
 	}
 

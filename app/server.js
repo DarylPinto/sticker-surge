@@ -36,6 +36,9 @@ app.use(sessions({
 //Public dir 
 app.use('/', express.static('frontend/public'));
 
+//Sitemap
+app.use('/sitemap.xml', require('./routes/sitemap.js'));
+
 //Routes
 app.use('/login', require('./routes/auth.js').login);
 app.use('/logout', require('./routes/auth.js').logout);
