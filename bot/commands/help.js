@@ -51,7 +51,8 @@ module.exports = function(message, prefix, resource_info){
 					name: "Stickers for Discord",
 					value: `
 						To view a list of commands, type: **${escaped_prefix}commands**
-						[Click here](${covert.app_url}/sticker-packs) to view all available Sticker Packs
+						[View available sticker packs](${covert.app_url}/sticker-packs)
+						[View documentation](${covert.app_url}/docs)
 						.
 					`.replace(/\t/g, '')
 				},

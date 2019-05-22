@@ -43,16 +43,16 @@ module.exports = function(message, bot_auth, prefix){
 	})
 	.catch(err => {
 		if(err.message.includes('Sticker Pack not found')){
-			message.channel.send(`There's no Sticker Pack with that prefix.\nYou can view all available Sticker Packs here: ${covert.app_url}/sticker-packs`);
+			message.channel.send(`There's no sticker pack with that prefix.\nYou can view all available sticker packs here: <${covert.app_url}/sticker-packs>`);
 		}
 
 		else if(err.message.includes('Unauthorized')){
-			message.channel.send(`You do not have permission to remove Sticker Packs.`);
+			message.channel.send(`You do not have permission to remove sticker packs.`);
 		}
 
 		else if(err.message.includes('does not have a Sticker Pack')){
 			let response_start = (message.channel.type === 'text') ? 'This server is' : 'You are';
-			message.channel.send(response_start + ' not using that Sticker Pack.');
+			message.channel.send(response_start + ' not using that sticker pack.');
 		}
 
 		else{

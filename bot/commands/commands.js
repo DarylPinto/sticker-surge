@@ -23,7 +23,7 @@ module.exports = function(message, prefix, guild_info){
 		const escaped_prefix = prefix.replace(/[^a-zA-Zа-яёА-ЯЁ0-9]/g, '\\$&');
 		const custom_sticker_creator_ids = guild_info.customStickers.map(s => s.creatorId);
 
-		const help_message = (is_guild_manager) ? "Here is a list of commands" : "Here is a list of commands you have permission to use:";
+		const help_message = (is_guild_manager) ? "Here is a list of commands:" : "Here is a list of commands you have permission to use:";
 
 		let command_list = {
 			color: embed_color,
@@ -97,7 +97,7 @@ module.exports = function(message, prefix, guild_info){
 			}
 		]);	
 
-		message.channel.send(help_message, {reply: message.author.id, embed: command_list});
+		message.channel.send(`${help_message} ${covert.app_url}/docs#commands`, {reply: message.author.id, embed: command_list});
 
 	}else{
 		
