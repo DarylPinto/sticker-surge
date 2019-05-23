@@ -8,6 +8,8 @@
 
 To get stickers on your Discord server, simply head over to https://stickersfordiscord.com and click the "Add to Discord" button!
 
+For more detailed instructions, check out the [documentation.](https://stickersfordiscord.com/docs)
+
 ## Why
 
 One of my gaming groups used to bounce around various messaging and VoIP clients looking for the one that would best suit our needs. Eventually we settled with [Telegram](https://telegram.org/) due to the ease of use and polished interface on all platforms. However, it still lacked a lot of crucial features that we were looking for such as the ability to ping specific users in a group and voice chat without relying on yet another service.
@@ -27,5 +29,5 @@ For help with Stickers for Discord, join the support server: [https://discord.gg
 * [Node](https://nodejs.org/)
 * [Express](https://expressjs.com/)
 * [MongoDB](https://www.mongodb.com/)
-* [Vue](http://vuejs.org/)
+* [Vue](https://vuejs.org/)
 * [DiscordJS](https://discord.js.org/#/)
