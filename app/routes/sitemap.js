@@ -5,8 +5,9 @@ const covert = require('../../covert.js');
 router.get('/', async (req, res) => {
 	const domain = covert.app_url;
 	
-	const popular_packs = await rp({uri: `${domain}/api/sticker-packs?sort=popular`, json: true});
+	const popular_packs = await rp({uri: `${domain}/api/sticker-packs?sort=all`, json: true});
 	const static_routes = [
+		'', // <- Homepage
 		'/sticker-packs',
 		'/docs',
 		'/terms.html'
