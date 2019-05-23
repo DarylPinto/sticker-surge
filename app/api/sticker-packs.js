@@ -35,7 +35,7 @@ const removedFields = {
 
 router.get('/', async (req, res) =>{
 
-	const packsPerPage = 12;
+	let packsPerPage = 12;
 
 	//Page #
 	let requestedPage = parseInt(req.query.page);
@@ -48,7 +48,12 @@ router.get('/', async (req, res) =>{
 	//Sort Type
 	let sortType;
 
-	if(req.query.sort === 'popular') sortType = '-subscribers';
+	if(req.query.sort === 'all'){
+		sortType = '-createdAt';
+		skipAmount = 0;
+		packsPerPage = 50000;
+	}
+	else if(req.query.sort === 'popular') sortType = '-subscribers';
 	else if(req.query.sort === 'oldest') sortType = 'createdAt';
 	else sortType = '-createdAt';
 
