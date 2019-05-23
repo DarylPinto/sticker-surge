@@ -31,7 +31,7 @@ module.exports = {
 	//Aliases
 	resolve: {
 	  alias: {
-	    'vue$': 'vue/dist/vue'
+	    'vue$': 'vue/dist/vue.min'
 	  }
 	},
 
