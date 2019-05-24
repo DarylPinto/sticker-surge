@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const stickerPackSchema = Schema({
 	name: {type: String, required: true, maxlength: 30},
-	key: {type: String, unique: true, required: true, maxlength: 8},
+	key: {type: String, unique: true, required: true, maxlength: 8}, // Current maxlength is 5, but this must remain as 8 for legacy packs
 	description: {type: String, required: true, maxlength: 110},
 	icon: {type: String, default: null},
 	published: {type: Boolean, default: false},

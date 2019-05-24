@@ -32,7 +32,7 @@ module.exports = {
 				this.packKeyValid = true;
 				return;
 			}
-			this.packKey = this.packKey.toLowerCase().replace(/[^a-z0-9]/g, '');
+			this.packKey = this.packKey.toLowerCase().replace(/[^a-z]/g, '');
 			this.debouncedCheckValidPackKey();
 		},
 		debouncedCheckValidPackKey: debounce(function(){	
@@ -109,7 +109,7 @@ module.exports = {
 					name="key"
 					@input="sanitizePackKey"
 					placeholder="Unique Prefix"
-					maxlength="8"
+					maxlength="5"
 					v-model="packKey"
 					@focus="packKeyFocused = true"
 					@blur="packKeyFocused = false"
