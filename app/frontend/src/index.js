@@ -6,6 +6,7 @@ import VueCookie from 'vue-cookie';
 import homePage from './pages/home-page.vue';
 import userPage from './pages/user-page.vue';
 import guildPage from './pages/guild-page.vue';
+import guildPopoutPage from './pages/guild-popout-page.vue';
 import yourGuilds from './pages/your-guilds.vue';
 import documentation from './pages/documentation.vue';
 import stickerPackPage from './pages/sticker-pack-page.vue';
@@ -22,6 +23,7 @@ Vue.use(VueCookie);
 const HomePage = Vue.component('home-page', homePage);
 const UserPage = Vue.component('user-page', userPage);
 const GuildPage = Vue.component('guild-page', guildPage);
+const GuildPopoutPage = Vue.component('guild-popout-page', guildPopoutPage);
 const YourGuilds = Vue.component('your-guilds', yourGuilds);
 const Documentation = Vue.component('documentation', documentation);
 const StickerPackPage = Vue.component('sticker-pack-page', stickerPackPage);
@@ -34,6 +36,7 @@ const router = new VueRouter({
 		{ path: '/', component: HomePage },
 		{ path: '/user/:id', component: UserPage, props: {pageType: 'users'} },
 		{ path: '/server/:id', component: GuildPage, props: {pageType: 'guilds'} },
+		{ path: '/server/:id/popout', component: GuildPopoutPage, props: {pageType: 'guilds'} },
 		{ path: '/servers', component: YourGuilds },
 		{ path: '/docs', component: Documentation},
 		{ path: '/pack/:id', component: StickerPackPage, props: {pageType: 'sticker-packs'}},
