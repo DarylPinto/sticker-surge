@@ -361,6 +361,30 @@ router.patch('/:id/sticker-user-role', verifyUserAjax, async (req, res) => {
 
 });
 
+//Update guild "personalStickersAllowed" flag specifically (bot or auth'd user)
+router.patch('/:id/personal-stickers-allowed', verifyUserAjax, async (req, res) => {
+
+	if(req.body.personalStickersAllowed === undefined) return res.status(400).send('Invalid body data');
+	if(!res.locals.userId) return res.status(401).send('Unauthorized');
+
+	try{
+		let guild = await Guild.findOne({id: req.params.id});
+
+		if(!guild) return res.status(404).send('Guild not found');
+		if(!util.userIsGuildManager(guild, req, res)) return res.status(401).send('Unauthorized');
+
+		guild.personalStickersAllowed = req.body.personalStickersAllowed;
+		await guild.save();
+
+		return res.json(guild);
+
+	}catch(err){
+		console.error('Error updating personalStickersAllowed: ' + err.message);
+		return res.status(500).send('Internal server error');
+	}
+
+});
+
 //Subscribe to a sticker pack
 router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 	if(!req.body.packKey) return res.status(400).send('Invalid body data');

@@ -12,7 +12,7 @@ module.exports = async function(message, bot_auth, prefix){
 
 		await rp({
 			method: 'PATCH',
-			uri: `${covert.app_url}/api/guilds/${guild.id}`,
+			uri: `${covert.app_url}/api/guilds/${guild.id}/personal-stickers-allowed`,
 			body: {
 				personalStickersAllowed: !personal_stickers_currently_allowed
 			},
