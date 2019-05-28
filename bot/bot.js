@@ -67,6 +67,7 @@ const commands = {
 	'deletesticker': require('./commands/delete-sticker.js'),
 	'whitelist': require('./commands/set-whitelist-role.js'),
 	'blacklist': require('./commands/set-blacklist-role.js'),
+	'togglepersonalstickers': require('./commands/toggle-personal-stickers.js'),
 	'setprefix': require('./commands/set-command-prefix.js'),
 	'setmanagerrole': require('./commands/set-sticker-manager-role.js'),
 	'commands': require('./commands/commands.js'),
@@ -132,6 +133,7 @@ client.on('message', message => {
 			else if(usedGuildCommand('deletesticker')) commands.deletesticker(message, bot_auth, prefix)
 			else if(usedGuildCommand('whitelist')) commands.whitelist(message, bot_auth, prefix)
 			else if(usedGuildCommand('blacklist')) commands.blacklist(message, bot_auth, prefix)
+			else if(usedGuildCommand('togglepersonalstickers')) commands.togglepersonalstickers(message, bot_auth, prefix)
 			else if(usedGuildCommand('setprefix')) commands.setprefix(message, bot_auth, prefix)
 			else if(usedGuildCommand('setmanagerrole')) commands.setmanagerrole(message, bot_auth, prefix)
 			else if(usedGuildCommand('commands')) commands.commands(message, prefix, guild)

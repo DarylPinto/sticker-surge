@@ -76,6 +76,10 @@ module.exports = function(message, prefix, guild_info){
 					value: 'Set a role to be blocked from using stickers on this server.'
 				},
 				{
+					name: `${escaped_prefix}togglePersonalStickers`,
+					value: 'Toggle the ability to use personal stickers on this server.'
+				},
+				{
 					name: `${escaped_prefix}setPrefix`,
 					value: 'Set the prefix used to invoke these commands.'
 				},

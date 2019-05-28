@@ -94,6 +94,11 @@ module.exports = async function(message, client, bot_auth){
 					return false;
 				}
 
+				if(!guild_info.personalStickersAllowed && sticker.groupType === 'user'){
+					message.channel.send('Personal stickers are not allowed on this server.');
+					return false;
+				}
+
 				//Delete original message
 				if(message.guild.me.hasPermission('MANAGE_MESSAGES')) message.delete();
 

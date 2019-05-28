@@ -76,6 +76,10 @@ module.exports = {
 							<td>Set a role to be blocked from using stickers on your server.</td>
 						</tr>
 						<tr>
+							<td>$togglePersonalStickers</td>
+							<td>Toggle the ability to use personal stickers on your server.</td>
+						</tr>
+						<tr>
 							<td>$setPrefix [NEW&nbsp;PREFIX]</td>
 							<td>Set the prefix used to invoke bot commands on your server.</td>
 						</tr>

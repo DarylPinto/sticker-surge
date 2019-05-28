@@ -25,6 +25,7 @@ const guildSchema = Schema({
 		roleId: {type: String, default: null},
 		userIds: [String]
 	},
+	personalStickersAllowed: {type: Boolean, default: true},
 	stickerManagers: {
 		roleId: {type: String, default: '@everyone'},
 		userIds: [String]	

@@ -20,6 +20,7 @@ module.exports = function(message, prefix, resource_info){
 		let list_mode = resource_info.listMode;
 		let whitelist_role = resource_info.whitelist.roleId;
 		let blacklist_role = resource_info.blacklist.roleId;
+		let personal_stickers_allowed = resource_info.personalStickersAllowed ? "Yes" : "No";
 		let who_can_send;
 		let guild = message.channel.guild;	
 		let sticker_manager_role_name;
@@ -62,8 +63,9 @@ module.exports = function(message, prefix, resource_info){
 						Command Prefix: ${escaped_prefix}
 						Who can use stickers: ${who_can_send}
 						Sticker Manager Role: ${sticker_manager_role_name}
+						Personal stickers allowed: ${personal_stickers_allowed}
 						Custom Stickers: ${sticker_amount}
-						[View Stickers](https://stickersfordiscord.com/server/${message.guild.id})
+						[View Stickers](${covert.app_url}/server/${message.guild.id})
 						.
 					`.replace(/\t/g, '')
 				},
