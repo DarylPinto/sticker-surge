@@ -100,10 +100,10 @@ module.exports = async function(message, client, bot_auth){
 				}
 
 				//Delete original message
-				if(message.guild.me.hasPermission('MANAGE_MESSAGES')) message.delete();
+				if(message.channel.memberPermissions(client.user).has('MANAGE_MESSAGES')) message.delete();
 
 				//Webhook style sticker
-				if(message.guild.me.hasPermission('MANAGE_WEBHOOKS')){
+				if(message.channel.memberPermissions(client.user).has('MANAGE_WEBHOOKS')){
 					let hook = await getStickerWebhook(message.channel);
 					//Discord requires webhook names to be 2 chars minimum.
 					//Spread operator below provides more accurate char count for usernames that can potentially include emojis	
@@ -112,7 +112,17 @@ module.exports = async function(message, client, bot_auth){
 						
 					//Update webhook channel
 					if(hook.channelID !== message.channel.id){
-						await updateWebhookChannel(hook.id, message.channel.id);	
+						try {
+							await updateWebhookChannel(hook.id, message.channel.id);
+						}catch(err){
+							return message.channel.send(
+								`**Error:**
+								Sticker webhook is stuck in a different channel.
+								Make sure this bot has permission to manage webhooks in EVERY channel.	
+
+								*(Channel settings > Permissions > Stickers for Discord > Manage Webhooks)*`.replace(/\t/g, '')
+							);
+						}
 					}
 
 					message_options.username = name;

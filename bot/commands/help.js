@@ -4,7 +4,7 @@ const covert = require('../../covert.js');
 module.exports = function(message, prefix, resource_info){
 
 	const embed_color = 16540258;
-	const lib_version = "11.2.1";
+	const lib_version = "11.5.1";
 	const discord_link = "https://discord.gg/HNFmKsE";
 	const add_bot_link = `https://discordapp.com/oauth2/authorize?client_id=${covert.discord.app_id}&scope=bot&permissions=536879104`;
 	const bot_vote_link = `https://discordbots.org/bot/${covert.discord.app_id}`;
