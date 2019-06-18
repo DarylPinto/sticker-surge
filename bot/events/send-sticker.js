@@ -112,7 +112,17 @@ module.exports = async function(message, client, bot_auth){
 						
 					//Update webhook channel
 					if(hook.channelID !== message.channel.id){
-						await updateWebhookChannel(hook.id, message.channel.id);	
+						try {
+							await updateWebhookChannel(hook.id, message.channel.id);
+						}catch(err){
+							return message.channel.send(
+								`**Error:**
+								Sticker webhook is stuck in a different channel.
+								Make sure this bot has permission to manage webhooks in EVERY channel.	
+
+								*(Channel settings > Permissions > Stickers for Discord > Manage Webhooks)*`.replace(/\t/g, '')
+							);
+						}
 					}
 
 					message_options.username = name;
