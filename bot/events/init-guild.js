@@ -45,7 +45,7 @@ module.exports = function(guild, bot_auth){
 		})
 		.then(res => {
 			console.log(`Guild ${guild.id} activated!`);	
-			sendWelcomeMessage(res.commandPrefix);
+			// sendWelcomeMessage(res.commandPrefix);
 			updateGuildInfo(guild, bot_auth);
 		})
 		.catch(err => {
