@@ -39,9 +39,12 @@ module.exports = {
 							stickerPacks: res.data.stickerPacks
 						});
 					}	
-				});
+				})
 			});
 
+		})
+		.catch(err => {
+			if(err.response.status === 401) window.location.replace('/login');
 		});
 
 		axios.get(`/api/users/${this.userId}/info?nocache=${(new Date()).getTime()}`)

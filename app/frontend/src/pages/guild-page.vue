@@ -67,10 +67,15 @@ module.exports = {
 		loadPageData(){	
 			this.pageLoaded = false;
 
-			axios.get(`/api/set-guilds?nocache=${(new Date()).getTime()}`)
-			.then(() => {
-				this.userGuilds = JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || []
-			});
+			if(this.userId) {
+				axios.get(`/api/set-guilds?nocache=${(new Date()).getTime()}`)
+				.then(() => {
+					this.userGuilds = JSON.parse(decodeURIComponent(this.$cookie.get('guilds'))) || []
+				})
+				.catch(err => {
+					if(err.response.status === 401) window.location.replace('/login');
+				});
+			}
 
 			axios.get(`/api/${this.pageType}/${this.$route.params.id}?nocache=${(new Date()).getTime()}`)
 			.then(res => {

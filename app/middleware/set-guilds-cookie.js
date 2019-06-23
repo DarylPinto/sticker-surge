@@ -34,12 +34,15 @@ async function setGuildsCookie(req, res, next){
 		next();
 
 	}catch(err){
-		if(err.response && err.response.body && err.response.body.retry_after){
+		if(err.statusCode === 401) {
+			res.status(401);
+			next();
+		}else if(err.response && err.response.body && err.response.body.retry_after){
 			//Request user guilds again after Discord's rate limit ends
 			let retry_after = err.response.body.retry_after;
 			setTimeout(() => setGuildsCookie(req, res, next), retry_after + 100);
 		}else{
-			console.error(err);
+			console.error(err.message);
 			next();
 		}
 	}
