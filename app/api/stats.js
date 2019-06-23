@@ -42,13 +42,14 @@ router.get('/', async (req, res) => {
 		//Convert queries to numbers
 		guild_sticker_count = (guild_sticker_count.length > 0) ? guild_sticker_count[0].amount : 0;
 		user_sticker_count = (user_sticker_count.length > 0) ? user_sticker_count[0].amount : 0;	
-		pack_sticker_count = (pack_sticker_count.length > 0) ? pack_sticker_count[0].amount : 0;	
+		pack_sticker_count = (pack_sticker_count.length > 0) ? pack_sticker_count[0].amount : 0;
+		sticker_pack_sub_count = (sticker_pack_sub_count.length > 0) ? sticker_pack_sub_count[0].count : 0;
 
 		return res.json({
 			active_guilds: await Guild.count({isActive: true}),
 			inactive_guilds: await Guild.count({isActive: false}),
 			sticker_packs: await StickerPack.count(active_pack_settings),
-			sticker_pack_subs: sticker_pack_sub_count[0].count,
+			sticker_pack_subs: sticker_pack_sub_count,
 			users: await User.count({}),
 			stickers: guild_sticker_count + user_sticker_count + pack_sticker_count	
 		});
