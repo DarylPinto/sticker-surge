@@ -26,6 +26,7 @@ client.on('ready', () => {
 //Add guild to db for the first time
 client.on('guildCreate', guild => {
 	initGuild(guild, bot_auth);
+	setTimeout(() => updateGuildInfo(guild, bot_auth), 1500);
 });
 
 //Set isActive flag to false in db when bot leaves guild

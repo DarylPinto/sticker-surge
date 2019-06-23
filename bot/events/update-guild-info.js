@@ -1,4 +1,5 @@
 const rp = require('request-promise');
+const initGuild = require('./init-guild.js');
 const covert = require('../../covert.js');
 
 module.exports = function(guild, bot_auth){
@@ -65,9 +66,12 @@ module.exports = function(guild, bot_auth){
 		});
 
 	})
-	.catch(err => {
-		console.log(err);
-		console.error("Error updating guild info:\n" + err.message);	
+	.catch(err => {	
+		if(err.message.includes("404")) {
+			initGuild(guild, bot_auth);
+			return;
+		}	
+		console.error("Error updating guild info:\n" + err.message);
 	});
 	
 }
