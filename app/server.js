@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+mongoose.plugin(schema => { schema.options.usePushEach = true });
 const sessions = require('client-sessions');
-const path = require('path');
 const verifyUser = require('./middleware/verify-user.js')({ajax: false});
 const setGuildsCookie = require('./middleware/set-guilds-cookie.js');
 const setUserAvatar = require('./middleware/update-user-info.js');
@@ -17,7 +17,9 @@ process.on('unhandledRejection', r => console.error(r));
 
 //DB init
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/stickers-for-discord');
+mongoose.connect('mongodb://localhost/stickers-for-discord', {
+	useMongoClient: true
+});
 const db = mongoose.connection;
 db.on('error', err => {if(err) throw err});
 

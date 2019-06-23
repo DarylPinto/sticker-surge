@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const rp = require('request-promise');
 const client = new Discord.Client({disabledEvents: ['TYPING_START', 'PRESENCE_UPDATE']});
 const covert = require('../covert.js');
-const bot_auth = `Basic ${new Buffer(covert.bot_token_hash).toString('base64')}`;
+const bot_auth = `Basic ${Buffer.from(covert.bot_token_hash).toString('base64')}`;
 
 //Useful stack trace for unhandledRejection errors
 process.on('unhandledRejection', r => console.error(r));
