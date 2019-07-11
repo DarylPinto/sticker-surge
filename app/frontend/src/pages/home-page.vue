@@ -50,7 +50,7 @@ module.exports = {
 			<span>{{randArrayItem(taglines)}} with</span>
 			<h1>Stickers for Discord</h1>	
 		</div>	
-		<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536879104" class="btn" target="_blank">Add to Discord</a>
+		<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536880128" class="btn" target="_blank">Add to Discord</a>
 		<router-link to="/docs" class="btn secondary">Learn More</router-link>
 
 		<video src="demo-video.mp4" autoplay loop muted></video>	

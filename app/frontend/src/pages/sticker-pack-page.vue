@@ -234,7 +234,7 @@ module.exports = {
 				<ol>
 					<li>
 						Add the bot to your server:
-						<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536879104" class="btn" target="_blank">Add to Discord</a>
+						<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536880128" class="btn" target="_blank">Add to Discord</a>
 					</li>	
 					<li>In your server, type: <pre><span class="mention">@Stickers for Discord</span> addPack {{key}}</pre></li>	
 				</ol>	
