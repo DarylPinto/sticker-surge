@@ -75,7 +75,8 @@ module.exports = {
 			<nav class="profile-submenu">
 				<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
 				<router-link :to="`/user/${userId}`" v-if="loggedIn">Personal Stickers</router-link>
-				<a href="/logout">Logout</a>
+				<hr />
+				<a href="/logout" class="logout">Log Out</a>
 			</nav>
 		</div>
 
@@ -94,11 +95,11 @@ module.exports = {
 		<router-link to="/sticker-packs">Sticker Packs</router-link>
 		<router-link to="/docs">Documentation</router-link>
 		<a href="https://discord.gg/HNFmKsE" target="_blank" rel="noopener noreferrer">Community</a>
-		<hr />
+		<hr v-if="loggedIn" />
 		<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
 		<router-link :to="`/user/${userId}`" v-if="loggedIn">Personal Stickers</router-link>
-
-		<a href="/login" v-if="!loggedIn">Log In</a>
+		<hr />
+		<a href="/login" v-if="!loggedIn">Login</a>
 		<a href="/logout" v-if="loggedIn">Log Out</a>
 	</nav>
 
@@ -201,6 +202,9 @@ module.exports = {
 						text-decoration: none
 						&:hover, &.router-link-active
 							background-color: $discord-gray
+					hr
+						border-color: rgba(128, 128, 128, 0.25)
+						margin: 0
 				
 				&:hover
 					min-width: 150px
@@ -260,7 +264,8 @@ module.exports = {
 				&:hover, &.router-link-active
 					background-color: rgba(255,255,255,0.1)
 			hr
-				border-bottom: 1px
+				border-color: rgba(128, 128, 128, 0.5)
+				margin: 0
 
 		.mobile-nav-backdrop.open
 			opacity: 1
