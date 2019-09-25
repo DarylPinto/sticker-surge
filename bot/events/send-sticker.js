@@ -51,6 +51,15 @@ module.exports = async function(message, client, bot_auth){
 		}
 	}
 
+	// Adds a `size` querystring to the end of an avatarURL
+	function resizeAvatarURL(avatarURL, size) {
+		let baseURL = (avatarURL.includes('?')) ?
+			avatarURL.substr(0, avatarURL.indexOf('?')) :
+			avatarURL;
+
+		return `${baseURL}?size=${size}`;
+	}
+
 	//Attempt to use sticker. Returns true if sticker was succesfully sent, and false if not.
 	async function useSticker(sticker, pack_key){
 
@@ -126,7 +135,7 @@ module.exports = async function(message, client, bot_auth){
 					}
 
 					message_options.username = name;
-					message_options.avatarURL = user.displayAvatarURL;
+					message_options.avatarURL = resizeAvatarURL(user.displayAvatarURL, 64);
 					await hook.send(message_options);
 					return true;
 				}
