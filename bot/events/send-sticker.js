@@ -10,7 +10,7 @@ module.exports = async function(message, client, bot_auth){
 	let is_guild_message = message.channel.type === 'text';	
 	let author_name = message.author.username;
 
-	if(is_guild_message && message.member.nickname) author_name = message.member.nickname;
+	if(is_guild_message && message.member && message.member.nickname) author_name = message.member.nickname;
 
 	//Returns Webhook used to send stickers
 	async function getStickerWebhook(channel){
