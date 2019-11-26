@@ -9,7 +9,7 @@
     "url": "https://github.com/darylpinto/stickers-for-discord"
   },
   "devDependencies": {
-    "axios": "^0.16.1",
+    "axios": "^0.18.1",
     "babel-core": "^6.24.1",
     "babel-loader": "^7.0.0",
     "babel-polyfill": "^6.23.0",
