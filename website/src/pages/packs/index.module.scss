@@ -1,0 +1,19 @@
+.headline {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 60px;
+	span {
+		display: block;
+    margin-bottom: 15px;
+    font-weight: 400;
+    opacity: .8;
+    font-size: 35px;
+	}
+	h1 {
+		transform: scaleY(1.1);
+    font-weight: 600;
+    font-size: 65px;
+	}
+}
+

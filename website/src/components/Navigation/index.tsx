@@ -1,10 +1,11 @@
 import React, { memo } from "react";
+import s from "./index.module.scss";
 import Link from "next/link";
 
 const links = [
 	{
 		text: "Sticker Packs",
-		href: "/sticker-packs",
+		href: "/packs",
 		isExternal: false
 	},
 	{
@@ -20,7 +21,7 @@ const links = [
 ];
 
 const Navigation = () => (
-	<nav>
+	<nav className={s.mainNavigation}>
 		{links.map(link =>
 			link.isExternal ? (
 				<a

@@ -1,0 +1,32 @@
+@import "_reset.scss";
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600&display=swap");
+
+// Global styles
+* {
+	font-family: "Open Sans", sans-serif;
+	color: white;
+}
+
+body {
+	background-color: #2a2d2f;
+}
+
+// Page transitions
+$page-transition-time: 100;
+
+:global {
+	.page-transition-enter {
+		opacity: 0;
+	}
+	.page-transition-enter-active {
+		opacity: 1;
+		transition: opacity #{$page-transition-time}ms;
+	}
+	.page-transition-exit {
+		opacity: 1;
+	}
+	.page-transition-exit-active {
+		opacity: 0;
+		transition: opacity #{$page-transition-time}ms;
+	}
+}

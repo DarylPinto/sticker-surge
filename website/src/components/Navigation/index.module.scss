@@ -1,0 +1,19 @@
+.mainNavigation {
+	margin-left: 20px;
+	height: 100%;
+	a {
+		display: inline-flex;
+		align-items: center;
+		font-size: 16px;
+		padding-left: 5px;
+		padding-right: 5px;
+		text-decoration: none;
+		height: 100%;
+		&:last-of-type {
+			margin-right: 0;
+		}
+		&:hover {
+			background-color: #2a2d2f;
+		}
+	}
+}

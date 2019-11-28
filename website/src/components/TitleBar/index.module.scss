@@ -1,0 +1,19 @@
+.titleBar {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	margin-top: 60px;
+	margin-bottom: 60px;
+	// height: 200px;
+	padding-top: 65px;
+	padding-bottom: 65px;
+	background-color: #1d1f21;
+	h1 {
+		font-size: 45px;
+	}
+	p {
+		margin-top: 15px;
+	}
+}
