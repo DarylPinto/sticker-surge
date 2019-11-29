@@ -3,8 +3,12 @@ import Head from "next/head";
 import s from "./index.module.scss";
 import TitleBar from "../../components/TitleBar";
 import MarkdownArticle from "../../components/MarkdownArticle";
+import { INVITE_URL } from "../../data/constants";
 
+// Load page content from markdown file 
 const article = require("../../data/documentation.md");
+// replace placeholders
+const markdown = article.default.replace(/%%INVITE_URL%%/g, INVITE_URL);
 
 const StickerPacksPage = () => {	
 	return (
@@ -15,7 +19,7 @@ const StickerPacksPage = () => {
 			</Head>
 			<TitleBar title="Documentation" />
 			<section className={s.container}>
-				<MarkdownArticle markdownText={article.default} />
+				<MarkdownArticle markdownText={markdown} />
 			</section>
 		</main>
 	);

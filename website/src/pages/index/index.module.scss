@@ -21,13 +21,10 @@
 	h1 {
 		// transform: scaleY(1.1);
     font-weight: 600;
-    font-size: 65px;
+		font-size: 65px;
+		letter-spacing: -2px;
 	}
 }
-
-// .buttonGroup :global(.button) {
-// 	margin-right: 20px;
-// }
 
 :global {
 	.button {

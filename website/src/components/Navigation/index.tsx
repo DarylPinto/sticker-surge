@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import s from "./index.module.scss";
-import Link from "next/link";
+import ActiveLink from "../ActiveLink";
 
 const links = [
 	{
@@ -33,9 +33,9 @@ const Navigation = () => (
 					{link.text}
 				</a>
 			) : (
-				<Link key={link.href} href={link.href}>
+				<ActiveLink key={link.href} href={link.href}>
 					<a>{link.text}</a>
-				</Link>
+				</ActiveLink>
 			)
 		)}
 	</nav>

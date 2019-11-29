@@ -4,7 +4,7 @@ Inspired by other chat applications such as Telegram and LINE, Stickers for Disc
 
 Getting your server set up is a piece of cake and only takes a minute:
 
-1. [Add the bot to your server](https://google.com)
+1. [Add the bot to your server](%%INVITE_URL%%)
 2. Check out the [available sticker packs](/packs) and start using the ones you like.  
    (Click on a pack, then click "Use This Pack")
 3. In your server, start sending stickers by typing in their names! (Example: `:pika-rofl:`)
