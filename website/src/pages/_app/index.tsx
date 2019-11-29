@@ -1,6 +1,7 @@
 import React from "react";
 import "./index.scss";
 import App from "next/app";
+import Head from "next/head";
 import Header from "components/Header";
 import { PageTransition } from "next-page-transitions";
 
@@ -21,7 +22,15 @@ class MainApp extends App {
 		const { Component, pageProps } = this.props;
 		return (
 			<>
+				<Head>
+					<link
+						href="https://fonts.googleapis.com/icon?family=Material+Icons"
+						rel="stylesheet"
+					/>
+				</Head>
+
 				<Header />
+				
 				<PageTransition timeout={100} classNames="page-transition">
 					<Component {...pageProps} />
 				</PageTransition>

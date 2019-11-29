@@ -2,6 +2,8 @@ import React from "react";
 import Head from "next/head";
 import s from "./index.module.scss";
 import TitleBar from "components/TitleBar";
+import Container from "components/Container";
+import SearchBar from "components/SearchBar";
 
 const StickerPacksPage = () => {
 	return (
@@ -13,6 +15,9 @@ const StickerPacksPage = () => {
 
 			<TitleBar title="Sticker Packs" />
 
+			<Container>
+				<SearchBar />
+			</Container>
 		</main>
 	);
 };
