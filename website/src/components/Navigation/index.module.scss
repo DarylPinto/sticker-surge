@@ -12,7 +12,7 @@
 		&:last-of-type {
 			margin-right: 0;
 		}
-		&:hover {
+		&:hover, &[data-active] {
 			background-color: #2a2d2f;
 		}
 	}

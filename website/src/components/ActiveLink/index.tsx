@@ -10,12 +10,8 @@ interface Props {
 const ActiveLink = ({ href, children }: Props) => {
 	const router = useRouter();
 
-	let className = children.props.className || "";
-	if (router.pathname === href) {
-		className = `${className} selected`;
-	}
-
-	return <Link href={href}>{React.cloneElement(children, { className })}</Link>;
+	const dataActive = router.pathname === href ? {"data-active": true} : {};
+	return <Link href={href}>{React.cloneElement(children, dataActive)}</Link>;
 };
 
 export default ActiveLink;

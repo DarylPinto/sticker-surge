@@ -2,7 +2,7 @@ import React from "react";
 import Head from "next/head";
 import s from "./index.module.scss";
 import { LinkButton } from "components/Button";
-import { INVITE_URL } from "data/constants";
+import { BOT_INVITE_URL } from "data/constants";
 
 const taglines = [
 	"Make your server more expressive",
@@ -38,7 +38,7 @@ const HomePage = () => {
 				<LinkButton
 					type="primary"
 					size="large"
-					link={INVITE_URL}
+					link={BOT_INVITE_URL}
 					isExternal={true}
 				>
 					Add to Discord
