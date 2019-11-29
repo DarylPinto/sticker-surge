@@ -43,7 +43,7 @@ const HomePage = () => {
 				>
 					Add to Discord
 				</LinkButton>
-				{"  "}
+
 				<LinkButton
 					type="standard"
 					size="large"

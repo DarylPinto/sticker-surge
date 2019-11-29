@@ -45,3 +45,49 @@ Getting your server set up is a piece of cake and only takes a minute:
   
   Use the command `$stickers`
 </details>
+
+<details>
+  <summary>How do I make my own stickers?</summary>
+  
+  There are 3 types of stickers that you can make:
+
+  1. *Server stickers*  
+  These stickers will be usable by anyone in your Discord server. You can create them by using the `$createSticker` command. You can also create server stickers by logging in to the website, clicking on "Your Servers", selecting your server, and then clicking "Create a Sticker"
+
+  2. *Personal Stickers*  
+  These stickers will only be usable by you, but you can use them on any server where the bot is present. You can create them by direct messaging the bot with the command `$createSticker`  
+  You can also create personal stickers by logging in to the website, clicking on "Personal Stickers", and clicking "Create a Sticker"
+  
+  3. *Sticker Packs*  
+  These stickers will be publicly available for anyone to use. Don't create sticker packs if the stickers are in-jokes between you and your friends that no one else will understand (use server stickers for that). Sticker packs are for general-purpose stickers. Make them if you think many people will enjoy using them. You can create sticker packs by logging in to the website, clicking on "Sticker Packs", and then clicking "Create a Sticker Pack".
+</details>
+
+<details>
+  <summary>How many stickers can I have?</summary>
+  
+  Each server can have up to **400** custom stickers, and each user can have up to **200**. You can add as many sticker packs to your server as you'd like.
+</details>
+
+<details>
+  <summary>I changed the command prefix for the bot and can't remember what it is! What do I do?</summary>
+  
+  Type: `@Stickers for Discord help`
+</details>
+
+<details>
+  <summary>What are the maximum dimensions for stickers?</summary>
+  
+  250x250
+</details>
+
+<details>
+  <summary>Can I make animated gif stickers?</summary>
+  
+  No
+</details>
+
+<details>
+  <summary>My Discord Nitro emojis conflict with sticker names. What do I do?</summary>
+  
+  You can use semicolons instead of colons to send stickers. (Example: `;pika-rofl;`)
+</details>

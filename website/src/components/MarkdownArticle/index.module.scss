@@ -50,23 +50,31 @@
 
 	ol,
 	ul {
-		margin-left: 20px;
+		background-color: rgba(255, 255, 255, 0.075);
+		padding: 30px;
+		padding-left: 50px;
+		border-radius: 5px;
 	}
 
 	li {
 		list-style: unset;
 		margin-bottom: 20px;
+		&:last-of-type {
+			margin-bottom: 0;
+		}
 	}
 
 	code {
+		display: inline;
 		font-family: monospace;
 		border: 1px solid rgba(0, 0, 0, 0.4);
 		border-radius: 4px;
 		background-color: rgba(0, 0, 0, 0.2);
-		padding: 7px 10px;
-		display: inline-block;
+		padding: 3px 10px;
 		margin-right: 4px;
 		line-height: 1em;
+		position: relative;
+		top: 7px;
 	}
 
 	table {
@@ -75,13 +83,13 @@
 		overflow: hidden;
 		box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 		thead {
-			background-color: rgba(0, 0, 0, 0.3);
+			background-color: rgba(0, 0, 0, 0.2);
 		}
 		tr:nth-child(2n) {
 			background-color: rgba(255, 255, 255, 0.1);
 		}
 		tr:nth-child(2n - 1) {
-			background-color: rgba(255, 255, 255, 0.06);
+			background-color: rgba(255, 255, 255, 0.08);
 		}
 		td, th {
 			padding: 20px;
@@ -117,8 +125,9 @@
 
 		code {
 			font-size: 14px;
-			position: relative;
-			top: -3px;
+			margin-right: 0;
+			padding: 2px 5px;
+			top: 5px;
 		}
 	}	
 
@@ -126,6 +135,7 @@
 		margin-bottom: 30px;
 		cursor: pointer;
 		margin-left: -30px;
+		outline: 0;
 	}
 
 }

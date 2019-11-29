@@ -13,21 +13,24 @@
 	margin-bottom: 60px;
 	span {
 		display: block;
-    margin-bottom: 15px;
-    font-weight: 400;
-    opacity: .8;
-    font-size: 35px;
+		margin-bottom: 15px;
+		font-weight: 400;
+		opacity: 0.8;
+		font-size: 35px;
 	}
 	h1 {
-		// transform: scaleY(1.1);
-    font-weight: 600;
+		font-weight: 600;
 		font-size: 65px;
 		letter-spacing: -2px;
 	}
 }
 
-:global {
-	.button {
-		margin-right: 20px;
+.buttonGroup {
+	:global(a) {
+		margin-right: 15px;
+		width: 200px;
+		&:last-of-type {
+			margin-right: 0;
+		}
 	}
 }
