@@ -1,7 +1,7 @@
 import React from "react";
 import Head from "next/head";
 import s from "./index.module.scss";
-import TitleBar from "../../components/TitleBar";
+import TitleBar from "components/TitleBar";
 
 const StickerPacksPage = () => {
 	return (

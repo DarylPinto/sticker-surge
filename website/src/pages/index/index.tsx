@@ -1,8 +1,8 @@
 import React from "react";
 import Head from "next/head";
 import s from "./index.module.scss";
-import { LinkButton } from "../../components/Button";
-import { INVITE_URL } from "../../data/constants";
+import { LinkButton } from "components/Button";
+import { INVITE_URL } from "data/constants";
 
 const taglines = [
 	"Make your server more expressive",

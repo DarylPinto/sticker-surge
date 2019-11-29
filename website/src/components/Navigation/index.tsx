@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import s from "./index.module.scss";
-import ActiveLink from "../ActiveLink";
+import ActiveLink from "components/ActiveLink";
 
 const links = [
 	{

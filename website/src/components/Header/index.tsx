@@ -1,7 +1,7 @@
 import React from "react";
 import s from "./index.module.scss";
 import Link from "next/link";
-import Navigation from "../Navigation";
+import Navigation from "components/Navigation";
 
 const Header = () => (
 	<header className={s.mainHeader}>

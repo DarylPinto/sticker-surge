@@ -1,7 +1,7 @@
 import React from "react";
 import "./index.scss";
 import App from "next/app";
-import Header from "../../components/Header";
+import Header from "components/Header";
 import { PageTransition } from "next-page-transitions";
 
 class MainApp extends App {
