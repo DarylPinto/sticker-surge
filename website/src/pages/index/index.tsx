@@ -25,8 +25,12 @@ const HomePage = () => {
 	return (
 		<main className={s.page}>
 			<Head>
-				<title>Sticker Packs & Custom Stickers - Stickers for Discord</title>
-				<link rel="icon" href="/favicon.ico" />
+				<title key="title">Sticker Packs & Custom Stickers - Stickers for Discord</title>
+				<meta
+					key="description"
+					name="description"
+					content="Discord stickers have finally arrived – Inspired by apps like Telegram & LINE, this bot is here to help! Setting up your server is fun & only takes a minute."
+				/>
 			</Head>
 
 			<div className={s.headline}>

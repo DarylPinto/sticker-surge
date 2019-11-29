@@ -2,11 +2,17 @@ import React, { memo } from "react";
 import s from "./index.module.scss";
 import ActiveLink from "components/ActiveLink";
 
-const links = [
+interface NavLink {
+	text: string;
+	href: string;
+	isExternal: boolean;
+}
+
+const links: NavLink[] = [
 	{
 		text: "Sticker Packs",
 		href: "/packs",
-		isExternal: false
+		isExternal: false	
 	},
 	{
 		text: "Documentation",

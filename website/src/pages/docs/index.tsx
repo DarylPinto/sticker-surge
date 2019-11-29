@@ -14,8 +14,12 @@ const StickerPacksPage = () => {
 	return (
 		<main>
 			<Head>
-				<title>Documentation - Stickers for Discord</title>
-				<link rel="icon" href="/favicon.ico" />
+				<title key="title">Documentation - Stickers for Discord</title>
+				<meta
+					key="description"
+					name="description"
+					content="Whether you're setting up stickers for the first time or simply looking for bot commands, the docs are the place to be!"
+				/>
 			</Head>
 			<TitleBar title="Documentation" />
 			<section className={s.container}>

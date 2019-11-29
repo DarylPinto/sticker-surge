@@ -23,14 +23,11 @@ class MainApp extends App {
 		return (
 			<>
 				<Head>
-					<link
-						href="https://fonts.googleapis.com/icon?family=Material+Icons"
-						rel="stylesheet"
-					/>
+					<link key="favicon" rel="icon" href="/favicon.ico" />
 				</Head>
 
 				<Header />
-				
+
 				<PageTransition timeout={100} classNames="page-transition">
 					<Component {...pageProps} />
 				</PageTransition>
