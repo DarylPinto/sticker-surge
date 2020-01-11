@@ -62,7 +62,7 @@ module.exports = function(options = {ajax: false}){
 
 return function(req, res, next){
 	
-	let bot_auth = `Basic ${new Buffer(covert.bot_token_hash).toString('base64')}`;
+	let bot_auth = `Basic ${Buffer.from(covert.bot_token_hash).toString('base64')}`;
 
 	if(req.headers.authorization && req.headers.authorization === bot_auth){
 		res.locals.userId = req.headers['author-id']; //also add res.locals for user guilds

@@ -44,16 +44,15 @@ module.exports = async function(image, name){
 		}
 
 		//Resize to fit within 250x250
-		sticker = await sharp(sticker)
-		.resize(250, 250)
-		.max()
-		.toFormat('png')
-		.withoutEnlargement()
-		.toBuffer();
+		sticker = await sharp(sticker).resize(250, 250, {
+			fit: 'inside', withoutEnlargement: true
+		}).toBuffer();
 
 		//Compress
 		sticker = await imagemin.buffer(sticker, {
-			plugins: [imageminPngquant({quality: '65-80'})]
+			plugins: [
+				imageminPngquant({ quality: [0.65, 0.8] })
+			]
 		});
 
 		//Upload to S3
