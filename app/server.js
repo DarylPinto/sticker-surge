@@ -18,7 +18,9 @@ process.on('unhandledRejection', r => console.error(r));
 //DB init
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/stickers-for-discord', {
-	useMongoClient: true
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+	useCreateIndex: true
 });
 const db = mongoose.connection;
 db.on('error', err => {if(err) throw err});
