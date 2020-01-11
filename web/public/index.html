@@ -15,7 +15,7 @@
         margin: 0;
         background-color: #2a2d2f;
       }
-      router-view noscript {
+      noscript {
         height: 100vh;
         width: 100vw;
         display: flex;
@@ -26,13 +26,13 @@
         padding: 20px;
         box-sizing: border-box;
       }
-      router-view noscript img {
+      noscript img {
         display: block;
         max-width: 80%;
         width: 300px;
         margin-bottom: 40px;
       }
-      router-view noscript p {
+      noscript p {
         font-size: 20px;
         color: white;
         font-family: sans-serif;
@@ -41,10 +41,8 @@
   </head>
   <body>
     <noscript>
-      <strong
-        >We're sorry but stickers-for-discord-web doesn't work properly without
-        JavaScript enabled. Please enable it to continue.</strong
-      >
+      <img src="/logo.svg" alt="Stickers for Discord">
+			<p>This page cannot be displayed. Please enable JavaScript.</p>
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
