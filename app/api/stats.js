@@ -37,7 +37,7 @@ router.get('/', async (req, res) => {
 		let user_sticker_count = await User.aggregate(count_settings('customStickers'));
 		let pack_sticker_count = await StickerPack.aggregate(count_settings('stickers'));
 
-		let sticker_pack_sub_count = await StickerPack.aggregate({$group: {_id: null, count: {$sum: '$subscribers'}}})
+		let sticker_pack_sub_count = await StickerPack.aggregate([{$group: {_id: null, count: {$sum: '$subscribers'}}}])	
 
 		//Convert queries to numbers
 		guild_sticker_count = (guild_sticker_count.length > 0) ? guild_sticker_count[0].amount : 0;
@@ -46,11 +46,11 @@ router.get('/', async (req, res) => {
 		sticker_pack_sub_count = (sticker_pack_sub_count.length > 0) ? sticker_pack_sub_count[0].count : 0;
 
 		return res.json({
-			active_guilds: await Guild.count({isActive: true}),
-			inactive_guilds: await Guild.count({isActive: false}),
-			sticker_packs: await StickerPack.count(active_pack_settings),
+			active_guilds: await Guild.countDocuments({isActive: true}),
+			inactive_guilds: await Guild.countDocuments({isActive: false}),
+			sticker_packs: await StickerPack.countDocuments(active_pack_settings),
 			sticker_pack_subs: sticker_pack_sub_count,
-			users: await User.count({}),
+			users: await User.countDocuments(),
 			stickers: guild_sticker_count + user_sticker_count + pack_sticker_count	
 		});
 

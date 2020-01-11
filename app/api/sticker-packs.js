@@ -67,8 +67,6 @@ router.get('/', async (req, res) =>{
 	}
 
 	try{
-
-		const totalPackCount = await StickerPack.count(search);
 		const packs = await StickerPack.find(search, removedFields).sort(sortType).skip(skipAmount).limit(packsPerPage);
 		let packInfo = packs.map(p => p._doc);
 		packInfo.forEach(p => delete p.stickers);	

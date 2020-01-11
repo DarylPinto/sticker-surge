@@ -2,16 +2,15 @@
 import Vue from 'vue';
 import axios from 'axios';
 import debounce from 'debounce';
-import Header from '@/components/Header.vue';
-import GroupIcon from '@/components/GroupIcon.vue';
-import Footer from '@/components/Footer.vue';
+import header from '@/components/Header.vue';
+import groupIcon from '@/components/GroupIcon.vue';
+import footer from '@/components/Footer.vue';
 
-// Vue.component('header-bar', header);
-// Vue.component('groupIcon', groupIcon);
-// Vue.component('footer-bar', footer);
+Vue.component('header-bar', header);
+Vue.component('groupIcon', groupIcon);
+Vue.component('footer-bar', footer);
 
 export default {
-	components: {Header, GroupIcon, Footer},
 	data: function(){
 		return {
 			pageLoaded: false,	
@@ -87,7 +86,7 @@ export default {
 <template>
 <main class="create-pack-page">
 
-	<Header :userId="userId" />
+	<header-bar :userId="userId" />
 
 	<div :class="{transparent: !pageLoaded}">
 
@@ -97,7 +96,7 @@ export default {
 		</header>
 		
 		<form @submit.prevent="createPack">
-			<GroupIcon defaultImage="" :canEdit="true" />
+			<groupIcon defaultImage="" :canEdit="true" />
 			<input type="text" name="name" class="pack-title" placeholder="Title" maxlength="30" v-model="packTitle" autocomplete="off" required>
 			<input type="text" name="description" placeholder="Description" maxlength="110" v-model="packDescription" autocomplete="off" required>
 			<div class="pack-key">

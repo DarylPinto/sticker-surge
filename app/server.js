@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 mongoose.plugin(schema => { schema.options.usePushEach = true });
 const sessions = require('client-sessions');
+const cors = require('cors');
 const verifyUser = require('./middleware/verify-user.js')({ajax: false});
 const setGuildsCookie = require('./middleware/set-guilds-cookie.js');
 const setUserAvatar = require('./middleware/update-user-info.js');
@@ -20,7 +21,8 @@ mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://localhost/stickers-for-discord', {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
-	useCreateIndex: true
+	useCreateIndex: true,
+	useFindAndModify: false
 });
 const db = mongoose.connection;
 db.on('error', err => {if(err) throw err});
@@ -28,6 +30,7 @@ db.on('error', err => {if(err) throw err});
 //Middleware
 app.disable('x-powered-by');
 app.use(bodyParser.json());
+app.use(cors());
 app.use(sessions({
 	cookieName: 'session',
 	secret: covert.session.secret,

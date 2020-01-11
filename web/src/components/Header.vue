@@ -67,7 +67,7 @@ export default {
 			<a href="https://discord.gg/HNFmKsE" target="_blank" rel="noopener noreferrer">Community</a>		
 		</nav>
 
-		<a href="/login" v-if="!loggedIn" class="login-btn">Login</a>
+		<a :href="`${$apiURL}/login`" v-if="!loggedIn" class="login-btn">Login</a>
 
 		<div v-if="loggedIn" class="nav-profile">
 			<img :src="avatarURL">
@@ -76,7 +76,7 @@ export default {
 				<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
 				<router-link :to="`/user/${userId}`" v-if="loggedIn">Personal Stickers</router-link>
 				<hr />
-				<a href="/logout" class="logout">Log Out</a>
+				<a :href="`${$apiURL}/logout`" class="logout">Log Out</a>
 			</nav>
 		</div>
 
@@ -99,8 +99,8 @@ export default {
 		<router-link to="/servers" v-if="loggedIn">Your Servers</router-link>
 		<router-link :to="`/user/${userId}`" v-if="loggedIn">Personal Stickers</router-link>
 		<hr />
-		<a href="/login" v-if="!loggedIn">Login</a>
-		<a href="/logout" v-if="loggedIn">Log Out</a>
+		<a :href="`${$apiURL}/login`" v-if="!loggedIn">Login</a>
+		<a :href="`${$apiURL}/logout`" v-if="loggedIn">Log Out</a>
 	</nav>
 
 </header>
