@@ -1,7 +1,4 @@
 node_modules/
+app/public/
 covert.js
-app/sticker-temp/
-app/frontend/public/images/
-app/frontend/public/bundle.js
-app/frontend/public/bundle.css
 .DS_Store

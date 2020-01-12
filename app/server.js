@@ -41,7 +41,7 @@ app.use(sessions({
 }));
 
 //Public dir 
-app.use('/', express.static('frontend/public'));
+app.use('/', express.static(`${__dirname}/public`));
 
 //Sitemap
 app.use('/sitemap.xml', require('./routes/sitemap.js'));
@@ -85,7 +85,7 @@ app.get('/api/dbl-integrated', (req, res) => {
 
 //Redirect all other traffic to app root
 app.get('*', (req, res) => {
-	res.sendFile(__dirname+'/public/index.html');
+	res.sendFile(`${__dirname}/public/index.html`);
 });
 
 app.listen(port, () => {
