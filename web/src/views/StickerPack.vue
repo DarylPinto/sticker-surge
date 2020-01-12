@@ -224,7 +224,7 @@ export default {
 			<!-- If Logged In -->
 			<component
 				v-if="userId"
-				v-bind:is="packSubscriberList"
+				is="packSubscriberList"
 				:userId="userId"
 				:packKey="key"
 			/>
