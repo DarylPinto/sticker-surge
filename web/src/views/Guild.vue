@@ -83,7 +83,7 @@ export default {
 				this.guild = res.data;
 				this.guild.icon = res.data.icon ?
 					`https://cdn.discordapp.com/icons/${res.data.id}/${res.data.icon}.png` :
-					'../assets/images/default-discord-icon.png';
+					'/img/default-discord-icon.png';
 				document.title = `${res.data.guildName} - Stickers for Discord`;	
 				this.pageLoaded = true;
 			})
@@ -142,7 +142,7 @@ export default {
 	<header-bar :userId="userId"></header-bar>
 
 	<div v-if="!pageLoaded" class="loading-page">
-		<img src="../assets/images/loading-spin.svg">
+		<img src="/img/loading-spin.svg">
 	</div>
 
 	<div :class="{transparent: !pageLoaded}">

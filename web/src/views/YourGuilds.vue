@@ -98,7 +98,7 @@ export default {
 	<header-bar :userId="userId"></header-bar>
 	
 	<div v-if="!guildsLoaded" class="loading-page">
-		<img src="../assets/images/loading-spin.svg">
+		<img src="/img/loading-spin.svg">
 	</div>
 
 	<div :class="{transparent: !pageLoaded}">
@@ -118,7 +118,7 @@ export default {
 			<div v-if="userGuilds.length > 0 && guildsLoaded" v-for="guild in userGuildData" :key="guild.id" class="guild">
 				<router-link :to="`/server/${guild.id}`">
 					<img v-if="guild.icon" :src="`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`" :alt="guild.name">
-					<img v-if="!guild.icon" src="../assets/images/default-discord-icon.png" :alt="guild.name">
+					<img v-if="!guild.icon" src="/img/default-discord-icon.png" :alt="guild.name">
 					<h2>{{guild.name}}</h2>
 				</router-link>
 			</div>

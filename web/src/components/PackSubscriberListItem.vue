@@ -13,7 +13,7 @@ export default {
 	},
 	computed: {
 		iconURL(){
-			if(!this.icon) return '../assets/images/default-discord-icon.png';
+			if(!this.icon) return '/img/default-discord-icon.png';
 			const icon_type = (this.type === 'users') ? 'avatars' : 'icons';
 			return `https://cdn.discordapp.com/${icon_type}/${this.itemId}/${this.icon}.png`;
 		},

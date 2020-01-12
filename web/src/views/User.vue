@@ -43,7 +43,7 @@ export default {
 				this.username = res.data.username;
 				this.avatarURL = res.data.avatar ?
 					`https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png` :
-					'../assets/images/default-discord-icon.png';
+					'/img/default-discord-icon.png';
 				this.stickerPacks = res.data.stickerPacks;
 				document.title = `${res.data.username} - Stickers for Discord`;	
 				this.pageLoaded = true;
@@ -117,7 +117,7 @@ export default {
 	<header-bar :userId="userId"></header-bar>
 	
 	<div v-if="!pageLoaded" class="loading-page">
-		<img src="../assets/images/loading-spin.svg">
+		<img src="/img/loading-spin.svg">
 	</div>
 
 	<div :class="{transparent: !pageLoaded}">

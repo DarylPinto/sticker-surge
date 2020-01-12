@@ -30,7 +30,7 @@ export default {
 				this.username = res.data.username;
 				this.avatarURL = res.data.avatar ?
 					`https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png` :
-					'../assets/images/default-discord-icon.png';
+					'/img/default-discord-icon.png';
 			});
 		}
 	},
@@ -57,7 +57,7 @@ export default {
 		<div class="mobile-nav-btn" @click="openMobileNav"></div>
 		
 		<router-link to="/" class="logo-link">
-			<img src="../assets/images/logo.svg" class="logo" alt="Stickers for Discord">
+			<img src="/img/logo.svg" class="logo" alt="Stickers for Discord">
 		</router-link>
 
 		<nav class="main-nav">
@@ -88,7 +88,7 @@ export default {
 
 	<nav class="mobile-nav" :class="{open: mobileNavOpen}">
 		<router-link to="/" class="logo-link">
-			<img src="../assets/images/logo.svg" class="logo" alt="Stickers for Discord">
+			<img src="/img/logo.svg" class="logo" alt="Stickers for Discord">
 		</router-link>
 
 		<router-link to="/" :exact="true">Home</router-link>

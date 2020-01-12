@@ -159,7 +159,7 @@ export default {
 	<header-bar :userId="userId"></header-bar>
 
 	<div v-if="!pageLoaded" class="loading-page">
-		<img src="../assets/images/loading-spin.svg">
+		<img src="/img/loading-spin.svg">
 	</div>
 
 	<div :class="{transparent: !pageLoaded}">

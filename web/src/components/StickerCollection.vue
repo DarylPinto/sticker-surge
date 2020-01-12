@@ -193,7 +193,7 @@ export default {
 		<p v-if="stickers.length === 0 && !loadingNewSticker" class="no-stickers-text">{{noStickersText}}</p>
 
 		<div v-if="loadingNewSticker" class="loading-sticker">
-			<img src="../assets/images/loading-spin.svg" alt="">
+			<img src="/img/loading-spin.svg" alt="">
 		</div>
 		<sticker
 			v-for="sticker in shownStickers"

@@ -128,7 +128,7 @@ export default {
 			/>
 
 			<div v-if="currentlyLoadingPacks" class="loading-packs">
-				<img src="../assets/images/loading-spin.svg">
+				<img src="/img/loading-spin.svg">
 			</div>
 
 		</div>
