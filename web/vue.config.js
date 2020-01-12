@@ -7,11 +7,11 @@ module.exports = {
     appleMobileWebAppCapable: 'yes',
     appleMobileWebAppStatusBarStyle: 'black',
     iconPaths: {
-      favicon32: 'favicon.ico',
-      favicon16: 'favicon.ico',
-      appleTouchIcon: 'favicon.ico',
-      maskIcon: 'favicon.ico',
-      msTileImage: 'favicon.ico'
+      favicon32: 'img/icons/favicon.ico',
+      favicon16: 'img/icons/favicon.ico',
+      appleTouchIcon: 'img/icons/favicon.ico',
+      maskIcon: 'img/icons/favicon.ico',
+      msTileImage: 'img/icons/favicon.ico'
     },
     // configure the workbox plugin
     workboxPluginMode: 'GenerateSW'
