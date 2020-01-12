@@ -85,7 +85,7 @@ app.get('/api/dbl-integrated', (req, res) => {
 
 //Redirect all other traffic to app root
 app.get('*', (req, res) => {
-	res.sendFile(__dirname+'/frontend/public/index.html');
+	res.sendFile(__dirname+'/public/index.html');
 });
 
 app.listen(port, () => {
