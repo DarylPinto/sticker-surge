@@ -38,7 +38,7 @@ export default {
 		v-if="!packStickerInForeignGroup && (isCreatedByUser || userIsGuildManager)"
 		@click="emitDeleteSticker($event)"
 	>clear</i>	
-	<img :src="link" :alt="name">	
+	<img :src="link" :alt="name" loading="lazy">	
 	<p>{{displayName}}</p>
 </div>
 </template>
