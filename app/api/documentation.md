@@ -1,8 +1,8 @@
-# Stickers for Discord RESTful API
+# Sticker Surge RESTful API
 
-*BASE URI: https://stickersfordiscord.com/api*
+*BASE URI: https://stickersurge.com/api*
 
-> This API is intended to aid interaction between various components within *Stickers for Discord*, but is open for public use as well.
+> This API is intended to aid interaction between various components within *Sticker Surge*, but is open for public use as well.
 
 ## Guilds (Servers)
 
@@ -32,7 +32,7 @@ Usage: Initialize a guild within the service
 
 Body (required): `string:name, string:id`
 
-Accessible by: Stickers for Discord Bot
+Accessible by: Sticker Surge Bot
 
 ### POST /guilds/{guild\_id}/stickers
 
@@ -46,7 +46,7 @@ Accessible by: Users with proper permissions within their Discord Server
 
 Usage: Increment amount of uses for a custom sticker within a guild
 
-Accessible by: Stickers for Discord Bot
+Accessible by: Sticker Surge Bot
 
 ---
 
@@ -56,4 +56,4 @@ Usage: Update guild info
 
 Body (optional): `string:guildName, string:icon, array:guildManagerIds, array:stickerManagerIds`
 
-Accessible by: Stickers for Discord Bot
+Accessible by: Sticker Surge Bot

@@ -2,7 +2,7 @@
 <footer id="main-footer">
 	<div class="container">	
 		<div>
-			<a href="https://github.com/darylpinto/stickers-for-discord" target="_blank" rel="noopener noreferrer">Github</a>	
+			<a href="https://github.com/darylpinto/sticker-surge" target="_blank" rel="noopener noreferrer">Github</a>	
 			<a href="/terms.html" target="_blank" rel="noopener noreferrer">Terms & Conditions</a>
 		</div>
 	</div>

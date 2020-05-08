@@ -18,7 +18,7 @@ async function main(){
 		stats = await rp({uri: stats_uri, json: true});
 		guild_count = stats.active_guilds;
 	}catch(err){
-		return console.error("Unable to connect to Stickers for Discord API.");
+		return console.error("Unable to connect to Sticker Surge API.");
 	}	
 		
 	// Spawn shards

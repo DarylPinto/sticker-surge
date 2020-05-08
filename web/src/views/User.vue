@@ -45,7 +45,7 @@ export default {
 					`https://cdn.discordapp.com/avatars/${res.data.id}/${res.data.avatar}.png` :
 					'/img/default-discord-icon.png';
 				this.stickerPacks = res.data.stickerPacks;
-				document.title = `${res.data.username} - Stickers for Discord`;	
+				document.title = `${res.data.username} - Sticker Surge`;	
 				this.pageLoaded = true;
 			})
 			.catch(err => {
@@ -61,7 +61,7 @@ export default {
 					if(!res.data.updated) return;
 					this.username = res.data.username;
 					this.avatarURL = `https://cdn.discordapp.com/avatars/${this.userId}/${res.data.avatar}.png`;
-					document.title = `${res.data.username} - Stickers for Discord`;
+					document.title = `${res.data.username} - Sticker Surge`;
 				});
 
 			})

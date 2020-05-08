@@ -57,7 +57,7 @@ export default {
 		<div class="mobile-nav-btn" @click="openMobileNav"></div>
 		
 		<router-link to="/" class="logo-link">
-			<img src="/img/logo.svg" class="logo" alt="Stickers for Discord">
+			<img src="/img/logo.svg" class="logo" alt="Sticker Surge">
 		</router-link>
 
 		<nav class="main-nav">
@@ -88,7 +88,7 @@ export default {
 
 	<nav class="mobile-nav" :class="{open: mobileNavOpen}">
 		<router-link to="/" class="logo-link">
-			<img src="/img/logo.svg" class="logo" alt="Stickers for Discord">
+			<img src="/img/logo.svg" class="logo" alt="Sticker Surge">
 		</router-link>
 
 		<router-link to="/" :exact="true">Home</router-link>
@@ -135,8 +135,7 @@ export default {
 				align-items: center
 			.logo
 				max-height: 37px
-				max-width: 249px	
-				width: auto
+				min-width: 120px	
 			.main-nav
 				font-size: 0
 				margin-left: 15px
@@ -287,6 +286,7 @@ export default {
 					height: 80px
 				.logo
 					max-height: 50px
+					min-width: 1000px
 				.mobile-nav-btn
 					display: block
 

@@ -114,7 +114,7 @@ module.exports = function(message, prefix, guild_info){
 				},
 				{
 					name: "addPack",
-					value: `Add a sticker pack to your personal collection. You can use these on any server with Stickers for Discord.\n[View all available packs](${covert.app_url}/sticker-packs)`
+					value: `Add a sticker pack to your personal collection. You can use these on any server with Sticker Surge.\n[View all available packs](${covert.app_url}/sticker-packs)`
 				},
 				{
 					name: "removePack",
@@ -122,7 +122,7 @@ module.exports = function(message, prefix, guild_info){
 				},
 				{
 					name: "createSticker",
-					value: "Create a custom sticker to use on any server with Stickers for Discord."
+					value: "Create a custom sticker to use on any server with Sticker Surge."
 				},
 				{
 					name: "deleteSticker",

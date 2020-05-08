@@ -53,7 +53,7 @@ function handleExpiredRefreshToken(req, res, next, options){
 }
 
 /**
-* Verify that request is coming from the correct user, or from official Stickers for Discord bot
+* Verify that request is coming from the correct user, or from official Sticker Surge bot
 *
 * options {Object}
 * - ajax {Boolean} - True request is ajax

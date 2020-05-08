@@ -2,7 +2,7 @@ const covert = require('../../covert.js');
 
 
 /**
-* Verify that request is coming from official Stickers for Discord bot 
+* Verify that request is coming from official Sticker Surge bot 
 */
 module.exports = function(req, res, next){	
 

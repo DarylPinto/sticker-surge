@@ -62,7 +62,7 @@ export default {
 	},
 
 	mounted: function(){
-		document.title = 'Sticker Packs - Stickers for Discord';
+		document.title = 'Sticker Packs - Sticker Surge';
 		this.pageLoaded = true;
 		this.loadPacks(true);
 

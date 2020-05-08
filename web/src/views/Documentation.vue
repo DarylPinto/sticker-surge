@@ -14,7 +14,7 @@ export default {
 		}
 	},
 	mounted: function(){
-		document.title = 'Documentation - Stickers for Discord';
+		document.title = 'Documentation - Sticker Surge';
 		this.pageLoaded = true;
 	}
 }
@@ -35,7 +35,7 @@ export default {
 		<div class="container">
 			<section id="tutorial">
 				<h2>Getting Started</h2>
-				<p>Inspired by other chat applications such as Telegram and LINE, Stickers for Discord aims to fill the sticker shaped void that us Discord users have in our hearts.</p>
+				<p>Inspired by other chat applications such as Telegram and LINE, Sticker Surge aims to fill the sticker shaped void that us Discord users have in our hearts.</p>
 				<p>Getting your server set up is a piece of cake and only takes a minute:</p>
 				<ol>
 					<li>Add the bot to your server: <a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536880128" class="btn" target="_blank">Add to Discord</a></li>
@@ -138,7 +138,7 @@ export default {
 				</div>
 				<div>	
 					<strong>I changed the command prefix for the bot and can't remember what it is! What do I do?</strong>
-					<p>Type: <pre><span class="mention">@Stickers for Discord</span> help</pre></p>
+					<p>Type: <pre><span class="mention">@Sticker Surge</span> help</pre></p>
 				</div>
 				<div>
 					<strong>What are the maximum dimensions for stickers?</strong>

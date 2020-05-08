@@ -53,7 +53,7 @@ export default {
 				this.guild.icon = res.data.icon ?
 					`https://cdn.discordapp.com/icons/${res.data.id}/${res.data.icon}.png` :
 					'/img/default-discord-icon.png';
-				document.title = `${res.data.guildName} - Stickers for Discord`;	
+				document.title = `${res.data.guildName} - Sticker Surge`;	
 				this.pageLoaded = true;
 			})
 			.catch(err => {

@@ -1,4 +1,4 @@
-# stickers-for-discord-web
+# sticker-surge-web
 
 ## Project setup
 ```

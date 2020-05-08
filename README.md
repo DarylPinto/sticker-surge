@@ -1,4 +1,4 @@
-# Stickers for Discord
+# Sticker Surge
 
 > Custom stickers and sticker packs for Discord servers!
 
@@ -6,9 +6,9 @@
 
 ## How to use
 
-To get stickers on your Discord server, simply head over to https://stickersfordiscord.com and click the "Add to Discord" button!
+To get stickers on your Discord server, simply head over to https://stickersurge.com and click the "Add to Discord" button!
 
-For more detailed instructions, check out the [documentation.](https://stickersfordiscord.com/docs)
+For more detailed instructions, check out the [documentation.](https://stickersurge.com/docs)
 
 ## Why
 
@@ -22,7 +22,7 @@ And so, this project was born.
 
 ## Support
 
-For help with Stickers for Discord, join the support server: [https://discord.gg/HNFmKsE](https://discord.gg/HNFmKsE)
+For help with Sticker Surge, join the support server: [https://discord.gg/HNFmKsE](https://discord.gg/HNFmKsE)
 
 ## Built with
 

@@ -49,7 +49,7 @@ module.exports = function(message, prefix, resource_info){
 			color: embed_color,
 			fields: [
 				{
-					name: "Stickers for Discord",
+					name: "Sticker Surge",
 					value: `
 						To view a list of commands, type: **${escaped_prefix}commands**
 						[View available sticker packs](${covert.app_url}/sticker-packs)
@@ -90,7 +90,7 @@ module.exports = function(message, prefix, resource_info){
 			color: embed_color,
 			fields: [
 				{
-					name: "Stickers for Discord",
+					name: "Sticker Surge",
 					value: `
 						To view a list of commands, type: **commands**
 						.
@@ -100,7 +100,7 @@ module.exports = function(message, prefix, resource_info){
 					name: message.author.username,
 					value: `
 						Custom Stickers: ${sticker_amount}
-						[View Stickers](https://stickersfordiscord.com/user/${message.author.id})
+						[View Stickers](${covert.app_url}/user/${message.author.id})
 						.
 					`.replace(/\t/g, '')
 				},

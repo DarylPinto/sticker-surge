@@ -1,12 +1,12 @@
 {
-  "name": "stickers-for-discord-bot",
+  "name": "sticker-surge-bot",
   "version": "1.0.0",
   "description": "Custom stickers and sticker packs for Discord servers!",
   "author": "Daryl Pinto",
   "license": "MPLv2",
   "repository": {
     "type": "git",
-    "url": "https://github.com/darylpinto/stickers-for-discord"
+    "url": "https://github.com/darylpinto/sticker-surge"
   },
   "dependencies": {
     "dblapi.js": "^1.1.1",

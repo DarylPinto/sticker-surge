@@ -34,7 +34,7 @@ module.exports = function(message, bot_auth, prefix){
 		json: true
 	})
 	.then(res => {
-		message.channel.send(`Stickers for Discord commands now begin with **${escaped_new_prefix}**\nType **${escaped_new_prefix}commands** for a list of commands.`);
+		message.channel.send(`Sticker Surge commands now begin with **${escaped_new_prefix}**\nType **${escaped_new_prefix}commands** for a list of commands.`);
 	})
 	.catch(err => {
 		

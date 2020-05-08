@@ -129,7 +129,7 @@ module.exports = async function(message, client, bot_auth){
 								Sticker webhook is stuck in a different channel.
 								Make sure this bot has permission to manage webhooks in EVERY channel.	
 
-								*(Channel settings > Permissions > Stickers for Discord > Manage Webhooks)*`.replace(/\t/g, '')
+								*(Channel settings > Permissions > Sticker Surge > Manage Webhooks)*`.replace(/\t/g, '')
 							);
 						}
 					}

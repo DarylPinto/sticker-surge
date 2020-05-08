@@ -18,9 +18,9 @@ const initUser = require('./events/init-user.js');
 const updateUserInfo = require('./events/update-user-info.js');
 
 client.on('ready', () => {
-	client.user.setPresence({game: {name: 'stickersfordiscord.com'}});
+	client.user.setPresence({game: {name: 'stickersurge.com'}});
 	// client.guilds.forEach(g => updateGuildInfo(g, bot_auth));
-	console.log('Stickers for Discord bot is online!');
+	console.log('Sticker Surge bot is online!');
 });
 
 //Add guild to db for the first time

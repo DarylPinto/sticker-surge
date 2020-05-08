@@ -77,7 +77,7 @@ export default {
 
 		let currentNewPack = this.$cookie.get('currentNewPack');
 		if(currentNewPack) return window.location.replace(`/pack/${currentNewPack}`); //redirect if user curnrently working on a pack
-		document.title = 'Create a Sticker Pack - Stickers for Discord';
+		document.title = 'Create a Sticker Pack - Sticker Surge';
 		axios.get(`${this.$apiURL}/api/dbl-integrated`).then(res => this.dblSupportRequired = res.data.dbl_integrated);
 	}
 }	

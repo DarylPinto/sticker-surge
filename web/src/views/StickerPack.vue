@@ -69,7 +69,7 @@ export default {
 				this.published = res.data.published;
 				this.iconURL = res.data.icon ? res.data.icon : null;
 				this.creatorId = res.data.creatorId;
-				document.title = `${res.data.name} - Stickers for Discord`;	
+				document.title = `${res.data.name} - Sticker Surge`;	
 				this.pageLoaded = true;
 				setTimeout(this.adjustDescHeight, 100);
 
@@ -88,7 +88,7 @@ export default {
 				description: this.description
 			})
 			.then(res => {
-				document.title = `${res.data.name} - Stickers for Discord`;
+				document.title = `${res.data.name} - Sticker Surge`;
 			})
 			.catch(err => {
 				console.error(err.message);
@@ -236,7 +236,7 @@ export default {
 						Add the bot to your server:
 						<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536880128" class="btn" target="_blank">Add to Discord</a>
 					</li>	
-					<li>In your server, type: <pre><span class="mention">@Stickers for Discord</span> addPack {{key}}</pre></li>	
+					<li>In your server, type: <pre><span class="mention">@Sticker Surge</span> addPack {{key}}</pre></li>	
 				</ol>	
 			</div>
 		</modal>

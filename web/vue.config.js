@@ -1,7 +1,7 @@
 module.exports = {
   lintOnSave: false,
   pwa: {
-    name: 'Stickers for Discord',
+    name: 'Sticker Surge',
     themeColor: '#FC6262',
     msTileColor: '#000000',
     appleMobileWebAppCapable: 'yes',

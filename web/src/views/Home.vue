@@ -11,17 +11,17 @@ export default {
 			pageLoaded: false,
 			userId: this.$cookie.get('id') || null,
 			taglines: [
-				'Make your server more expressive',
-				'Spice up your server',
-				'Meme it up in your server',
-				'Liven up the mood in your server',
-				'Keep your server interesting',
-				'Add some fun to your server',
-				'Express yourself in your server',
-				'Try something new in your server',
-				'Bring a bit of humor to your server',
+				'Make your Discord server more expressive',
+				'Spice up your Discord server',
+				'Meme it up in your Discord server',
+				'Liven up the mood in your Discord server',
+				'Keep your Discord server interesting',
+				'Add some fun to your Discord server',
+				'Express yourself in your Discord server',
+				'Try something new in your Discord server',
+				'Bring a bit of humor to your Discord server',
 				'Trash talk your buddies in new ways',
-				'Turn your server up a notch'
+				'Turn your Discord server up a notch'
 			]
 		}
 	},
@@ -33,7 +33,7 @@ export default {
 	},
 
 	mounted: function(){
-		document.title = 'Sticker Packs & Custom Stickers - Stickers for Discord';
+		document.title = 'Sticker Packs & Custom Stickers - Sticker Surge';
 		this.pageLoaded = true;
 	}
 
@@ -48,7 +48,7 @@ export default {
 	<div class="container home-page" :class="{transparent: !pageLoaded}">
 		<div class="headline">
 			<span>{{randArrayItem(taglines)}} with</span>
-			<h1>Stickers for Discord</h1>	
+			<h1>Sticker Surge</h1>	
 		</div>	
 		<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536880128" class="btn" target="_blank">Add to Discord</a>
 		<router-link to="/docs" class="btn secondary">Learn More</router-link>
@@ -92,6 +92,7 @@ export default {
 				font-weight: 400
 				opacity: 0.8
 				font-size: 35px
+				line-height: 1.25em
 		a.btn
 			font-size: 24px
 			font-weight: 100
@@ -113,7 +114,8 @@ export default {
 			h1
 				font-size: 38px
 			span
-				font-size: 20px		
+				font-size: 20px
+				padding: 0 10px	
 	
 	@media screen and (max-width: 460px)
 		.home-page a.btn

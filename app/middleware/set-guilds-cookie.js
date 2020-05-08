@@ -2,7 +2,7 @@ const rp = require('request-promise');
 const Guild = require('../api/models/guild-model.js');
 
 /**
-* Set `guilds` cookie as an array of guild IDs that the user is a member of AND are registered in Stickers for Discord.
+* Set `guilds` cookie as an array of guild IDs that the user is a member of AND are registered by Sticker Surge.
 * The cookie is added to the session as a tamper proof httpOnly cookie and as a standard easily readable cookie for
 * the view layer to use
 */
