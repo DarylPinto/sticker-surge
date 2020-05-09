@@ -33,7 +33,7 @@ export default {
 	},
 
 	mounted: function(){
-		document.title = 'Sticker Packs & Custom Stickers - Sticker Surge';
+		document.title = 'Discord Sticker Packs & Custom Stickers - Sticker Surge';
 		this.pageLoaded = true;
 	}
 
