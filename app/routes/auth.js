@@ -5,15 +5,13 @@ const sessions = require('client-sessions');
 const Cryptr = require('cryptr');
 const url = require('url');
 const User = require('../api/models/user-model.js');
-const util = require('../api/utilities/utilities.js');
-const covert = require('../../covert.js');
 
-const cryptr = new Cryptr(covert.refresh_token_key);
+const cryptr = new Cryptr(process.env.REFRESH_TOKEN_KEY);
 
 const oauth2 = simpleOauth.create({
 	client: {
-		id: covert.discord.app_id,
-		secret: covert.discord.app_secret 
+		id: process.env.DISCORD_APP_ID,
+		secret: process.env.DISCORD_APP_SECRET 
 	},
 	auth: {
 		tokenHost: 'https://discordapp.com',
@@ -29,7 +27,7 @@ module.exports = {
 //Login route
 login: express.Router().get('/', (req, res) => {
 	const authorizationUri = oauth2.authorizationCode.authorizeURL({
-		redirect_uri: `${covert.app_url}/callback`,	
+		redirect_uri: `${process.env.APP_URL}/callback`,	
 		scope: 'identify guilds',
 		state: encodeURIComponent(req.header('Referer'))
 	});
@@ -53,7 +51,7 @@ callback: express.Router().get('/', (req, res) => {
 
 	oauth2.authorizationCode.getToken({
 		code: req.query.code,
-		redirect_uri: `${covert.app_url}/callback`	
+		redirect_uri: `${process.env.APP_URL}/callback`	
 	})
 	.then(result => {
 

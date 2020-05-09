@@ -1,5 +1,4 @@
 const rp = require('request-promise');
-const covert = require('../../covert.js');
 
 module.exports = function(message, bot_auth, prefix){
 
@@ -13,10 +12,10 @@ module.exports = function(message, bot_auth, prefix){
 
 	//change request uri and prefix if message is a private message
 	if(message.channel.type === 'dm'){
-		uri = `${covert.app_url}/api/users/${message.author.id}/stickers`;
+		uri = `${process.env.APP_URL}/api/users/${message.author.id}/stickers`;
 		prefix = '';
 	}else if(message.channel.type === 'text'){
-		uri = `${covert.app_url}/api/guilds/${message.channel.guild.id}/stickers`;
+		uri = `${process.env.APP_URL}/api/guilds/${message.channel.guild.id}/stickers`;
 	}
 
 	//Escape prefix to avoid issues with Discord formatting

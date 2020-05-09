@@ -1,11 +1,10 @@
 const DBL = require('dblapi.js');
-const covert = require('../../covert.js');
 
 //Update guild count on Discord Bot List
 module.exports = function(guild_count){
 
-	if(!covert.discord_bot_list.integrated || !covert.discord_bot_list.api_key) return false;	
-	const dbl = new DBL(covert.discord_bot_list.api_key);
+	if(!process.env.TOPGG_ENABLED || !process.env.TOPGG_API_KEY) return false;	
+	const dbl = new DBL(process.env.TOPGG_API_KEY);
 
 	dbl.postStats(guild_count);
 

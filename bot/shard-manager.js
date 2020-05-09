@@ -2,15 +2,15 @@
 // Must spawn 1 shard for every 2500 servers
 // https://anidiots.guide/understanding/sharding
 
+require('dotenv').config({ path: require('find-config')('.env') });
 const Discord = require('discord.js');
 const Manager = new Discord.ShardingManager('./bot.js');
 const rp = require('request-promise');
 const updateDblStats = require('./events/update-dbl-stats.js');
-const covert = require('../covert.js');
 
 async function main(){
 
-	const stats_uri = `${covert.app_url}/api/stats`;
+	const stats_uri = `${process.env.APP_URL}/api/stats`;
 	let stats, guild_count, shard_count;
 
 	// Get stats from API

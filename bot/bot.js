@@ -1,8 +1,7 @@
 const Discord = require('discord.js');
 const rp = require('request-promise');
 const client = new Discord.Client({disabledEvents: ['TYPING_START', 'PRESENCE_UPDATE']});
-const covert = require('../covert.js');
-const bot_auth = `Basic ${Buffer.from(covert.bot_token_hash).toString('base64')}`;
+const bot_auth = `Basic ${Buffer.from(process.env.DISCORD_BOT_TOKEN_HASH).toString('base64')}`;
 
 //Useful stack trace for unhandledRejection errors
 process.on('unhandledRejection', r => console.error(r));
@@ -114,7 +113,7 @@ client.on('message', message => {
 
 		if(!message_has_command) return false; //Ensures the API isn't called on every message
 
-		rp({uri: `${covert.app_url}/api/guilds/${message.guild.id}`, json: true})
+		rp({uri: `${process.env.APP_URL}/api/guilds/${message.guild.id}`, json: true})
 		.then(guild => {
 
 			let prefix = guild.commandPrefix.toLowerCase();	
@@ -147,7 +146,7 @@ client.on('message', message => {
 	//Private messages
 	else if(message.channel.type === 'dm'){
 
-		rp({uri: `${covert.app_url}/api/users/${message.author.id}`, json: true})
+		rp({uri: `${process.env.APP_URL}/api/users/${message.author.id}`, json: true})
 		.then(user => {
 
 			let custom_stickers = user.customStickers;
@@ -190,4 +189,4 @@ client.on('message', message => {
 
 });
 
-client.login(covert.discord.bot_token);
+client.login(process.env.DISCORD_APP_BOT_TOKEN);

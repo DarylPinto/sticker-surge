@@ -1,6 +1,5 @@
 const rp = require('request-promise');
 const initGuild = require('./init-guild.js');
-const covert = require('../../covert.js');
 
 module.exports = function(guild, bot_auth){
 
@@ -10,7 +9,7 @@ module.exports = function(guild, bot_auth){
 	let blacklist;
 	let stickerManagers;
 
-	rp({uri: `${covert.app_url}/api/guilds/${guild.id}`, json: true})
+	rp({uri: `${process.env.APP_URL}/api/guilds/${guild.id}`, json: true})
 	.then(res => {
 
 		listMode = res.listMode;
@@ -50,7 +49,7 @@ module.exports = function(guild, bot_auth){
 
 		return rp({
 			method: 'PATCH',
-			uri: `${covert.app_url}/api/guilds/${guild.id}`,
+			uri: `${process.env.APP_URL}/api/guilds/${guild.id}`,
 			body: {
 				isActive: true,
 				guildName: guild.name,

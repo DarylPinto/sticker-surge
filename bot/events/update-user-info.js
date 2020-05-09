@@ -1,11 +1,10 @@
 const rp = require('request-promise');
-const covert = require('../../covert.js');
 
 module.exports = function(user, bot_auth){
 
 	rp({
 		method: 'PATCH',
-		uri: `${covert.app_url}/api/users/${user.id}`,
+		uri: `${process.env.APP_URL}/api/users/${user.id}`,
 		body: {
 			username: user.username,
 			avatar: user.avatar || null

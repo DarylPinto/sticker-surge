@@ -1,5 +1,4 @@
 const rp = require('request-promise');
-const covert = require('../../covert.js');
 
 module.exports = function(message, bot_auth, prefix){
 
@@ -20,10 +19,10 @@ module.exports = function(message, bot_auth, prefix){
 	let sticker_name = message_words[1].toLowerCase().replace(/(:|-)/g, '');
 	sticker_name = encodeURIComponent(sticker_name);
 
-	let uri = `${covert.app_url}/api/users/${message.author.id}/stickers/${sticker_name}`;
+	let uri = `${process.env.APP_URL}/api/users/${message.author.id}/stickers/${sticker_name}`;
 
 	if(message.channel.type === 'text'){
-		uri = `${covert.app_url}/api/guilds/${message.channel.guild.id}/stickers/${sticker_name}`;
+		uri = `${process.env.APP_URL}/api/guilds/${message.channel.guild.id}/stickers/${sticker_name}`;
 	}
 	
 	return rp({

@@ -1,5 +1,4 @@
 const rp = require('request-promise');
-const covert = require('../../covert.js');
 const updateGuildInfo = require('../events/update-guild-info.js');
 
 module.exports = function(message, bot_auth, prefix){
@@ -36,7 +35,7 @@ module.exports = function(message, bot_auth, prefix){
 
 	return rp({
 		method: 'PATCH',
-		uri: `${covert.app_url}/api/guilds/${guild.id}/sticker-user-role`,
+		uri: `${process.env.APP_URL}/api/guilds/${guild.id}/sticker-user-role`,
 		body: {
 			listMode: 'blacklist',
 			blacklistRole: new_blacklist_role,

@@ -38,7 +38,7 @@ export default {
 				<p>Inspired by other chat applications such as Telegram and LINE, Sticker Surge aims to fill the sticker shaped void that us Discord users have in our hearts.</p>
 				<p>Getting your server set up is a piece of cake and only takes a minute:</p>
 				<ol>
-					<li>Add the bot to your server: <a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536880128" class="btn" target="_blank">Add to Discord</a></li>
+					<li>Add the bot to your server: <a :href="$botInviteURL" class="btn" target="_blank">Add to Discord</a></li>
 					<li>Check out the <router-link to="/sticker-packs">available sticker packs</router-link> and start using the ones you like. (Click on a pack, then click "Use This Pack")</li>
 					<li>In your server, start sending stickers by typing in their names! (Example: <pre>:pika-rofl:</pre>)</li>
 				</ol>

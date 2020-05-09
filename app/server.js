@@ -1,3 +1,4 @@
+require('dotenv').config({ path: require('find-config')('.env') });
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -7,7 +8,6 @@ const cors = require('cors');
 const verifyUser = require('./middleware/verify-user.js')({ajax: false});
 const setGuildsCookie = require('./middleware/set-guilds-cookie.js');
 const setUserAvatar = require('./middleware/update-user-info.js');
-const covert = require('../covert.js');
 
 const app = express();
 const port = 3000;
@@ -33,7 +33,7 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(sessions({
 	cookieName: 'session',
-	secret: covert.session.secret,
+	secret: process.env.SESSION_SECRET,
 	duration: 365 * 24 * 60 * 60 * 1000,
 	cookie: {
 		httpOnly: true
@@ -80,7 +80,7 @@ app.get('/api/invalidate-token', (req, res) => {
 	res.send('Token invalidated');
 });
 app.get('/api/dbl-integrated', (req, res) => {
-	res.send({dbl_integrated: covert.discord_bot_list.integrated});
+	res.send({dbl_integrated: !!process.env.TOPGG_ENABLED});
 });
 
 //Redirect all other traffic to app root

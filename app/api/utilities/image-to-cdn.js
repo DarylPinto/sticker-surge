@@ -3,11 +3,10 @@ const sharp = require('sharp');
 const snekfetch = require('snekfetch');
 const imagemin = require('imagemin');
 const imageminPngquant = require('imagemin-pngquant');
-const covert = require('../../../covert.js');
 
 AWS.config.update({
-	accessKeyId: covert.aws.access_key_id,
-	secretAccessKey: covert.aws.secret_access_key
+	accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+	secretAccessKey: process.env.AWS_ACCESS_SECRET_ACCESS_KEY 
 });
 
 const s3 = new AWS.S3();

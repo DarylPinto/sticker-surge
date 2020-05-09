@@ -234,7 +234,7 @@ export default {
 				<ol>
 					<li>
 						Add the bot to your server:
-						<a href="https://discordapp.com/oauth2/authorize?client_id=224415693393625088&scope=bot&permissions=536880128" class="btn" target="_blank">Add to Discord</a>
+						<a :href="$botInviteURL" class="btn" target="_blank">Add to Discord</a>
 					</li>	
 					<li>In your server, type: <pre><span class="mention">@Sticker Surge</span> addPack {{key}}</pre></li>	
 				</ol>	

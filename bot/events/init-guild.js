@@ -1,12 +1,11 @@
 const rp = require("request-promise");
-const covert = require("../../covert.js");
 
 module.exports = async (guild, bot_auth) => {
 	try {
 		// Add guild to database
 		await rp({
 			method: "POST",
-			uri: `${covert.app_url}/api/guilds/`,
+			uri: `${process.env.APP_URL}/api/guilds/`,
 			body: {
 				id: guild.id,
 				guildName: guild.name,
@@ -24,7 +23,7 @@ module.exports = async (guild, bot_auth) => {
 			try {
 				await rp({
 					method: "PATCH",
-					uri: `${covert.app_url}/api/guilds/${guild.id}`,
+					uri: `${process.env.APP_URL}/api/guilds/${guild.id}`,
 					body: { isActive: true },
 					headers: { Authorization: bot_auth },
 					json: true

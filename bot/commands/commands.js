@@ -1,6 +1,5 @@
 const rp = require('request-promise');
 const userStickerPerms = require('../utilities/user-sticker-perms.js');
-const covert = require('../../covert.js');
 
 module.exports = function(message, prefix, guild_info){
 
@@ -39,7 +38,7 @@ module.exports = function(message, prefix, guild_info){
 			command_list.fields.push(...[
 				{
 					name: `${escaped_prefix}addPack`,
-					value: `Add a sticker pack for anyone on this server to use. [View all available packs](${covert.app_url}/sticker-packs)`
+					value: `Add a sticker pack for anyone on this server to use. [View all available packs](${process.env.APP_URL}/sticker-packs)`
 				},
 				{
 					name: `${escaped_prefix}removePack`,
@@ -101,7 +100,7 @@ module.exports = function(message, prefix, guild_info){
 			}
 		]);	
 
-		message.channel.send(`${help_message} ${covert.app_url}/docs#commands`, {reply: message.author.id, embed: command_list});
+		message.channel.send(`${help_message} ${process.env.APP_URL}/docs#commands`, {reply: message.author.id, embed: command_list});
 
 	}else{
 		
@@ -114,7 +113,7 @@ module.exports = function(message, prefix, guild_info){
 				},
 				{
 					name: "addPack",
-					value: `Add a sticker pack to your personal collection. You can use these on any server with Sticker Surge.\n[View all available packs](${covert.app_url}/sticker-packs)`
+					value: `Add a sticker pack to your personal collection. You can use these on any server with Sticker Surge.\n[View all available packs](${process.env.APP_URL}/sticker-packs)`
 				},
 				{
 					name: "removePack",

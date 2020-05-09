@@ -134,7 +134,7 @@ export default {
 					<!-- Standard checkboxes used for keyboard controls -->
 					<input type="checkbox" v-model="dblSupported">
 					<i class="material-icons">{{dblSupported ? 'check_box' : 'check_box_outline_blank'}}</i>
-					I have voted for the bot on <a href="https://discordbots.org/bot/224415693393625088" target="_blank">Discord Bot List</a> within the last 24 hours
+					I have voted for the bot on <a :href="`https://discordbots.org/bot/${$botId}`" target="_blank">Discord Bot List</a> within the last 24 hours
 				</p>	
 			</div>
 			<button class="btn">{{packSubmissionLoading ? 'Loading...' : 'Continue'}}</button>

@@ -11,7 +11,6 @@ const imageToCdn = require('./utilities/image-to-cdn.js');
 const deleteCdnImage = require('./utilities/delete-cdn-image.js');
 const emojis = require('./utilities/emojis.json');
 const multer = require('multer');
-const covert = require('../../covert.js');
 
 let storage = multer.memoryStorage();
 let upload = multer({
@@ -166,10 +165,10 @@ router.post('/', verifyUserAjax, upload.single('icon'), handleMulterError, async
 	if(keyAlreadyUsed) return res.status(400).send('There is already a Sticker Pack with that key');	
 
 	//Ensure user has voted on DBL within the last 24hrs before continuing (only works if DBL integrated)
-	if(covert.discord_bot_list.integrated){	
+	if(!!process.env.TOPGG_ENABLED){	
 		let dbl_vote_check = await rp({
-			uri: `https://discordbots.org/api/bots/${covert.discord.app_id}/check?userId=${res.locals.userId}`,
-			headers: {Authorization: covert.discord_bot_list.api_key},
+			uri: `https://discordbots.org/api/bots/${process.env.DISCORD_APP_ID}/check?userId=${res.locals.userId}`,
+			headers: {Authorization: process.env.TOPGG_API_KEY},
 			json: true
 		});
 

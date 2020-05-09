@@ -1,9 +1,8 @@
 const router = require('express').Router();
 const rp = require('request-promise');
-const covert = require('../../covert.js');
 
 router.get('/', async (req, res) => {
-	const domain = covert.app_url;
+	const domain = process.env.APP_URL;
 	
 	const popular_packs = await rp({uri: `${domain}/api/sticker-packs?sort=all`, json: true});
 	const static_routes = [

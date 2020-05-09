@@ -1,18 +1,17 @@
 const rp = require('request-promise');
-const covert = require('../../covert.js');
 
 module.exports = async function(message, bot_auth, prefix){
 
 	let guild = message.channel.guild;
 
-	const res = await rp({uri: `${covert.app_url}/api/guilds/${guild.id}`, json: true});
+	const res = await rp({uri: `${process.env.APP_URL}/api/guilds/${guild.id}`, json: true});
 	const personal_stickers_currently_allowed = res.personalStickersAllowed;
 
 	try {
 
 		await rp({
 			method: 'PATCH',
-			uri: `${covert.app_url}/api/guilds/${guild.id}/personal-stickers-allowed`,
+			uri: `${process.env.APP_URL}/api/guilds/${guild.id}/personal-stickers-allowed`,
 			body: {
 				personalStickersAllowed: !personal_stickers_currently_allowed
 			},

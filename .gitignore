@@ -1,4 +1,5 @@
 node_modules/
 app/public/
 covert.js
+.env
 .DS_Store

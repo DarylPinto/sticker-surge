@@ -1,5 +1,4 @@
 const rp = require('request-promise');
-const covert = require('../../covert.js');
 
 module.exports = function(message, bot_auth, prefix){
 
@@ -19,10 +18,10 @@ module.exports = function(message, bot_auth, prefix){
 
 	let pack_key = message_words[1].toLowerCase();
 
-	let uri = `${covert.app_url}/api/users/${message.author.id}/sticker-packs`;
+	let uri = `${process.env.APP_URL}/api/users/${message.author.id}/sticker-packs`;
 
 	if(message.channel.type === 'text'){
-		uri = `${covert.app_url}/api/guilds/${message.channel.guild.id}/sticker-packs`;
+		uri = `${process.env.APP_URL}/api/guilds/${message.channel.guild.id}/sticker-packs`;
 	}
 	
 	return rp({
@@ -43,7 +42,7 @@ module.exports = function(message, bot_auth, prefix){
 	})
 	.catch(err => {
 		if(err.message.includes('Sticker Pack not found')){
-			message.channel.send(`There's no sticker pack with that prefix.\nYou can view all available sticker packs here: <${covert.app_url}/sticker-packs>`);
+			message.channel.send(`There's no sticker pack with that prefix.\nYou can view all available sticker packs here: <${process.env.APP_URL}/sticker-packs>`);
 		}
 
 		else if(err.message.includes('Unauthorized')){

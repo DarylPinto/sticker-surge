@@ -1,10 +1,8 @@
 const rp = require('request-promise');
 const Cryptr = require('cryptr');
 const User = require('../api/models/user-model.js');
-const util = require('../api/utilities/utilities.js');
-const covert = require('../../covert.js');
 
-const cryptr = new Cryptr(covert.refresh_token_key);
+const cryptr = new Cryptr(process.env.REFRESH_TOKEN_KEY);
 
 /**
 * Requests a new user access token from Discord's API
@@ -21,7 +19,7 @@ function getNewAccessToken(id){return new Promise((resolve, reject) => {
 	.then(refresh_token => {
 		return rp({
 			method: 'POST',
-			uri: `https://discordapp.com/api/oauth2/token?grant_type=refresh_token&client_id=${covert.discord.app_id}&client_secret=${covert.discord.app_secret}&refresh_token=${refresh_token}`	
+			uri: `https://discordapp.com/api/oauth2/token?grant_type=refresh_token&client_id=${process.env.DISCORD_APP_ID}&client_secret=${process.env.DISCORD_APP_SECRET}&refresh_token=${refresh_token}`	
 		})
 	})	
 	.then(data => {
@@ -62,7 +60,7 @@ module.exports = function(options = {ajax: false}){
 
 return function(req, res, next){
 	
-	let bot_auth = `Basic ${Buffer.from(covert.bot_token_hash).toString('base64')}`;
+	let bot_auth = `Basic ${Buffer.from(process.env.DISCORD_BOT_TOKEN_HASH).toString('base64')}`;
 
 	if(req.headers.authorization && req.headers.authorization === bot_auth){
 		res.locals.userId = req.headers['author-id']; //also add res.locals for user guilds

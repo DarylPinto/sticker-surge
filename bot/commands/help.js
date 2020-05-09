@@ -1,13 +1,10 @@
-const rp = require('request-promise');
-const covert = require('../../covert.js');
-
 module.exports = function(message, prefix, resource_info){
 
 	const embed_color = 16540258;
 	const lib_version = "11.5.1";
 	const discord_link = "https://discord.gg/HNFmKsE";
-	const add_bot_link = `https://discordapp.com/oauth2/authorize?client_id=${covert.discord.app_id}&scope=bot&permissions=536880128`;
-	const bot_vote_link = `https://discordbots.org/bot/${covert.discord.app_id}`;
+	const add_bot_link = `https://discordapp.com/oauth2/authorize?client_id=${process.env.DISCORD_APP_ID}&scope=bot&permissions=${process.env.DISCORD_BOT_PERMS}`;
+	const bot_vote_link = `https://discordbots.org/bot/${process.env.DISCORD_APP_ID}`;
 
 	//Escape prefix to avoid issues with Discord formatting
 	const escaped_prefix = (prefix) ? prefix.replace(/[^a-zA-Z0-9]/g, '\\$&') : null;
@@ -52,8 +49,8 @@ module.exports = function(message, prefix, resource_info){
 					name: "Sticker Surge",
 					value: `
 						To view a list of commands, type: **${escaped_prefix}commands**
-						[View available sticker packs](${covert.app_url}/sticker-packs)
-						[View documentation](${covert.app_url}/docs)
+						[View available sticker packs](${process.env.APP_URL}/sticker-packs)
+						[View documentation](${process.env.APP_URL}/docs)
 						.
 					`.replace(/\t/g, '')
 				},
@@ -65,7 +62,7 @@ module.exports = function(message, prefix, resource_info){
 						Sticker Manager Role: ${sticker_manager_role_name}
 						Personal stickers allowed: ${personal_stickers_allowed}
 						Custom Stickers: ${sticker_amount}
-						[View Stickers](${covert.app_url}/server/${message.guild.id})
+						[View Stickers](${process.env.APP_URL}/server/${message.guild.id})
 						.
 					`.replace(/\t/g, '')
 				},
@@ -100,7 +97,7 @@ module.exports = function(message, prefix, resource_info){
 					name: message.author.username,
 					value: `
 						Custom Stickers: ${sticker_amount}
-						[View Stickers](${covert.app_url}/user/${message.author.id})
+						[View Stickers](${process.env.APP_URL}/user/${message.author.id})
 						.
 					`.replace(/\t/g, '')
 				},

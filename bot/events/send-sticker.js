@@ -1,7 +1,6 @@
 const rp = require('request-promise');
 const userStickerPerms = require('../utilities/user-sticker-perms.js');
 const updateWebhookChannel = require('../utilities/update-webhook-channel.js');
-const covert = require('../../covert.js');
 
 module.exports = async function(message, client, bot_auth){
 
@@ -29,7 +28,7 @@ module.exports = async function(message, client, bot_auth){
 	function incrementStickerUses(sticker_name, sticker_type, group_id){
 		rp({
 			method: 'POST',
-			uri: `${covert.app_url}/api/${sticker_type}/${group_id}/stickers/${sticker_name}/uses`,
+			uri: `${process.env.APP_URL}/api/${sticker_type}/${group_id}/stickers/${sticker_name}/uses`,
 			json: true,
 			headers: {Authorization: bot_auth}
 		})
@@ -41,7 +40,7 @@ module.exports = async function(message, client, bot_auth){
 		try{
 			let user = await rp({
 				method: 'GET',
-				uri: `${covert.app_url}/api/users/${userId}/info`,
+				uri: `${process.env.APP_URL}/api/users/${userId}/info`,
 				json: true
 			});
 			return user.stickerPacks;
@@ -77,7 +76,7 @@ module.exports = async function(message, client, bot_auth){
 				
 				const guild_info = await rp({
 					method: 'GET',
-					uri: `${covert.app_url}/api/guilds/${message.guild.id}/info`,
+					uri: `${process.env.APP_URL}/api/guilds/${message.guild.id}/info`,
 					json: true
 				});
 
@@ -186,7 +185,7 @@ module.exports = async function(message, client, bot_auth){
 
 		rp({
 			method: 'GET',
-			uri: `${covert.app_url}/api/users/${user.id}/stickers/${sticker_name}`,
+			uri: `${process.env.APP_URL}/api/users/${user.id}/stickers/${sticker_name}`,
 			json: true
 		})
 		.then(res => useSticker(res))
@@ -204,7 +203,7 @@ module.exports = async function(message, client, bot_auth){
 
 		rp({
 			method: 'GET',
-			uri: `${covert.app_url}/api/guilds/${guild.id}/stickers/${sticker_name}`,
+			uri: `${process.env.APP_URL}/api/guilds/${guild.id}/stickers/${sticker_name}`,
 			json: true
 		})
 		.then(res => useSticker(res))
@@ -222,7 +221,7 @@ module.exports = async function(message, client, bot_auth){
 
 		rp({
 			method: 'GET',
-			uri: `${covert.app_url}/api/sticker-packs/${pack_key}/stickers/${sticker_name}`,
+			uri: `${process.env.APP_URL}/api/sticker-packs/${pack_key}/stickers/${sticker_name}`,
 			json: true
 		})
 		.then(res => useSticker(res, pack_key))
