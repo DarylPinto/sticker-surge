@@ -4,6 +4,10 @@
   "description": "Custom stickers and sticker packs for Discord servers!",
   "author": "Daryl Pinto",
   "license": "MPLv2",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/darylpinto/sticker-surge"
@@ -27,5 +31,7 @@
     "simple-oauth2": "^1.2.0",
     "snekfetch": "^3.2.4"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  }
 }
