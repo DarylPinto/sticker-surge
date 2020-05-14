@@ -24,6 +24,7 @@ const removedFields = {
 	'_id': false,
 	'__v': false,
 	'refresh_token': false,
+	'token_expiry_time': false,
 	'customStickers._id': false
 }
 

@@ -7,7 +7,6 @@ const sessions = require('client-sessions');
 const cors = require('cors');
 const verifyUser = require('./middleware/verify-user.js')({ajax: false});
 const setGuildsCookie = require('./middleware/set-guilds-cookie.js');
-const setUserAvatar = require('./middleware/update-user-info.js');
 
 const app = express();
 const port = 3000;
@@ -68,17 +67,16 @@ app.use('/api/stats', require('./api/stats.js'));
 app.get('/api/set-guilds', verifyUser, setGuildsCookie, (req, res) => {
 	res.send('Guilds cookie updated');
 });
-app.get('/api/update-user-info', verifyUser, setUserAvatar, (req, res) => {
-	res.send({
-		updated: res.locals.updated,
-		username: res.locals.username,
-		avatar: res.locals.avatar
-	});
-});
+
 app.get('/api/invalidate-token', (req, res) => {
 	req.session.token = 'invalidated';
 	res.send('Token invalidated');
 });
+
+// app.get('/api/check-token', (req, res) => {	
+// 	res.send(req.session.token);
+// });
+
 app.get('/api/dbl-integrated', (req, res) => {
 	res.send({dbl_integrated: !!process.env.TOPGG_ENABLED});
 });

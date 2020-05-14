@@ -52,20 +52,6 @@ export default {
 				if(err.response.status === 404) window.location.replace('/');
 			})
 			.then(() => {
-
-				//If user is logged in and on their own page, update their username + avatar
-				if(!this.isUsersPage) return;
-				
-				axios.get(`${this.$apiURL}/api/update-user-info`)
-				.then(res => {
-					if(!res.data.updated) return;
-					this.username = res.data.username;
-					this.avatarURL = `https://cdn.discordapp.com/avatars/${this.userId}/${res.data.avatar}.png`;
-					document.title = `${res.data.username} - Sticker Surge`;
-				});
-
-			})
-			.then(() => {
 				//Map user's sticker pack keys into requests for the pack data
 				return Promise.all(this.stickerPacks.map(key => {
 					return axios.get(`${this.$apiURL}/api/sticker-packs/${key}`)

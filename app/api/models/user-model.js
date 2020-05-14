@@ -6,6 +6,7 @@ const userSchema = Schema({
 	username: {type: String, required: true},
 	avatar: {type: String, default: null},
 	refresh_token: {type: String, default: ''},
+	token_expiry_time: {type: Date, default: Date.now},
 	customStickers: [{
 		name: {type: String, required: true, maxlength: 20},
 		url: {type: String, required: true},
