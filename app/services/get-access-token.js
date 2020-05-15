@@ -8,7 +8,8 @@ const cryptr = new Cryptr(process.env.REFRESH_TOKEN_KEY);
  * Gets access token for a user with one of two methods:
  *
  * 1) If a userID is provided, we check if they have a refresh token
- * stored that we can use to get an access token. If they don't, returns null.
+ * stored that we can use to get an access token. If they don't or if
+ * the refresh token is invalid for some reason, it returns null.
  *
  * 2) If an authorizationCode is provided we exchange that for an access token.
  *
@@ -26,9 +27,11 @@ const getAccessToken = async ({ userId, authorizationCode }) => {
 
   if (!authorizationCode) {
     user = await User.findOne({ id: userId });
-    refreshToken = user.refresh_token.length > 0
-      ? cryptr.decrypt(user.refresh_token)
-      : null;
+    try {
+      refreshToken = cryptr.decrypt(user.refresh_token);
+    } catch (err) {
+      return null;
+    }
   }
 
   if (!authorizationCode && !refreshToken) return null;
@@ -45,7 +48,12 @@ const getAccessToken = async ({ userId, authorizationCode }) => {
         grantType: "refresh_token",
       };
 
-  const tokenResponse = await oauth.tokenRequest(tokenRequestBody);
+  let tokenResponse;
+  try {
+    tokenResponse = await oauth.tokenRequest(tokenRequestBody);
+  } catch (err) {
+    return null;
+  }
 
   // Get user's basic info
   const { access_token, refresh_token, expires_in } = tokenResponse;
