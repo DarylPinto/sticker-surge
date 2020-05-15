@@ -1,5 +1,6 @@
 node_modules/
 covert.js
+.env
 app/sticker-temp/
 app/frontend/public/images/
 app/frontend/public/bundle.js
