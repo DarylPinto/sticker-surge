@@ -3,8 +3,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 mongoose.plugin(schema => { schema.options.usePushEach = true });
-const sessions = require('modules/client-sessions');
+const sessions = require('./modules/client-sessions');
 const cors = require('cors');
+const { IS_PRODUCTION } = require('./data/constants.js');
 const verifyUser = require('./middleware/verify-user.js')({ajax: false});
 const setGuildsCookie = require('./middleware/set-guilds-cookie.js');
 
@@ -35,7 +36,9 @@ app.use(sessions({
 	secret: process.env.SESSION_SECRET,
 	duration: 365 * 24 * 60 * 60 * 1000,
 	cookie: {
-		httpOnly: true
+		path: '/api',
+		httpOnly: true,
+		secureProxy: IS_PRODUCTION
 	}
 }));
 
