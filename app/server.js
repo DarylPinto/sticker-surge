@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 mongoose.plugin(schema => { schema.options.usePushEach = true });
-const sessions = require('client-sessions');
+const sessions = require('modules/client-sessions');
 const cors = require('cors');
 const verifyUser = require('./middleware/verify-user.js')({ajax: false});
 const setGuildsCookie = require('./middleware/set-guilds-cookie.js');

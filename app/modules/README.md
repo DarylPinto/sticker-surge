@@ -1,0 +1,2 @@
+## What is this?
+`modules` is a directory to store packages from npm that are no longer being updated but still need additional functionality. Usually I'll implement updates from open pull requests on Github.
