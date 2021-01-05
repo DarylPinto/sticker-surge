@@ -13,7 +13,7 @@
     "minimist": "1.2.3"
   },
   "dependencies": {
-    "axios": "^0.19.1",
+    "axios": "^0.21.1",
     "clipboard": "^2.0.4",
     "core-js": "^3.4.4",
     "debounce": "^1.2.0",
