@@ -268,10 +268,17 @@ router.patch('/:id/command-prefix', verifyUserAjax, (req, res) => {
 			return null;	
 		}
 
-		if(!util.userIsGuildManager(guild, req, res)){
-			res.status(401).send('Unauthorized');
-			return null;
-		}
+		/**
+		 * CODE: TODO-101
+		 * TEMPORARY:
+		 * UNTIL DISCORD FIXES MY BOT'S PERMISSIONS.
+		 * CURRENTLY RELIES ON THE BOT TO DETERMINE WHO HAS PERMS,
+		 * EVEN THOUGH API SHOULD BE THE ARBITER
+		 */
+		// if(!util.userIsGuildManager(guild, req, res)){
+		// 	res.status(401).send('Unauthorized');
+		// 	return null;
+		// }
 
 		if(/(@|#|-)/g.test(req.body.commandPrefix) || util.strHasEmoji(req.body.commandPrefix)){
 			res.status(400).send('Illegal prefix');
@@ -310,10 +317,17 @@ router.patch('/:id/sticker-manager-role', verifyUserAjax, (req, res) => {
 			return null;	
 		}
 
-		if(!util.userIsGuildManager(guild, req, res)){
-			res.status(401).send('Unauthorized');
-			return null;
-		}
+		/**
+		 * CODE: TODO-101
+		 * TEMPORARY:
+		 * UNTIL DISCORD FIXES MY BOT'S PERMISSIONS.
+		 * CURRENTLY RELIES ON THE BOT TO DETERMINE WHO HAS PERMS,
+		 * EVEN THOUGH API SHOULD BE THE ARBITER
+		 */
+		// if(!util.userIsGuildManager(guild, req, res)){
+		// 	res.status(401).send('Unauthorized');
+		// 	return null;
+		// }
 
 		if(req.body.stickerManagerRole.length > 30){
 			res.status(400).send('Role must be less than 30 characters');
@@ -345,7 +359,14 @@ router.patch('/:id/sticker-user-role', verifyUserAjax, async (req, res) => {
 		let guild = await Guild.findOne({id: req.params.id});
 
 		if(!guild) return res.status(404).send('Guild not found');
-		if(!util.userIsGuildManager(guild, req, res)) return res.status(401).send('Unauthorized');
+		/**
+		 * CODE: TODO-101
+		 * TEMPORARY:
+		 * UNTIL DISCORD FIXES MY BOT'S PERMISSIONS.
+		 * CURRENTLY RELIES ON THE BOT TO DETERMINE WHO HAS PERMS,
+		 * EVEN THOUGH API SHOULD BE THE ARBITER
+		 */
+		// if(!util.userIsGuildManager(guild, req, res)) return res.status(401).send('Unauthorized');
 
 		guild.listMode = req.body.listMode;
 		guild.whitelist.roleId = req.body.whitelistRole;
@@ -371,7 +392,15 @@ router.patch('/:id/personal-stickers-allowed', verifyUserAjax, async (req, res) 
 		let guild = await Guild.findOne({id: req.params.id});
 
 		if(!guild) return res.status(404).send('Guild not found');
-		if(!util.userIsGuildManager(guild, req, res)) return res.status(401).send('Unauthorized');
+
+		/**
+		 * CODE: TODO-101
+		 * TEMPORARY:
+		 * UNTIL DISCORD FIXES MY BOT'S PERMISSIONS.
+		 * CURRENTLY RELIES ON THE BOT TO DETERMINE WHO HAS PERMS,
+		 * EVEN THOUGH API SHOULD BE THE ARBITER
+		 */
+		// if(!util.userIsGuildManager(guild, req, res)) return res.status(401).send('Unauthorized');
 
 		guild.personalStickersAllowed = req.body.personalStickersAllowed;
 		await guild.save();
@@ -395,10 +424,17 @@ router.post('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 		let guild = await Guild.findOne({id: req.params.id});
 		let pack = await StickerPack.findOne({key: req.body.packKey});
 
-		if(!util.userCanManageStickers(guild, req, res)){
-			res.status(401).send('Unauthorized');
-			return null;
-		}
+	  /**
+		 * CODE: TODO-101
+		 * TEMPORARY:
+		 * UNTIL DISCORD FIXES MY BOT'S PERMISSIONS.
+		 * CURRENTLY RELIES ON THE BOT TO DETERMINE WHO HAS PERMS,
+		 * EVEN THOUGH API SHOULD BE THE ARBITER
+		 */
+		// if(!util.userCanManageStickers(guild, req, res)){
+		// 	res.status(401).send('Unauthorized');
+		// 	return null;
+		// }
 
 		if(!guild) return res.status(404).send('Guild not found');
 		if(!pack) return res.status(404).send('Sticker Pack not found');
@@ -489,10 +525,17 @@ router.delete('/:id/sticker-packs', verifyUserAjax, async (req, res) => {
 		let guild = await Guild.findOne({id: req.params.id});
 		let pack = await StickerPack.findOne({key: req.body.packKey});	
 
-		if(!util.userCanManageStickers(guild, req, res)){
-			res.status(401).send('Unauthorized');
-			return null;
-		}
+		 /**
+		 * CODE: TODO-101
+		 * TEMPORARY:
+		 * UNTIL DISCORD FIXES MY BOT'S PERMISSIONS.
+		 * CURRENTLY RELIES ON THE BOT TO DETERMINE WHO HAS PERMS,
+		 * EVEN THOUGH API SHOULD BE THE ARBITER
+		 */
+		// if(!util.userCanManageStickers(guild, req, res)){
+		// 	res.status(401).send('Unauthorized');
+		// 	return null;
+		// }
 
 		if(!guild) return res.status(404).send('Guild not found');
 		if(!guild.stickerPacks.includes(req.body.packKey)){

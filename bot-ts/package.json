@@ -1,0 +1,36 @@
+{
+  "name": "sticker-surge-bot",
+  "version": "2.0.0",
+  "description": "Custom stickers and sticker packs for Discord servers!",
+  "author": "Daryl Pinto",
+  "license": "MPLv2",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "export NODE_ENV=production && npm run build && node dist/index.js",
+    "dev": "ts-node-dev src/bot.ts",
+    "lint": "npx prettier **/*.{ts,json} --write"
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darylpinto/sticker-surge"
+  },
+  "dependencies": {
+    "@top-gg/sdk": "^3.0.8",
+    "@types/node": "^14.14.31",
+    "axios": "^0.21.1",
+    "discord-akairo": "^8.1.0",
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0",
+    "find-config": "^1.0.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.2",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1",
+    "ts-node-dev": "^1.1.6"
+  }
+}
