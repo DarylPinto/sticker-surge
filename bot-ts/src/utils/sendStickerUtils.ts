@@ -162,7 +162,7 @@ export const getStickerWebhook = async (
       avatar: client.user.displayAvatarURL(),
     });
   } catch (err) {
-    logger.warn({
+    logger.debug({
       message: "Unable to create a new sticker webhook",
       meta: {
         error: { message: err.message },

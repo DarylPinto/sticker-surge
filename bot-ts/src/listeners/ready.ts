@@ -14,7 +14,7 @@ class ReadyListener extends Listener {
 
   async exec() {
     // topggService.autopost(this.client);
- 
+
     await this.client.user.setPresence({
       activity: { name: "stickersurge.com" },
     });

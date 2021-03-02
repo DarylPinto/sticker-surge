@@ -70,7 +70,9 @@ class SendSticker extends Command {
         .has("MANAGE_MESSAGES");
 
       if (stickerPostedSuccessfully && botCanDelete) {
-        await message.delete();
+        try {
+          await message.delete();
+        } catch (err) {}
       }
     } catch (err) {
       logger.error({
