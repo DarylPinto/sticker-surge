@@ -1,6 +1,6 @@
 import { Listener } from "discord-akairo";
 import logger from "../utils/logger";
-import topggService from "../services/topgg";
+// import topggService from "../services/topgg";
 
 const LISTENER_NAME = "ready";
 
@@ -13,7 +13,7 @@ class ReadyListener extends Listener {
   }
 
   async exec() {
-    topggService.autopost(this.client);
+    // topggService.autopost(this.client);
  
     await this.client.user.setPresence({
       activity: { name: "stickersurge.com" },
