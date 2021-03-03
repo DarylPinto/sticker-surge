@@ -49,7 +49,7 @@ export const postTextSticker = async (
       meta: {
         guild: message.guild.id,
         user: message.author.id,
-        usersMessage: message.content,
+        message: { id: message.id, content: message.content },
       },
     });
 
@@ -78,7 +78,7 @@ export const postWebhookSticker = async (
       meta: {
         guild: message.guild.id,
         user: message.author.id,
-        usersMessage: message.content,
+        message: { id: message.id, content: message.content },
       },
     });
 

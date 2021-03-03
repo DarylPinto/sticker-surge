@@ -107,7 +107,7 @@ class HelpCommand extends Command {
           botCommand: COMMAND_NAME,
           guild: message.guild.id,
           user: message.author.id,
-          usersMessage: message.content,
+          message: { id: message.id, content: message.content },
         },
       });
 

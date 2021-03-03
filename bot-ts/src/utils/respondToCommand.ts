@@ -58,7 +58,7 @@ const respondToCommand = async ({
         stickerSurgeServiceResult: result,
         guild: message.guild.id,
         user: message.author.id,
-        usersMessage: message.content,
+        message: { id: message.id, content: message.content },
       },
     });
     return message.channel.send(
