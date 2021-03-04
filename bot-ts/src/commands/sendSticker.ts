@@ -70,11 +70,11 @@ class SendSticker extends Command {
         .has("MANAGE_MESSAGES");
 
       if (stickerPostedSuccessfully && botCanDelete) {
-        try {
-          await message.delete();
-        } catch (err) {}
+        await message.delete();
       }
     } catch (err) {
+      if (err.message === "Unknown Message") return;
+
       logger.error({
         message: "Error occured in sendSticker command",
         meta: {
