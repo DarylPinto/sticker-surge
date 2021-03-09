@@ -1,6 +1,6 @@
 import stickerSurge, { Status } from "../services/stickerSurge";
 import logger from "./logger";
-import { Guild, GuildMember } from "discord.js";
+import { Message, Guild, GuildMember } from "discord.js";
 
 /**
  * Calculate user sticker permissions. This function DOES NOT
@@ -8,12 +8,13 @@ import { Guild, GuildMember } from "discord.js";
  *
  * Instead it reads directly from the user within Discord itself.
  */
-const userStickerPerms = async (guild: Guild, guildMember: GuildMember) => {
-  const userId = guildMember.user.id;
-  const isGuildManager = guildMember.hasPermission("MANAGE_GUILD");
-  const userRoles = guildMember.roles.cache.keyArray();
+const userStickerPerms = async (message: Message) => {
+  const isGuildManager = message.member.hasPermission("MANAGE_GUILD");
+  const userRoles = message.member.roles.cache.keyArray();
 
-  const { status, data: guildInfo } = await stickerSurge.getGuildInfo(guild);
+  const { status, data: guildInfo } = await stickerSurge.getGuildInfo(
+    message.guild
+  );
 
   if (status === Status.FAILED) {
     // Now that `getGuildInfo` creates guilds on 404,this error
@@ -22,10 +23,12 @@ const userStickerPerms = async (guild: Guild, guildMember: GuildMember) => {
       message:
         "Unable to fetch guild from stickerSurgeService while calculating permissions",
       meta: {
-        guild: guild.id,
-        user: userId,
+        guild: message.guild.id,
+        user: message.author.id,
+        message: { id: message.id, content: message.content },
       },
     });
+
     return { canManage: false, canSend: false };
   }
 

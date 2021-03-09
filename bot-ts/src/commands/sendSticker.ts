@@ -49,7 +49,7 @@ class SendSticker extends Command {
       }
 
       // Verify user's permissions to send stickers
-      const { canSend } = await userStickerPerms(message.guild, message.member);
+      const { canSend } = await userStickerPerms(message);
       if (!canSend) {
         await message.channel.send(
           "You do not have permission to send stickers on this server."

@@ -42,7 +42,7 @@ class AddPackCommand extends Command {
   }
 
   async exec(message: Message, args) {
-    const { canManage } = await userStickerPerms(message.guild, message.member);
+    const { canManage } = await userStickerPerms(message);
 
     if (!canManage) {
       return message.channel.send(
