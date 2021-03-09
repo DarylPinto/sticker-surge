@@ -210,7 +210,7 @@ const createSticker = async (
     {
       method: "POST",
       url: `${process.env.APP_URL}/api/guilds/${guild.id}/stickers`,
-      data: { name: stickerName, url: stickerUrl },
+      data: { name: stickerName.toLowerCase(), url: stickerUrl },
       headers: { Authorization: BOT_AUTH, "Author-Id": userId },
     },
     guild
@@ -231,10 +231,11 @@ const deleteSticker = async (
   userId: Snowflake,
   stickerName: string
 ): Promise<StickerSurgeResponse> => {
+  const encodedStickerName = encodeURIComponent(stickerName);
   const res = await stickerSurgeAPI(
     {
       method: "DELETE",
-      url: `${process.env.APP_URL}/api/guilds/${guild.id}/stickers/${stickerName}`,
+      url: `${process.env.APP_URL}/api/guilds/${guild.id}/stickers/${encodedStickerName}`,
       headers: { Authorization: BOT_AUTH, "Author-Id": userId },
     },
     guild
@@ -361,7 +362,8 @@ const togglePersonalStickersAllowed = async (
 };
 
 const usePackSticker = async (
-  details: StickerMessageDetails
+  details: StickerMessageDetails,
+  encodedStickerName: string
 ): Promise<Sticker> => {
   const [guildInfoResult, userInfoResult] = await Promise.all([
     getGuildInfo(details.guild),
@@ -376,7 +378,7 @@ const usePackSticker = async (
 
   const res = await stickerSurgeAPI({
     method: "POST",
-    url: `${process.env.APP_URL}/api/sticker-packs/${details.packKey}/stickers/${details.name}/uses`,
+    url: `${process.env.APP_URL}/api/sticker-packs/${details.packKey}/stickers/${encodedStickerName}/uses`,
     headers: { Authorization: BOT_AUTH },
   });
 
@@ -388,7 +390,8 @@ const usePackSticker = async (
 };
 
 const useCustomSticker = async (
-  details: StickerMessageDetails
+  details: StickerMessageDetails,
+  encodedStickerName: string
 ): Promise<Sticker> => {
   let res: StickerSurgeResponse;
 
@@ -396,7 +399,7 @@ const useCustomSticker = async (
     case "guild":
       res = await stickerSurgeAPI({
         method: "POST",
-        url: `${process.env.APP_URL}/api/guilds/${details.guild.id}/stickers/${details.name}/uses`,
+        url: `${process.env.APP_URL}/api/guilds/${details.guild.id}/stickers/${encodedStickerName}/uses`,
         headers: { Authorization: BOT_AUTH },
       });
       break;
@@ -404,7 +407,7 @@ const useCustomSticker = async (
     case "user":
       res = await stickerSurgeAPI({
         method: "POST",
-        url: `${process.env.APP_URL}/api/users/${details.userId}/stickers/${details.name}/uses`,
+        url: `${process.env.APP_URL}/api/users/${details.userId}/stickers/${encodedStickerName}/uses`,
         headers: { Authorization: BOT_AUTH },
       });
       break;
@@ -421,12 +424,14 @@ const useCustomSticker = async (
 };
 
 const useSticker = async (details: StickerMessageDetails): Promise<Sticker> => {
+  const encodedStickerName = encodeURIComponent(details.name);
+
   switch (details.type) {
     case "guild":
     case "user":
-      return await useCustomSticker(details);
+      return await useCustomSticker(details, encodedStickerName);
     case "sticker-pack":
-      return await usePackSticker(details);
+      return await usePackSticker(details, encodedStickerName);
     default:
       return null;
   }
