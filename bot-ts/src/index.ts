@@ -7,6 +7,8 @@ const BOT_FILE_PATH = "./dist/bot.js";
 // Create your ShardingManger instance
 export const manager = new ShardingManager(BOT_FILE_PATH, {
   token: process.env.DISCORD_APP_BOT_TOKEN,
+  mode: "worker",
+  totalShards: "auto"
 });
 
 // Emitted when a shard is created
@@ -15,4 +17,4 @@ manager.on("shardCreate", (shard) =>
 );
 
 // Spawn your shards
-manager.spawn("auto", 5500, -1);
+manager.spawn();
